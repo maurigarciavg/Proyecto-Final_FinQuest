@@ -12,7 +12,7 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
-
+import { ChildDashboard } from "./pages/ChildDashboard";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -35,6 +35,10 @@ export const router = createBrowserRouter(
                         <Orders />
                     </PrivateRoute>
                 )}
+            />
+            <Route
+                path="child-dashboard"
+                element={<ChildDashboard />}
             />
             <Route path="*" element={<NotFound />} />
         </Route>
