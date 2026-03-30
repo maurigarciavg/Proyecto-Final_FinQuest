@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import cashtorImg from "../assets/img/Cashtor.jpg"; 
+import cashtorImg from "../../assets/img/Cashtor.jpg";
 
 /**
  * NOTA PARA EL EQUIPO:
