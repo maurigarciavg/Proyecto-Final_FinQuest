@@ -25,10 +25,7 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage }) => {
                 <div className="calendar-placeholder">
                     {/* Aquí puedes renderizar un calendario real o una cuadrícula de días */}
                     <div className="calendar-grid">
-                        {/* Simulación de días */}
-                        {[...Array(31)].map((_, i) => (
-                            <span key={i} className="calendar-day">{i + 1}</span>
-                        ))}
+                        Calendario
                     </div>
                 </div>
             </section>

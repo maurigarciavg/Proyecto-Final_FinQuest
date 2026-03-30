@@ -2,6 +2,7 @@ import React from 'react';
 import LeftPanel from '../components/LeftPanel';
 import CenterPanel from '../components/CenterPanel';
 import RightPanel from '../components/RightPanel';
+import "../style ParentDash/stylePAdmin.css";
 
 export const ParentAdmin = () => { // Nota: Sugiero Mayúscula inicial para componentes
     // Datos de prueba
@@ -10,21 +11,29 @@ export const ParentAdmin = () => { // Nota: Sugiero Mayúscula inicial para comp
         { id: 2, name: "Hijo 2" }
     ];
 
+
     return (
-        <div className="min-h-screen bg-slate-50 p-4 lg:p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto">
-                <aside className="lg:col-span-3 space-y-6">
-                    {/* Pasamos las props necesarias */}
-                    <LeftPanel parentName="Papá Pérez" childrenProfiles={misHijos} />
+        <div className="dashboard-wrapper">
+            <div className="dashboard-content">
+                {/* 1. Left Panel (25%) */}
+                <aside className="panel-left">
+                    <div className="card-container">
+                        <LeftPanel parentName="Papá Pérez" childrenProfiles={misHijos} />
+                    </div>
                 </aside>
 
-                <main className="lg:col-span-6 space-y-8">
-                    {/* Pasamos las props necesarias */}
-                    <CenterPanel childName="Hijo 1" pendingTasksCount={3} />
+                {/* 2. Center Panel (50%) */}
+                <main className="panel-center">
+                    <div>
+                        <CenterPanel childName="Hijo 1" pendingTasksCount={3} />
+                    </div>
                 </main>
 
-                <section className="lg:col-span-3 space-y-6">
-                    <RightPanel grandPrizeName="Cine en familia" />
+                {/* 3. Right Panel (25%) */}
+                <section className="panel-right">
+                    <div className="card-container">
+                        <RightPanel grandPrizeName="Cine en familia" />
+                    </div>
                 </section>
             </div>
         </div>
