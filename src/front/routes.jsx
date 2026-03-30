@@ -12,6 +12,7 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
+import { Login} from "./pages/Login";
 
 
 export const router = createBrowserRouter(
@@ -19,7 +20,8 @@ export const router = createBrowserRouter(
         <Route path="/" element={<Layout />} errorElement={<NotFound />}>
             <Route index element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
-            <Route path="sign-up" element={<SignUp />} />
+            <Route path="sign-up" element={<SignUp />} /> 
+            <Route path="login" element={<Login />} /> 
             <Route
                 path="profile"
                 element={(
