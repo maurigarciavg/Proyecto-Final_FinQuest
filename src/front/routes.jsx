@@ -12,7 +12,7 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
-import { ChildRegistration } from "./components/Child profile creation/ChildRegistration.jsx";
+import { ChildRegistration } from "./components/ChildProfileCreation/ChildRegistration.jsx";
 
 
 export const router = createBrowserRouter(
