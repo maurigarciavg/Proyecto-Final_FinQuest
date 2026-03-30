@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import { PrivateRoute } from "./components/PrivateRoute";
+import { ParentAdmin } from "../ParentDashboard/pages/ParentAdmin";
 import { Home } from "./pages/Home";
 import { Layout } from "./pages/Layout";
 import { NotFound } from "./pages/NotFound";
@@ -33,6 +34,14 @@ export const router = createBrowserRouter(
                 element={(
                     <PrivateRoute>
                         <Orders />
+                    </PrivateRoute>
+                )}
+            />
+            <Route
+                path="parentadmin"
+                element={(
+                    <PrivateRoute>
+                        <ParentAdmin />
                     </PrivateRoute>
                 )}
             />
