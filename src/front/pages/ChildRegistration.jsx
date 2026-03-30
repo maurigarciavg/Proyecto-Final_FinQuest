@@ -41,7 +41,7 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
 
         console.log("🚀 DEBUG: Datos para la API:", childData);
 
-        // Simulación de carga (sustituir por fetch mañana)
+        // Simulación de carga (sustituir por fetch mas adelante)
         await new Promise(resolve => setTimeout(resolve, 1500)); 
         
         setIsSubmitting(false);
