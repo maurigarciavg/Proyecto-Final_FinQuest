@@ -32,8 +32,14 @@ export const ChildDashboard = () => {
 
     if (!data) {
         return (
-            <div className="container py-5">
-                <p>Cargando dashboard...</p>
+            <div
+                className="container py-5 d-flex justify-content-center align-items-center"
+                style={{ minHeight: "60vh" }}
+            >
+                <div className="text-center">
+                    <div className="spinner-border mb-3" role="status"></div>
+                    <p className="mb-0">Cargando tu progreso...</p>
+                </div>
             </div>
         );
     }
@@ -54,7 +60,7 @@ export const ChildDashboard = () => {
                             </div>
 
                             <div className="d-flex gap-3 flex-wrap">
-                                <div className="bg-light rounded-4 px-4 py-3 text-center">
+                                <div className="bg-warning bg-opacity-25 rounded-4 px-4 py-3 text-center">
                                     <div className="small text-muted">Monedas</div>
                                     <div className="fw-bold fs-4">{child.coins}</div>
                                 </div>
@@ -81,7 +87,7 @@ export const ChildDashboard = () => {
                                                 {tasks.map((task) => (
                                                     <div
                                                         key={task.id}
-                                                        className="d-flex justify-content-between align-items-center bg-white rounded-4 p-3 shadow-sm"
+                                                        className="d-flex justify-content-between align-items-center bg-white rounded-4 p-3 shadow-sm border"
                                                     >
                                                         <div>
                                                             <div className="fw-semibold">
@@ -108,7 +114,7 @@ export const ChildDashboard = () => {
                                     <div className="card-body p-4">
                                         <h2 className="h5 mb-3">Objetivo</h2>
 
-                                        <div className="bg-white rounded-4 p-3 shadow-sm mb-3">
+                                        <div className="bg-white rounded-4 p-3 shadow-sm mb-3 border">
                                             <div className="small text-muted mb-1">
                                                 Gran premio
                                             </div>
@@ -131,7 +137,7 @@ export const ChildDashboard = () => {
                                             style={{ height: "18px" }}
                                         >
                                             <div
-                                                className="progress-bar"
+                                                className="progress-bar bg-success"
                                                 role="progressbar"
                                                 style={{ width: `${child.progress}%` }}
                                                 aria-valuenow={child.progress}
