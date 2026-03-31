@@ -1,0 +1,76 @@
+/* Contenedor principal de fondo */
+.dashboard-wrapper {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding: 2rem;
+  background-color: #ffffff; /* Color de base */
+  background-image:
+    radial-gradient(at 0% 0%, #f2fcff 0%, transparent 50%),
+    radial-gradient(at 100% 0%, #e9f1f6 0%, transparent 50%),
+    radial-gradient(at 100% 100%, #f2fcff 0%, transparent 50%),
+    radial-gradient(at 0% 100%, #e9f1f6 0%, transparent 50%),
+    radial-gradient(at 50% 50%, #ffffff 0%, transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* El contenedor de las 3 columnas */
+.dashboard-content {
+    display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  /* CAMBIO: stretch hace que todos los hijos midan lo mismo de alto */
+  align-items: stretch; 
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  /* Calculamos el alto restando el padding del wrapper (2rem arriba + 2rem abajo = 4rem o 64px) */
+  min-height: calc(100vh - 4rem); 
+  background-color: #eef9f7;
+}
+
+/* Panel Izquierdo - 25% */
+.panel-left {
+  width: 25%;
+}
+
+/* Panel Central - 50% */
+.panel-center {
+  flex: 0 0 calc(50% - 16px);
+   padding: 1.5rem;
+}
+
+/* Panel Derecho - 25% */
+.panel-right {
+  width: 25%;
+}
+
+.panel-left, .panel-center, .panel-right {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Las cajas blancas redondeadas (Cards) */
+.card-container {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 24px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  
+  /* CAMBIO: Le decimos que crezca para llenar el espacio del panel */
+  flex-grow: 1; 
+  height: 100%; /* Asegura que tome el alto del padre flex */
+  border-radius: 10px;
+}
+
+/* Responsive: En tablets/móviles se ponen uno abajo del otro */
+@media (max-width: 1024px) {
+  .dashboard-content {
+    flex-direction: column;
+  }
+  .panel-left,
+  .panel-center,
+  .panel-right {
+    flex: 1 1 100%;
+  }
+}
