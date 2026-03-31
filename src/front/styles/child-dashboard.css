@@ -1,0 +1,483 @@
+.child-dashboard {
+  min-height: 100vh;
+  background: #eaf3f7;
+  padding: 24px 18px 40px;
+  font-family: Arial, sans-serif;
+  color: #1f1f1f;
+}
+
+.child-dashboard__container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.child-dashboard__content {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 22px;
+  margin-top: 22px;
+}
+
+.child-dashboard__state {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.child-dashboard__message {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.child-dashboard__message--error {
+  color: #b42318;
+}
+
+.child-dashboard__spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #d9e4ea;
+  border-top-color: #1f8ca8;
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  animation: spin 0.9s linear infinite;
+}
+
+.child-topbar {
+  background: #dfe8ed;
+  border-radius: 22px;
+  padding: 22px 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 22px;
+}
+
+.child-topbar__profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 240px;
+}
+
+.child-topbar__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #fff3d6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.child-topbar__label {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  color: #5a5a5a;
+}
+
+.child-topbar__name {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 800;
+}
+
+.child-topbar__stats {
+  display: flex;
+  gap: 28px;
+  flex: 1;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.child-topbar__stat {
+  min-width: 260px;
+}
+
+.child-topbar__stat-head {
+  margin-bottom: 8px;
+}
+
+.child-topbar__stat-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.progress-track {
+  width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  background: #cfe0e0;
+  overflow: hidden;
+}
+
+.progress-track--large {
+  height: 16px;
+  margin-top: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.progress-fill--level {
+  background: linear-gradient(90deg, #0c7b9d 0%, #38c8c2 60%, #d6d719 100%);
+}
+
+.progress-fill--coins {
+  background: linear-gradient(90deg, #d4af00 0%, #f0d429 100%);
+}
+
+.progress-fill--goal {
+  background: linear-gradient(90deg, #0c7b9d 0%, #38c8c2 60%, #d4c900 100%);
+}
+
+.dashboard-panel,
+.goal-card {
+  background: #eef2f4;
+  border-radius: 24px;
+  padding: 26px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-panel__title,
+.goal-card__title {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 800;
+}
+
+.dashboard-panel__top {
+  margin-top: 18px;
+  margin-bottom: 22px;
+}
+
+.dashboard-panel__bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.dashboard-placeholder,
+.task-summary-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-placeholder--streak {
+  min-height: 150px;
+}
+
+.dashboard-placeholder--shop,
+.task-summary-card {
+  min-height: 280px;
+}
+
+.dashboard-placeholder__streak-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.dashboard-placeholder__header,
+.task-summary-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.dashboard-placeholder__badge,
+.task-summary-card__badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-placeholder__badge {
+  background: #27b3a3;
+}
+
+.task-summary-card__badge {
+  background: #a978df;
+}
+
+.dashboard-placeholder__title,
+.task-summary-card__title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.dashboard-placeholder__text {
+  margin: 0;
+  color: #5e5e5e;
+  font-weight: 600;
+}
+
+.dashboard-streak {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.dashboard-streak__days {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.dashboard-streak__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-streak__check {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.dashboard-streak__day--active .dashboard-streak__check {
+  background: #24b8a8;
+}
+
+.dashboard-streak__label {
+  font-size: 0.95rem;
+  color: #7a7a7a;
+  font-weight: 500;
+}
+
+.dashboard-streak__coins {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.dashboard-shop {
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.dashboard-shop__image {
+  font-size: 5rem;
+  line-height: 1;
+}
+
+.dashboard-shop__text {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1f1f1f;
+}
+
+.task-summary-card__content {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.task-summary-card__image {
+  font-size: 84px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.task-summary-card__task-name {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.task-summary-card__reward {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #20b8a7;
+}
+
+.goal-card__box {
+  margin-top: 14px;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.goal-card__name {
+  margin: 0 0 18px;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.goal-card__hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.goal-card__image {
+  font-size: 72px;
+  line-height: 1;
+}
+
+.goal-card__price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.goal-card__price-number {
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.goal-card__price-label {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.goal-card__progress-text {
+  margin: 14px 0 10px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.goal-card__hint {
+  margin: 0 0 22px;
+  text-align: center;
+  color: #24a598;
+  font-weight: 700;
+}
+
+.goal-card__button {
+  width: 100%;
+  border: none;
+  border-radius: 18px;
+  padding: 18px 20px;
+  background: #48c3b8;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.goal-card__button:hover {
+  opacity: 0.95;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 980px) {
+  .child-dashboard__content {
+    grid-template-columns: 1fr;
+  }
+
+  .child-topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .child-topbar__stats {
+    justify-content: stretch;
+  }
+
+  .child-topbar__stat {
+    min-width: unset;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-panel__bottom {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .child-dashboard {
+    padding: 14px 10px 28px;
+  }
+
+  .dashboard-panel,
+  .goal-card,
+  .goal-card__box,
+  .dashboard-placeholder,
+  .task-summary-card {
+    border-radius: 20px;
+  }
+
+  .dashboard-panel__title,
+  .goal-card__title,
+  .dashboard-placeholder__title,
+  .task-summary-card__title {
+    font-size: 1.5rem;
+  }
+
+  .goal-card__hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .goal-card__price-number {
+    font-size: 2.4rem;
+  }
+
+  .child-topbar__name {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-streak {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-streak__days {
+    gap: 10px;
+  }
+
+  .dashboard-streak__check {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+
+  .dashboard-streak__coins {
+    font-size: 3rem;
+  }
+}

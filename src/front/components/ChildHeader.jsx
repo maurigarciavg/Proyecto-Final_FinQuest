@@ -2,25 +2,41 @@ import React from "react";
 
 export const ChildHeader = ({ child }) => {
     return (
-        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-            <div>
-                <h1 className="h3 mb-1">¡Hola, {child.name}!</h1>
-                <p className="text-muted mb-0">
-                    Aquí puedes ver tu progreso.
-                </p>
-            </div>
-
-            <div className="d-flex gap-3 flex-wrap">
-                <div className="bg-warning bg-opacity-25 rounded-4 px-4 py-3 text-center">
-                    <div className="small text-muted">Monedas</div>
-                    <div className="fw-bold fs-4">{child.coins}</div>
-                </div>
-
-                <div className="bg-light rounded-4 px-4 py-3 text-center">
-                    <div className="small text-muted">Nivel</div>
-                    <div className="fw-bold fs-4">{child.level}</div>
+        <section className="child-topbar">
+            <div className="child-topbar__profile">
+                <div className="child-topbar__avatar">🦁</div>
+                <div>
+                    <p className="child-topbar__label">Perfil</p>
+                    <h2 className="child-topbar__name">{child.name}</h2>
                 </div>
             </div>
-        </div>
+
+            <div className="child-topbar__stats">
+                <div className="child-topbar__stat">
+                    <div className="child-topbar__stat-head">
+                        <span className="child-topbar__stat-title">
+                            Nivel {child.level} 👑
+                        </span>
+                    </div>
+                    <div className="progress-track">
+                        <div className="progress-fill progress-fill--level" style={{ width: "78%" }}></div>
+                    </div>
+                </div>
+
+                <div className="child-topbar__stat">
+                    <div className="child-topbar__stat-head">
+                        <span className="child-topbar__stat-title">
+                            🪙 {child.coins} Monedas
+                        </span>
+                    </div>
+                    <div className="progress-track">
+                        <div
+                            className="progress-fill progress-fill--coins"
+                            style={{ width: `${Math.min(child.progress, 100)}%` }}
+                        ></div>
+                    </div>
+                </div>
+            </div>
+        </section>
     );
 };
