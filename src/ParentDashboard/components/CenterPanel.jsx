@@ -2,6 +2,7 @@ import React, { useState } from 'react'; // 1. Importamos useState
 import PropTypes from 'prop-types';
 import "../style ParentDash/styleCePanel.css";
 
+
 const CenterPanel = ({ childName, pendingTasksCount }) => {
     // 2. Definimos el estado para la pestaña activa (por defecto 'Tareas')
     const [activeTab, setActiveTab] = useState('Tareas');

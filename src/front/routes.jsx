@@ -13,10 +13,8 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
-
 import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
 
-// Tu archivo de rutas actualizado
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Layout />} errorElement={<NotFound />}>
@@ -24,7 +22,7 @@ export const router = createBrowserRouter(
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
 
-            {/* Ahora está público, pero luego será privado con login */}
+               {/* Ahora está público, pero luego será privado con login */}
             <Route path="parentadmin" element={<ParentAdmin/>} /> 
 
             <Route
@@ -45,24 +43,13 @@ export const router = createBrowserRouter(
                 )}
             />
 
-             {/* Aquí está tu ruta mágica. 
-               Ahora apunta al Wizard, que cargará el Paso 1 (Registro) 
-               y al pulsar "Siguiente" cargará el Paso 2 (Metas) sin cambiar de URL.
-            */}
-            <Route element={<ChildRegistration />} path="/child-registration" />
-            {/* <Route
-                path="/parentadmin"
-                element={(
-                    <PrivateRoute>
-                        <ParentAdmin />
-                    </PrivateRoute>
-                )}
-            /> */}
+            {/* 🎯 RUTA DEL WIZARD: Aquí es donde ocurre la magia de los 3 pasos */}
+            <Route path="child-registration" element={<ChildWizard />} />
+
             <Route path="*" element={<NotFound />} />
         </Route>
     ),
     {
-        /* Aquí es donde agregas las flags para limpiar los warnings de la consola */
         future: {
             v7_startTransition: true,
             v7_relativeSplatPath: true,
