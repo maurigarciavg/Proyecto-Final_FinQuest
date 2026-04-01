@@ -38,19 +38,19 @@ const CenterPanel = ({ childName, pendingTasksCount }) => {
                     <div className='missions-btn'>
                         <div className="left_btn">
                             {/* 4. Agregamos onClick para cambiar la pestaña y una clase 'active' para CSS */}
-                            <button 
+                            <button
                                 className={`manage-item ${activeTab === 'Tareas' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('Tareas')}
                             >
                                 Tareas
                             </button>
-                            <button 
+                            <button
                                 className={`manage-item ${activeTab === 'Cupones' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('Cupones')}
                             >
                                 Cupones
                             </button>
-                            <button 
+                            <button
                                 className={`manage-item ${activeTab === 'Gran Premio' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('Gran Premio')}
                             >

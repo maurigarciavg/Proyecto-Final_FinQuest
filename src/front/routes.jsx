@@ -22,8 +22,8 @@ export const router = createBrowserRouter(
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
 
-               {/* Ahora está público, pero luego será privado con login */}
-            <Route path="parentadmin" element={<ParentAdmin/>} /> 
+            {/* Ahora está público, pero luego será privado con login */}
+            <Route path="parentadmin" element={<ParentAdmin />} />
 
             <Route
                 path="profile"
@@ -33,7 +33,7 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
-            
+
             <Route
                 path="orders"
                 element={(
