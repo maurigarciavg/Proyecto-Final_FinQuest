@@ -11,6 +11,15 @@
   --page-muted: #506164;
   --page-highlight: #ef8354;
   --page-shadow: 0 24px 60px rgba(35, 47, 53, 0.12);
+
+  --titular1:#29a38d;
+  --text-btn:#3dc9b6;
+  --action-btn: #3dc9b6;
+  --disable-btn1: #b4b4b4;
+  --disable-btn2: #d9d9d9;
+
+
+  
 }
 
 * {
