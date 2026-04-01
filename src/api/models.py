@@ -140,3 +140,21 @@ class Task(db.Model):
             "status": self.status,
             "child_id": self.child_id
         }
+
+
+class Reward(db.Model):
+    __tablename__ = "rewards"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(120), nullable=False)
+    cost: Mapped[int] = mapped_column(nullable=False, default=0)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id"), nullable=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "cost": self.cost,
+            "child_id": self.child_id
+        }

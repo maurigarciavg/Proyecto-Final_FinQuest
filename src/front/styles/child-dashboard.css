@@ -578,3 +578,8 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.task-modal__item-btn--disabled {
+  background: #d9d9d9;
+  cursor: not-allowed;
+}

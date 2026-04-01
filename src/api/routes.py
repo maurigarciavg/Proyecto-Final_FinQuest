@@ -12,6 +12,7 @@ from flask_jwt_extended import (
 from api.models import Order, Product, User, db
 from api.utils import APIException
 from api.models import Child, Order, Product, Task, User, db
+from api.models import Child, Order, Product, Reward, Task, User, db
 
 
 api = Blueprint("api", __name__)
@@ -216,14 +217,13 @@ def get_child_dashboard(child_id):
 
     tasks = Task.query.filter_by(child_id=child_id).all()
 
+    tasks = Task.query.filter_by(child_id=child_id).all()
+    rewards = Reward.query.filter_by(child_id=child_id).all()
+
     return jsonify({
         "child": child.serialize(),
         "tasks": [task.serialize() for task in tasks],
-        "rewards": [
-            {"id": 1, "title": "Entradas al cine", "cost": 50},
-            {"id": 2, "title": "Camiseta", "cost": 100},
-            {"id": 3, "title": "Salida con amigos", "cost": 150}
-        ]
+        "rewards": [reward.serialize() for reward in rewards]
     }), 200
 
 
@@ -242,6 +242,26 @@ def complete_task(task_id):
     return jsonify({
         "message": "Task marked as completed",
         "task": task.serialize()
+    }), 200
+
+
+@api.route("/rewards/<int:reward_id>/redeem", methods=["POST"])
+def redeem_reward(reward_id):
+    reward = db.session.get(Reward, reward_id)
+    if reward is None:
+        raise APIException("Reward not found", status_code=404)
+
+    child = db.session.get(Child, reward.child_id)
+    if child.coins < reward.cost:
+        raise APIException("Not enough coins", status_code=400)
+
+    child.coins -= reward.cost
+    db.session.commit()
+
+    return jsonify({
+        "message": "Reward redeemed successfully",
+        "coins_remaining": child.coins,
+        "reward": reward.serialize()
     }), 200
 
     return jsonify(mock_child_dashboard), 200

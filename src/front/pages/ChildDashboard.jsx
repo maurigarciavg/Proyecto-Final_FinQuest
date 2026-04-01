@@ -5,11 +5,13 @@ import { TaskSection } from "../components/TaskSection";
 import { getChildDashboard } from "../services/childDashboard";
 import "../styles/child-dashboard.css";
 import { TaskModal } from "../components/TaskModal";
+import { RewardModal } from "../components/RewardModal";
 
 export const ChildDashboard = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
+    const [showRewardModal, setShowRewardModal] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -68,6 +70,17 @@ export const ChildDashboard = () => {
         }
     };
 
+    const handleRedeem = async (rewardId) => {
+        const response = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/api/rewards/${rewardId}/redeem`,
+            { method: "POST" }
+        );
+        if (response.ok) {
+            const result = await getChildDashboard(2);
+            if (result) setData(result);
+        }
+    };
+
     return (
         <div className="child-dashboard">
             <div className="child-dashboard__container">
@@ -107,7 +120,11 @@ export const ChildDashboard = () => {
                             </div>
 
                             <div className="dashboard-panel__bottom">
-                                <div className="dashboard-placeholder dashboard-placeholder--shop">
+                                <div
+                                    className="dashboard-placeholder dashboard-placeholder--shop"
+                                    onClick={() => setShowRewardModal(true)}
+                                    style={{ cursor: "pointer" }}
+                                >
                                     <div className="dashboard-placeholder__header">
                                         <span className="dashboard-placeholder__badge">1</span>
                                         <h2 className="dashboard-placeholder__title">
@@ -122,6 +139,14 @@ export const ChildDashboard = () => {
                                         </p>
                                     </div>
                                 </div>
+                                {showRewardModal && (
+                                    <RewardModal
+                                        rewards={data.rewards}
+                                        coins={child.coins}
+                                        onClose={() => setShowRewardModal(false)}
+                                        onRedeem={handleRedeem}
+                                    />
+                                )}
 
                                 <div onClick={() => setShowTaskModal(true)} style={{ cursor: "pointer" }}>
                                     <TaskSection tasks={tasks} />
