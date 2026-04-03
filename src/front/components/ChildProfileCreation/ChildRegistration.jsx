@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import cashtorImg from "../../assets/img/Cashtor.jpg";
 
-/**
- * NOTA PARA EL EQUIPO:
- * @param {Function} onClose - Cierra el flujo (conectar con el Dashboard).
- * @param {Function} onNextStep - Dispara el siguiente paso (conectar con el módulo de Tareas).
- */
 export const ChildRegistration = ({ onClose, onNextStep }) => {
-    // 1. ESTADOS DE CONTROL
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [pin, setPin] = useState("");
@@ -22,50 +16,46 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
         { id: 4, img: cashtorImg, name: "Cashtor Flower" }
     ];
 
-    // 2. LÓGICA DE ENVÍO
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        /**
-         * PARA EL RESPONSABLE DE BACKEND:
-         * El objeto 'childData' ya está tipado. 
-         * El PIN se envía como string para evitar errores con ceros a la izquierda.
-         */
-        const childData = {
-            name: name,
-            age: parseInt(age),
-            pin: pin,
-            avatar_id: selectedAvatar
-        };
-
-        console.log("🚀 DEBUG: Datos para la API:", childData);
-
-        // Simulación de carga (sustituir por fetch mas adelante)
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // Simulación de validación local antes de mostrar éxito visual
+        await new Promise(resolve => setTimeout(resolve, 800));
 
         setIsSubmitting(false);
         setIsSuccess(true);
     };
 
-    // --- RENDERIZADO CONDICIONAL (ESTRUCTURA ÚNICA DE CARD) ---
-    return (
-        <div className="card shadow-lg border-0 p-4 h-100 w-100 d-flex flex-column justify-content-center animate__animated animate__fadeIn" style={{ borderRadius: "25px", backgroundColor: "#f0fdfa" }}>
+    // Formateo de datos para el componente padre (Wizard)
+    const handleConfirmAndNext = () => {
+        const childData = {
+            name: name,
+            age: parseInt(age),
+            pin: pin,
+            avatar: `avatar_${selectedAvatar}.png`
+        };
+        onNextStep(childData);
+    };
 
-            {/* A. VISTA DE ÉXITO */}
+    return (
+        <div className="card shadow-lg border-0 p-4 h-100 w-100 d-flex flex-column justify-content-center animate__animated animate__fadeIn"
+            style={{ borderRadius: "25px", backgroundColor: "#f0fdfa" }}>
+
             {isSuccess ? (
                 <div className="text-center animate__animated animate__fadeIn">
                     <div className="mb-4">
-                        <img src={cashtorImg} alt="Éxito" className="rounded-circle shadow-sm" style={{ width: "120px", height: "120px", border: "5px solid #32a89b" }} />
+                        <img src={cashtorImg} alt="Éxito" className="rounded-circle shadow-sm"
+                            style={{ width: "120px", height: "120px", border: "5px solid #32a89b" }} />
                     </div>
                     <h2 className="mb-3 fw-bold" style={{ color: "#32a89b" }}>¡Bienvenido, {name}!</h2>
-                    <p className="text-secondary mb-5">Perfil creado con éxito. ¿Pasamos a configurar sus metas y tareas?</p>
+                    <p className="text-secondary mb-5">Perfil preparado. ¿Configuramos sus metas y tareas ahora?</p>
 
                     <div className="d-flex flex-column gap-3 w-100">
                         <button
                             className="btn btn-lg text-white rounded-pill fw-bold shadow-sm"
                             style={{ backgroundColor: "#32a89b" }}
-                            onClick={onNextStep}
+                            onClick={handleConfirmAndNext}
                         >
                             Asignar primeras tareas
                         </button>
@@ -75,8 +65,6 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                     </div>
                 </div>
             ) : (
-
-                /* B. FORMULARIO DE REGISTRO (VISTA POR DEFECTO) */
                 <div className="animate__animated animate__fadeIn">
                     <h2 className="text-center mb-4" style={{ color: "#32a89b", fontWeight: "bold" }}>Crear Perfil del niño/a</h2>
 
@@ -99,14 +87,13 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                                 <input
                                     type="number"
                                     className="form-control rounded-pill shadow-sm border-0"
-                                    placeholder="Edad"
                                     value={age}
                                     onChange={(e) => setAge(e.target.value)}
                                     required
                                 />
                             </div>
                             <div className="col-8 mb-3 text-start">
-                                <label className="form-label fw-bold" style={{ color: "#32a89b" }}>PIN de Seguridad (4 dígitos)</label>
+                                <label className="form-label fw-bold" style={{ color: "#32a89b" }}>PIN (4 dígitos)</label>
                                 <input
                                     type="password"
                                     className={`form-control rounded-pill shadow-sm border-0 ${pin.length > 0 && pin.length !== 4 ? "is-invalid" : ""}`}
@@ -119,7 +106,6 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                             </div>
                         </div>
 
-                        {/* SELECTOR DE AVATAR*/}
                         <div className="mt-4 text-start">
                             <label className="form-label fw-bold mb-3" style={{ color: "#32a89b" }}>Selecciona tu avatar</label>
                             <div className="d-flex justify-content-center p-2 flex-wrap gap-2 align-items-center">
@@ -131,14 +117,12 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                                         onClick={() => setSelectedAvatar(av.id)}
                                         className="rounded-circle shadow-sm"
                                         style={{
-                                            width: "90px",
-                                            height: "90px",
+                                            width: "80px",
+                                            height: "80px",
                                             cursor: "pointer",
-                                            padding: "2px",
                                             border: selectedAvatar === av.id ? "4px solid #32a89b" : "2px solid transparent",
                                             transition: "all 0.2s ease-in-out",
-                                            transform: selectedAvatar === av.id ? "scale(1.15)" : "scale(1)",
-                                            boxShadow: selectedAvatar === av.id ? "0 8px 15px rgba(50, 168, 155, 0.4)" : "none"
+                                            transform: selectedAvatar === av.id ? "scale(1.1)" : "scale(1)"
                                         }}
                                     />
                                 ))}
@@ -151,13 +135,11 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                             </button>
                             <button
                                 type="submit"
-                                className="btn text-white rounded-pill w-50 fw-bold shadow-sm d-flex align-items-center justify-content-center"
+                                className="btn text-white rounded-pill w-50 fw-bold shadow-sm"
                                 style={{ backgroundColor: "#32a89b" }}
                                 disabled={isSubmitting || !name || !age || pin.length !== 4 || !selectedAvatar}
                             >
-                                {isSubmitting ? (
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                ) : "Crear Perfil"}
+                                {isSubmitting ? <span className="spinner-border spinner-border-sm"></span> : "Siguiente"}
                             </button>
                         </div>
                     </form>

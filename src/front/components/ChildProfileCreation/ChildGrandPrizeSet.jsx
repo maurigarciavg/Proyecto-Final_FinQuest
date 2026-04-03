@@ -1,17 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
-/**
- * PASO 4: Configuración del Gran Premio (Final del Wizard)
- */
 export const ChildGrandPrizeSet = ({ onBack, onNextStep }) => {
     const [goalName, setGoalName] = useState("");
     const [goalAmount, setGoalAmount] = useState(10);
-    const [image, setImage] = useState(null);
+    const [preview, setPreview] = useState(null);
+    const fileInputRef = useRef(null);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("🏆 Gran Premio Final:", { goalName, goalAmount, image });
-        onNextStep({ goalName, goalAmount, image });
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPreview(URL.createObjectURL(file));
+        }
+    };
+
+    // Esta función ahora es la única responsable de cerrar el proceso
+    const handleFinalClick = (e) => {
+        if (e) e.preventDefault();
+
+        // Cambiamos los nombres para que coincidan con el modelo de la base de datos
+        const finalData = {
+            name: goalName,
+            coins: parseInt(goalAmount) || 0,
+            image_url: "" // De momento vacío hasta implementar Cloudinary
+        };
+
+        onNextStep(finalData);
     };
 
     return (
@@ -28,25 +41,24 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep }) => {
 
             <h2 className="text-center fw-bold mb-4" style={{ color: "#32a89b" }}>Crear Gran Premio</h2>
 
-            <form onSubmit={handleSubmit} className="flex-grow-1 d-flex flex-column">
-
+            <div className="flex-grow-1 d-flex flex-column">
+                {/* --- CAMPOS DE TEXTO --- */}
                 <div className="d-flex gap-2 mb-4">
                     <input
                         type="text"
                         className="form-control rounded-pill border-0 shadow-sm px-4 flex-grow-1"
                         style={{ height: "50px", border: "2px solid #32a89b" }}
-                        placeholder="Gran premio"
+                        placeholder="Gran premio (ej. Una Switch)"
                         value={goalName}
                         onChange={(e) => setGoalName(e.target.value)}
-                        required
                     />
 
                     <div className="d-flex align-items-center bg-white rounded-pill shadow-sm px-3"
-                        style={{ border: "2px solid #32a89b", height: "50px", width: "220px" }}>
+                        style={{ border: "2px solid #32a89b", height: "50px", width: "160px" }}>
                         <input
                             type="number"
                             className="form-control border-0 bg-transparent text-center fw-bold p-0"
-                            style={{ color: "#32a89b", outline: "none", boxShadow: "none" }}
+                            style={{ color: "#32a89b" }}
                             value={goalAmount}
                             onChange={(e) => setGoalAmount(e.target.value)}
                         />
@@ -54,45 +66,57 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep }) => {
                     </div>
                 </div>
 
-                <div className="flex-grow-1 d-flex flex-column align-items-center justify-content-center mb-3"
+                {/* --- SUBIDA DE IMAGEN --- */}
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    accept="image/*"
+                    onChange={handleImageChange}
+                />
+
+                <div
+                    className="flex-grow-1 d-flex flex-column align-items-center justify-content-center mb-4"
+                    onClick={() => fileInputRef.current.click()}
                     style={{
-                        border: "2px dashed #ccc",
+                        border: "2px dashed #32a89b",
                         borderRadius: "20px",
-                        backgroundColor: "transparent",
-                        cursor: "pointer"
+                        backgroundColor: preview ? "white" : "rgba(50, 168, 155, 0.05)",
+                        cursor: "pointer",
+                        overflow: "hidden",
+                        minHeight: "150px"
                     }}>
-                    <div className="text-center">
-                        <button type="button" className="btn btn-outline-info rounded-pill px-4 fw-bold mb-2"
-                            style={{ color: "#32a89b", borderColor: "#32a89b" }}>
-                            ↑ Añadir imagen
-                        </button>
-                        <p className="text-muted small">Máximo 1 MB de tamaño</p>
-                    </div>
+                    {preview ? (
+                        <img src={preview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                    ) : (
+                        <div className="text-center">
+                            <span style={{ fontSize: "2.5rem" }}>🎁</span>
+                            <p className="mb-0 fw-bold mt-2" style={{ color: "#32a89b" }}>Añadir foto del premio</p>
+                        </div>
+                    )}
                 </div>
 
-                <p className="text-start small text-secondary px-2 mb-4" style={{ lineHeight: "1.2" }}>
-                    Valor sugerido: 20 🪙 = 1 €. Definir un valor que motive a cumplir objetivos.
-                </p>
-
+                {/* --- BOTONES DE ACCIÓN --- */}
                 <div className="d-flex gap-3">
                     <button
                         type="button"
-                        className="btn btn-outline-info rounded-pill w-50 fw-bold p-3"
-                        style={{ color: "#32a89b", borderColor: "#32a89b", backgroundColor: "white" }}
+                        className="btn btn-outline-secondary rounded-pill w-50 fw-bold p-3"
                         onClick={onBack}
                     >
                         Atrás
                     </button>
                     <button
-                        type="submit"
+                        type="button" // Cambiado a button para evitar conflictos con onSubmit
                         className="btn text-white rounded-pill w-50 fw-bold shadow-sm p-3"
                         style={{ backgroundColor: "#32a89b" }}
+                        onClick={handleFinalClick}
                         disabled={!goalName || !goalAmount}
                     >
                         Finalizar
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
     );
 };
+

@@ -8,7 +8,7 @@ from flask_jwt_extended import (
     jwt_required
 )
 
-from api.models import Order, Product, User, db
+from api.models import Order, Product, User, db, Child, Task, SmallGoal, GrandPrize
 from api.utils import APIException
 
 
@@ -36,7 +36,8 @@ def get_current_user():
     try:
         user_id = int(identity)
     except (TypeError, ValueError) as error:
-        raise APIException("Invalid token identity", status_code=401) from error
+        raise APIException("Invalid token identity",
+                           status_code=401) from error
 
     user = db.session.get(User, user_id)
     if user is None:
@@ -51,13 +52,16 @@ def validate_credentials(payload, require_name=False):
     password = payload.get("password", "")
 
     if require_name and len(name) < 2:
-        raise APIException("Name must contain at least 2 characters", status_code=400)
+        raise APIException(
+            "Name must contain at least 2 characters", status_code=400)
 
     if "@" not in email:
-        raise APIException("Please provide a valid email address", status_code=400)
+        raise APIException(
+            "Please provide a valid email address", status_code=400)
 
     if len(password) < 6:
-        raise APIException("Password must contain at least 6 characters", status_code=400)
+        raise APIException(
+            "Password must contain at least 6 characters", status_code=400)
 
     return name, email, password
 
@@ -86,7 +90,8 @@ def sign_up():
 
     existing_user = User.query.filter_by(email=email).one_or_none()
     if existing_user is not None:
-        raise APIException("A user with this email already exists", status_code=409)
+        raise APIException(
+            "A user with this email already exists", status_code=409)
 
     new_user = User(
         email=email,
@@ -125,7 +130,8 @@ def me():
 
 @api.route("/products", methods=["GET"])
 def get_products():
-    products = Product.query.filter_by(is_active=True).order_by(Product.id.asc()).all()
+    products = Product.query.filter_by(
+        is_active=True).order_by(Product.id.asc()).all()
     return jsonify({"products": [product.serialize() for product in products]}), 200
 
 
@@ -133,7 +139,8 @@ def get_products():
 @jwt_required()
 def get_orders():
     user = get_current_user()
-    orders = Order.query.filter_by(user_id=user.id).order_by(Order.created_at.desc()).all()
+    orders = Order.query.filter_by(user_id=user.id).order_by(
+        Order.created_at.desc()).all()
     return jsonify({
         "orders": [order.serialize() for order in orders],
         "user": user.serialize()
@@ -155,7 +162,8 @@ def create_order():
         quantity = int(data.get("quantity", 1))
         parsed_product_id = int(product_id)
     except (TypeError, ValueError) as error:
-        raise APIException("product_id and quantity must be valid integers", status_code=400) from error
+        raise APIException(
+            "product_id and quantity must be valid integers", status_code=400) from error
 
     if quantity < 1:
         raise APIException("Quantity must be at least 1", status_code=400)
@@ -180,3 +188,103 @@ def create_order():
         "message": "Order created successfully",
         "order": order.serialize()
     }), 201
+
+# ==========================================
+# ENDPOINTS PARA GESTIÓN DE PERFILES INFANTILES
+# ==========================================
+
+# NOTA: Se ha comentado @jwt_required temporalmente para pruebas sin Login completo.
+
+
+@api.route("/child", methods=["POST"])
+# @jwt_required()
+def create_child():
+    """Crea un nuevo perfil de hijo vinculado a un usuario (ID 1 por defecto para pruebas)"""
+    data = request.get_json()
+
+    # Mientras no haya token, forzamos el ID del primer usuario creado
+    current_user_id = 1
+
+    name = data.get("name")
+    age = data.get("age")
+    pin = data.get("pin")
+
+    if not name or not age or not pin:
+        return jsonify({"message": "Faltan datos obligatorios"}), 400
+
+    new_child = Child(
+        name=name,
+        age=age,
+        pin=pin,
+        avatar=data.get("avatar", "default_avatar.png"),
+        parent_id=current_user_id
+    )
+
+    db.session.add(new_child)
+    db.session.commit()
+
+    return jsonify({
+        "message": "¡Perfil de hijo creado!",
+        "child": new_child.serialize()
+    }), 201
+
+
+@api.route("/child/<int:child_id>/tasks", methods=["POST"])
+# @jwt_required()
+def create_tasks(child_id):
+    """Recibe una lista de tareas y las asigna a un hijo específico"""
+    data = request.get_json()
+
+    if not isinstance(data, list):
+        return jsonify({"message": "Se esperaba una lista de tareas"}), 400
+
+    for task_data in data:
+        new_task = Task(
+            name=task_data.get("name"),
+            coins=task_data.get("coins"),
+            days=task_data.get("days"),
+            child_id=child_id
+        )
+        db.session.add(new_task)
+
+    db.session.commit()
+    return jsonify({"message": f"¡{len(data)} tareas creadas para el hijo {child_id}!"}), 201
+
+
+@api.route("/child/<int:child_id>/small-goals", methods=["POST"])
+# @jwt_required()
+def create_small_goals(child_id):
+    """Asigna una lista de premios intermedios a un hijo"""
+    data = request.get_json()
+
+    if not isinstance(data, list):
+        return jsonify({"message": "Se esperaba una lista de premios"}), 400
+
+    for goal_data in data:
+        new_goal = SmallGoal(
+            name=goal_data.get("name"),
+            coins=goal_data.get("coins"),
+            child_id=child_id
+        )
+        db.session.add(new_goal)
+
+    db.session.commit()
+    return jsonify({"message": "Premios pequeños guardados"}), 201
+
+
+@api.route("/child/<int:child_id>/grand-prize", methods=["POST"])
+# @jwt_required()
+def create_grand_prize(child_id):
+    """Configura el premio final para un hijo"""
+    data = request.get_json()
+
+    new_prize = GrandPrize(
+        name=data.get("name"),
+        coins=data.get("coins"),
+        image_url=data.get("image_url", ""),
+        child_id=child_id
+    )
+
+    db.session.add(new_prize)
+    db.session.commit()
+    return jsonify({"message": "¡Gran Premio configurado!"}), 201
