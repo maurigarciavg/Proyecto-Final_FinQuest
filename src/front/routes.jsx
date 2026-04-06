@@ -13,10 +13,8 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
-import { ChildRegistration } from "./components/ChildProfileCreation/ChildRegistration.jsx";
+import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
 
-
-// Tu archivo de rutas actualizado
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Layout />} errorElement={<NotFound />}>
@@ -25,7 +23,7 @@ export const router = createBrowserRouter(
             <Route path="sign-up" element={<SignUp />} />
 
             {/* Ahora está público, pero luego será privado con login */}
-            <Route path="parentadmin" element={<ParentAdmin/>} /> 
+            <Route path="parentadmin" element={<ParentAdmin />} />
 
             <Route
                 path="profile"
@@ -35,6 +33,7 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
+
             <Route
                 path="orders"
                 element={(
@@ -43,20 +42,14 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
-            <Route element={<ChildRegistration />} path="/child-registration" />
-            {/* <Route
-                path="/parentadmin"
-                element={(
-                    <PrivateRoute>
-                        <ParentAdmin />
-                    </PrivateRoute>
-                )}
-            /> */}
+
+            {/* 🎯 RUTA DEL WIZARD: Aquí es donde ocurre la magia de los 3 pasos */}
+            <Route path="child-registration" element={<ChildWizard />} />
+
             <Route path="*" element={<NotFound />} />
         </Route>
     ),
     {
-        /* Aquí es donde agregas las flags para limpiar los warnings de la consola */
         future: {
             v7_startTransition: true,
             v7_relativeSplatPath: true,
