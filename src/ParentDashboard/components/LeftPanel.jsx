@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-// Asegúrate de que esta ruta sigue siendo válida tras tus merges
 import { ChildWizard } from "../../front/components/ChildProfileCreation/ChildWizard";
 
 const LeftPanel = ({ parentName, childrenProfiles }) => {
@@ -34,7 +33,7 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
           left: 0,
           width: '100vw',
           height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.75)', // Un poco más oscuro para que resalte
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -42,13 +41,11 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
         }}>
           <div className="wizard-modal-container" style={{
             position: 'relative',
-            width: '550px', 
-            height: '650px',
+            /* 🔴 HEMOS ELIMINADO width, height y overflow: hidden 🔴 */
+            /* Ahora este div abrazará perfectamente a tu ChildWizard sin aplastarlo */
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '30px', // Acompaña la forma de tu card
-            overflow: 'hidden'    // Evita que nada sobresalga
+            justifyContent: 'center'
           }}>
             {/* Botón de cerrar (X roja) */}
             <button

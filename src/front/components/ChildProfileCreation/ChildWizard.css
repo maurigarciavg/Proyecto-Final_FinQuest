@@ -1,62 +1,62 @@
+/* =========================================
+   ESTRUCTURA PRINCIPAL DEL MODAL
+   ========================================= */
 
-/* EL BÚNKER PRINCIPAL */
+/* 1. EL BÚNKER PRINCIPAL */
 .wizard-container {
     width: 800px;
-    height: 850px;
-    background-color: #f0fdfa; /* Verde clarito Castor */
+    height: 85vh; /* Se adapta a tu pantalla */
+    max-height: 750px;
+    background-color: #f0fdfa;
     border-radius: 40px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: hidden; /* Esto corta lo que se intente salir */
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
     margin: auto;
-    position: relative;
-    border: none;
 }
 
-/* CONTENEDOR DE CUERPO (PARA EL SCROLL) */
-.wizard-body {
-    flex: 1; 
-    padding: 20px 45px; /* Bajamos de 30px a 20px arriba/abajo para ganar 20px de espacio */
+/* 2. EL PASO (Cuadro rojo gigante) */
+.wizard-step-wrapper {
     display: flex;
     flex-direction: column;
-    overflow-y: auto; 
-    min-height: 0; 
+    flex: 1;
+    min-height: 0; /* 🔴 CRÍTICO 1: Le prohíbe crecer más que el búnker principal */
 }
 
-/* TÍTULO PRINCIPAL */
+/* 3. LA CABECERA (Cuadro rojo superior) */
+.wizard-header {
+    flex-shrink: 0;
+    padding: 30px 45px 10px 45px;
+}
+
+/* 4. EL CUERPO (Cuadro rojo del medio) */
+.wizard-body {
+    flex: 1; /* Ocupa todo el centro */
+    min-height: 0; /* 🔴 CRÍTICO 2: Activa el scroll y salva al footer */
+    overflow-y: auto;
+    padding: 10px 45px;
+    display: block; /* EL FIX: Volvemos a comportamiento normal, nada de flex aquí dentro */
+}
+
+/* 5. EL FOOTER (Tu cuadro verde) */
+.wizard-footer {
+    flex-shrink: 0; /* Prohibido encogerse */
+    padding: 15px 45px 25px 45px;
+    background-color: #f0fdfa;
+    border-top: 1px solid rgba(50, 168, 155, 0.1);
+    margin-top: auto;
+}
+
+/* =========================================
+   TÍTULOS, INPUTS Y BOTONES GENERALES
+   ========================================= */
 .wizard-title {
     color: #32a89b;
     font-weight: 800;
     font-size: 2.2rem;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
-}
-
-/* EL FOOTER FIJO (BARRA + BOTONES) */
-.wizard-footer {
-    padding: 15px 50px 25px 50px; /* Reducimos el aire interno del footer */
-    background-color: #f0fdfa;
-    border-top: 1px solid rgba(50, 168, 155, 0.1);
-    flex-shrink: 0; /* Esto prohíbe que el footer se mueva o se encoja */
-    height: 160px;  /* Le damos una altura fija para que el búnker sepa dónde termina */
-}
-
-/* ESTILO DE INPUTS (Limpios de Bootstrap) */
-.wizard-input {
-    width: 100%;
-    height: 55px;
-    border-radius: 50px;
-    border: 2px solid #e2e8f0;
-    padding: 0 25px;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s;
-    background-color: white;
-}
-
-.wizard-input:focus {
-    border-color: #32a89b;
 }
 
 .wizard-label {
@@ -69,7 +69,23 @@
     margin-left: 15px;
 }
 
-/* BOTONES */
+.wizard-input {
+    width: 100%;
+    height: 55px;
+    border-radius: 50px;
+    border: 2px solid #e2e8f0;
+    padding: 0 25px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+    background-color: white !important;
+    color: #475569 !important;
+}
+
+.wizard-input:focus {
+    border-color: #32a89b;
+}
+
 .btn-next {
     background-color: #32a89b;
     color: white;
@@ -106,3 +122,27 @@
 /* SCROLLBAR PERSONALIZADO */
 .wizard-body::-webkit-scrollbar { width: 6px; }
 .wizard-body::-webkit-scrollbar-thumb { background: #32a89b; border-radius: 10px; }
+
+/* =========================================
+   ELEMENTOS DE TAREAS Y CUPONES (Items)
+   ========================================= */
+.task-input-row { display: flex; gap: 10px; align-items: center; }
+.task-coin-input-wrapper { display: flex; align-items: center; background-color: white !important; border-radius: 50px; border: 2px solid #32a89b; padding: 0 15px; height: 55px; width: 110px; }
+.task-coin-input { border: none; width: 100%; font-weight: bold; color: #32a89b !important; outline: none; text-align: center; background: transparent; }
+.task-coin-input::-webkit-outer-spin-button, .task-coin-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.task-coin-input[type=number] { -moz-appearance: textfield; }
+
+.task-list-label { color: #059669 !important; margin-bottom: 15px; }
+.empty-tasks-msg { text-align: center; color: #94a3b8 !important; font-size: 0.9rem; font-style: italic; margin-top: 10px; }
+
+.task-item { display: flex; align-items: center; background-color: white !important; border-radius: 50px; padding: 10px 20px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+.task-name { flex: 1; font-weight: 600; color: #475569 !important; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.task-days-container { display: flex; gap: 4px; margin: 0 15px; }
+.task-day-bubble { cursor: pointer; font-size: 10px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; background-color: #f1f5f9; color: #94a3b8; transition: all 0.2s ease; }
+.task-day-bubble.active { background-color: #32a89b !important; color: white !important; }
+.task-coins-display { font-weight: 800; color: #f39c12 !important; min-width: 50px; }
+.btn-delete-task { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0 5px; transition: transform 0.2s; }
+.btn-delete-task:hover { transform: scale(1.2); }
+
+.footer-suggestion { text-align: center; color: #94a3b8 !important; font-size: 0.8rem; margin-bottom: 10px; }
+.footer-buttons { display: flex; gap: 15px; margin-top: 15px; }
