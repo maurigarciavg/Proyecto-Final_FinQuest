@@ -1,23 +1,18 @@
 import React, { useState } from "react";
+import { ProgressBar } from "./ProgressBar";
+import "./ChildWizard.css"; 
 
-export const ChildTaskSetting = ({ onBack, onNextStep }) => {
-    // 1. Estados para el catálogo de sugerencias
+export const ChildTaskSetting = ({ onBack, onNextStep, step }) => {
     const [suggestions, setSuggestions] = useState([
-        { id: 1, name: "Poner la mesa", coins: 10, days: ["L", "M", "X", "J", "V"] },
+        { id: 1, name: "Hacer los deberes", coins: 10, days: ["L", "M", "X", "J", "V"] },
         { id: 2, name: "Sacar al perro", coins: 22, days: ["L", "M", "X", "J", "V"] },
-        { id: 3, name: "Hacer los deberes", coins: 10, days: ["L", "M", "X", "J", "V"] },
+        { id: 3, name: "Poner la mesa", coins: 10, days: ["L", "M", "X", "J", "V"] },
     ]);
 
-    // 2. Estados para la lista final de tareas añadidas
     const [addedTasks, setAddedTasks] = useState([]);
-
-    // 3. Estados para el creador superior (Inputs)
     const [newTaskName, setNewTaskName] = useState("");
     const [newTaskCoins, setNewTaskCoins] = useState(10);
-
     const allDays = ["L", "M", "X", "J", "V", "S", "D"];
-
-    // --- FUNCIONES DE LÓGICA ---
 
     const addNewCustomTask = () => {
         if (!newTaskName.trim()) return;
@@ -29,7 +24,6 @@ export const ChildTaskSetting = ({ onBack, onNextStep }) => {
         };
         setSuggestions([newTask, ...suggestions]);
         setNewTaskName("");
-        setNewTaskCoins(10);
     };
 
     const toggleDay = (id, day) => {
@@ -50,72 +44,55 @@ export const ChildTaskSetting = ({ onBack, onNextStep }) => {
         setAddedTasks(addedTasks.filter((_, i) => i !== index));
     };
 
-    // Función para limpiar datos antes de enviarlos al Wizard/Backend
-    const handleNext = () => {
-        const formattedTasks = addedTasks.map(task => ({
-            name: task.name,
-            coins: task.coins,
-            days: task.days.join(",") // Convertimos Array ["L","M"] a String "L,M" para el Backend
-        }));
-        onNextStep(formattedTasks);
-    };
-
     return (
-        <div className="card shadow-lg border-0 p-4 w-100 h-100 d-flex flex-column"
-            style={{ borderRadius: "30px", backgroundColor: "#f0fdfa" }}>
-
+        <div className="d-flex flex-column h-100 w-100">
+            
             <style>
                 {`
                     input::-webkit-outer-spin-button,
-                    input::-webkit-inner-spin-button {
-                        -webkit-appearance: none;
-                        margin: 0;
-                    }
-                    input[type=number] {
-                        -moz-appearance: textfield;
-                    }
+                    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+                    input[type=number] { -moz-appearance: textfield; }
                 `}
             </style>
 
-            <h2 className="text-center fw-bold mb-4" style={{ color: "#32a89b" }}>Crear Tareas de casa</h2>
-
-            <div className="d-flex gap-2 mb-4 align-items-center">
-                <input
-                    type="text"
-                    className="form-control rounded-pill px-4 shadow-sm flex-grow-1"
-                    style={{ border: "2px solid #32a89b", outline: "none", height: "50px" }}
-                    placeholder="Nueva tarea"
-                    value={newTaskName}
-                    onChange={(e) => setNewTaskName(e.target.value)}
-                />
-
-                <div className="d-flex align-items-center bg-white rounded-pill shadow-sm ps-3 pe-2"
-                    style={{ border: "2px solid #32a89b", height: "50px", width: "140px" }}>
-                    <span style={{ fontSize: "1.1rem" }}>🪙</span>
+            {/* CABECERA: Título + Input (SIEMPRE VISIBLE) */}
+            <div className="px-4 pt-3">
+                <h2 className="wizard-title mb-4">Crear Tareas de casa</h2>
+                
+                <div className="d-flex gap-2 mb-3 align-items-center">
                     <input
-                        type="number"
-                        className="form-control border-0 bg-transparent text-center fw-bold p-0"
-                        style={{ color: "#32a89b", fontSize: "1rem", outline: "none", boxShadow: "none", marginLeft: "2px" }}
-                        placeholder="10"
-                        value={newTaskCoins}
-                        onChange={(e) => setNewTaskCoins(e.target.value)}
+                        type="text"
+                        className="form-control rounded-pill px-4 shadow-sm flex-grow-1"
+                        style={{ border: "2px solid #32a89b", height: "50px" }}
+                        placeholder="Nueva tarea"
+                        value={newTaskName}
+                        onChange={(e) => setNewTaskName(e.target.value)}
                     />
+                    <div className="d-flex align-items-center bg-white rounded-pill shadow-sm ps-3 pe-2"
+                        style={{ border: "2px solid #32a89b", height: "50px", width: "100px" }}>
+                        <span style={{fontSize: "1.1rem"}}>🪙</span>
+                        <input
+                            type="number"
+                            className="form-control border-0 bg-transparent text-center fw-bold p-0 shadow-none"
+                            style={{ color: "#32a89b", width: "40px" }}
+                            value={newTaskCoins}
+                            onChange={(e) => setNewTaskCoins(e.target.value)}
+                        />
+                    </div>
+                    <button onClick={addNewCustomTask} className="btn-next shadow-sm" style={{ width: "auto", padding: "0 20px", height: "50px" }}>
+                        Añadir
+                    </button>
                 </div>
-
-                <button
-                    onClick={addNewCustomTask}
-                    className="btn text-white rounded-pill px-4 fw-bold shadow-sm"
-                    style={{ backgroundColor: "#32a89b", border: "none", height: "50px" }}>
-                    Añadir
-                </button>
             </div>
 
-            <div className="overflow-auto mb-3 pe-2" style={{ maxHeight: "230px" }}>
-                <p className="small fw-bold text-secondary text-start mb-2">SUGERENCIAS (Configura y añade +)</p>
+            {/* CUERPO CENTRAL CON SCROLL (Sugerencias + Añadidas) */}
+            {/* Le damos una altura máxima fija para que no empuje el footer fuera */}
+            <div className="px-4 flex-grow-1 overflow-auto" style={{ maxHeight: "330px", marginBottom: "10px" }}>
+                
+                <p className="small fw-bold text-secondary text-start mb-2 text-uppercase" style={{fontSize: "0.7rem"}}>Sugerencias</p>
                 {suggestions.map((task) => (
                     <div key={task.id} className="d-flex align-items-center mb-2 gap-2 bg-white rounded-pill p-1 shadow-sm border border-light">
                         <span className="flex-grow-1 ms-3 text-start small fw-semibold text-secondary">{task.name}</span>
-
                         <div className="d-flex gap-1 me-2">
                             {allDays.map(d => (
                                 <span key={d} onClick={() => toggleDay(task.id, d)}
@@ -124,40 +101,41 @@ export const ChildTaskSetting = ({ onBack, onNextStep }) => {
                                         backgroundColor: task.days.includes(d) ? "#32a89b" : "#e9ecef",
                                         color: task.days.includes(d) ? "white" : "#adb5bd"
                                     }}
-                                    className="rounded-circle d-flex align-items-center justify-content-center fw-bold transition-all">
+                                    className="rounded-circle d-flex align-items-center justify-content-center fw-bold">
                                     {d}
                                 </span>
                             ))}
                         </div>
-
                         <div className="fw-bold me-2 small" style={{ color: "#f39c12" }}>🪙+{task.coins}</div>
-                        <button onClick={() => confirmTask(task.id)} className="btn btn-sm btn-success rounded-circle fw-bold me-1 shadow-sm">+</button>
+                        <button onClick={() => confirmTask(task.id)} className="btn btn-sm btn-success rounded-circle fw-bold me-1" style={{width: "24px", height: "24px", padding: "0"}}>+</button>
                     </div>
                 ))}
+
+                <div className="border-top mt-4 pt-3">
+                    <p className="small fw-bold text-success text-start mb-3" style={{fontSize: "0.75rem"}}>
+                        ✅ TAREAS AÑADIDAS ({addedTasks.length})
+                    </p>
+                    {addedTasks.length === 0 && <p className="text-muted small italic text-start ps-2">Usa el "+" para añadir tareas</p>}
+                    {addedTasks.map((task, index) => (
+                        <div key={index} className="d-flex align-items-center mb-2 gap-2 bg-success bg-opacity-10 rounded-pill p-2">
+                            <span className="flex-grow-1 ms-3 text-start fw-bold text-success small">{task.name}</span>
+                            <span className="text-muted small me-2" style={{ fontSize: "0.7rem" }}>{task.days.join(", ")}</span>
+                            <span className="text-danger fw-bold me-3" style={{ cursor: "pointer" }} onClick={() => revertTask(index)}>🗑️</span>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            <div className="flex-grow-1 border-top pt-3 overflow-auto">
-                <p className="small fw-bold text-success text-start mb-2">✅ TAREAS AÑADIDAS ({addedTasks.length})</p>
-                {addedTasks.length === 0 && <p className="text-muted small italic text-start">Añade tareas arriba para que aparezcan aquí</p>}
-                {addedTasks.map((task, index) => (
-                    <div key={index} className="d-flex align-items-center mb-2 gap-2 bg-success bg-opacity-10 rounded-pill p-2 animate__animated animate__fadeInLeft">
-                        <span className="flex-grow-1 ms-3 text-start fw-bold text-success small">{task.name}</span>
-                        <span className="text-muted small me-2" style={{ fontSize: "0.75rem" }}>{task.days.join(", ")}</span>
-                        <span className="text-danger fw-bold cursor-pointer me-3" onClick={() => revertTask(index)}>🗑️</span>
-                    </div>
-                ))}
-            </div>
-
-            <div className="d-flex gap-3 mt-4">
-                <button onClick={onBack} className="btn btn-outline-secondary rounded-pill w-50 p-3 fw-bold">Atrás</button>
-                <button
-                    onClick={handleNext}
-                    className="btn text-white rounded-pill w-50 p-3 fw-bold shadow-sm"
-                    style={{ backgroundColor: "#32a89b" }}
-                    disabled={addedTasks.length === 0}
-                >
-                    Siguiente
-                </button>
+            {/* PIE FIJO: Barra + Botones */}
+            <div className="wizard-footer">
+                <p className="text-center text-muted small mb-2" style={{ fontSize: "0.75rem" }}>
+                    💡 Sugerencia: 20 🪙 = 1€
+                </p>
+                <ProgressBar step={step} />
+                <div className="d-flex gap-3 mt-1">
+                    <button onClick={onBack} className="btn-back">Atrás</button>
+                    <button onClick={() => onNextStep(addedTasks)} className="btn-next shadow-sm" disabled={addedTasks.length === 0}>Siguiente</button>
+                </div>
             </div>
         </div>
     );

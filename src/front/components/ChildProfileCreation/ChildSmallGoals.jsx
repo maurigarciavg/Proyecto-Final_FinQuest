@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { ProgressBar } from "./ProgressBar";
+import "./ChildWizard.css";
 
-export const ChildSmallGoals = ({ onBack, onNextStep }) => {
+export const ChildSmallGoals = ({ onBack, onNextStep, step }) => {
     const [suggestions, setSuggestions] = useState([
         { id: 1, name: "30 min de videojuegos", coins: 50 },
         { id: 2, name: "Elegir la cena del viernes", coins: 100 },
@@ -37,7 +39,6 @@ export const ChildSmallGoals = ({ onBack, onNextStep }) => {
     };
 
     const handleNext = () => {
-        // Mapeamos para enviar solo lo que el Backend necesita
         const formattedRewards = addedRewards.map(r => ({
             name: r.name,
             coins: r.coins
@@ -46,9 +47,7 @@ export const ChildSmallGoals = ({ onBack, onNextStep }) => {
     };
 
     return (
-        <div className="card shadow-lg border-0 p-4 w-100 h-100 d-flex flex-column"
-            style={{ borderRadius: "30px", backgroundColor: "#f0fdfa" }}>
-
+        <div className="d-flex flex-column h-100 w-100 animate__animated animate__fadeIn">
             <style>
                 {`
                     input::-webkit-outer-spin-button,
@@ -57,62 +56,75 @@ export const ChildSmallGoals = ({ onBack, onNextStep }) => {
                 `}
             </style>
 
-            <h2 className="text-center fw-bold mb-4" style={{ color: "#32a89b" }}>Metas a Corto Plazo</h2>
-            <p className="text-center small text-secondary mb-4">¿Qué premios puede canjear con sus monedas?</p>
-
-            <div className="d-flex gap-2 mb-4 align-items-center">
-                <input
-                    type="text"
-                    className="form-control rounded-pill px-4 shadow-sm flex-grow-1"
-                    style={{ border: "2px solid #32a89b", height: "50px" }}
-                    placeholder="Nuevo premio"
-                    value={newRewardName}
-                    onChange={(e) => setNewRewardName(e.target.value)}
-                />
-
-                <div className="d-flex align-items-center bg-white rounded-pill shadow-sm ps-3 pe-2"
-                    style={{ border: "2px solid #32a89b", height: "50px", width: "140px" }}>
-                    <span>🪙</span>
+            {/* CABECERA: Igual que TaskSetting (px-4 pt-3) */}
+            <div className="px-4 pt-3">
+                <h2 className="wizard-title mb-4">Crear Cupones</h2>
+                
+                <div className="d-flex gap-2 mb-3 align-items-center">
                     <input
-                        type="number"
-                        className="form-control border-0 bg-transparent text-center fw-bold p-0"
-                        style={{ color: "#32a89b" }}
-                        value={newRewardCoins}
-                        onChange={(e) => setNewRewardCoins(e.target.value)}
+                        type="text"
+                        className="form-control rounded-pill px-4 shadow-sm flex-grow-1"
+                        style={{ border: "2px solid #32a89b", height: "50px" }}
+                        placeholder="Nuevo cupón (ej: Un helado)"
+                        value={newRewardName}
+                        onChange={(e) => setNewRewardName(e.target.value)}
                     />
-                </div>
 
-                <button onClick={addNewReward} className="btn text-white rounded-pill px-4 fw-bold shadow-sm" style={{ backgroundColor: "#32a89b", height: "50px" }}>
-                    Añadir
-                </button>
+                    <div className="d-flex align-items-center bg-white rounded-pill shadow-sm ps-3 pe-2"
+                        style={{ border: "2px solid #32a89b", height: "50px", width: "100px" }}>
+                        <span style={{fontSize: "1.1rem"}}>🪙</span>
+                        <input
+                            type="number"
+                            className="form-control border-0 bg-transparent text-center fw-bold p-0 shadow-none"
+                            style={{ color: "#32a89b", width: "40px" }}
+                            value={newRewardCoins}
+                            onChange={(e) => setNewRewardCoins(e.target.value)}
+                        />
+                    </div>
+
+                    <button onClick={addNewReward} className="btn-next shadow-sm" style={{ width: "auto", padding: "0 20px", height: "50px" }}>
+                        Añadir
+                    </button>
+                </div>
             </div>
 
-            <div className="overflow-auto mb-3 pe-2" style={{ maxHeight: "200px" }}>
-                <p className="small fw-bold text-secondary text-start mb-2 uppercase">Sugerencias</p>
+            {/* CUERPO CENTRAL: Igual que TaskSetting (maxHeight 330px) */}
+            <div className="px-4 flex-grow-1 overflow-auto" style={{ maxHeight: "330px", marginBottom: "10px" }}>
+                
+                <p className="small fw-bold text-secondary text-start mb-2 text-uppercase" style={{fontSize: "0.7rem"}}>Sugerencias</p>
                 {suggestions.map((r) => (
                     <div key={r.id} className="d-flex align-items-center mb-2 gap-2 bg-white rounded-pill p-1 shadow-sm border border-light">
-                        <span className="flex-grow-1 ms-3 text-start small fw-semibold text-secondary">{r.name}</span>
-                        <div className="fw-bold me-2 small" style={{ color: "#f39c12" }}>🪙+{r.coins}</div>
-                        <button onClick={() => confirmReward(r.id)} className="btn btn-sm btn-success rounded-circle fw-bold me-1 shadow-sm">+</button>
+                        <span className="flex-grow-1 ms-3 text-start small fw-semibold text-secondary" style={{fontSize: "0.8rem"}}>{r.name}</span>
+                        <div className="fw-bold me-2 small" style={{ color: "#f39c12", fontSize: "0.8rem" }}>🪙 {r.coins}</div>
+                        <button onClick={() => confirmReward(r.id)} className="btn btn-sm btn-success rounded-circle fw-bold me-1" style={{width: "24px", height: "24px", padding: "0"}}>+</button>
                     </div>
                 ))}
+
+                <div className="border-top mt-4 pt-3">
+                    <p className="small fw-bold text-success text-start mb-3" style={{fontSize: "0.75rem"}}>
+                        ✅ CUPONES ACTIVOS ({addedRewards.length})
+                    </p>
+                    {addedRewards.length === 0 && <p className="text-muted small italic text-start ps-2">Añade cupones para que el niño pueda canjearlos</p>}
+                    {addedRewards.map((r, index) => (
+                        <div key={index} className="d-flex align-items-center mb-2 gap-2 bg-success bg-opacity-10 rounded-pill p-2">
+                            <span className="flex-grow-1 ms-3 text-start fw-bold text-success small" style={{fontSize: "0.8rem"}}>{r.name}</span>
+                            <span className="fw-bold text-success small me-3" style={{fontSize: "0.7rem"}}>🪙 {r.coins}</span>
+                            <span className="text-danger fw-bold me-3" style={{ cursor: "pointer" }} onClick={() => revertReward(index)}>🗑️</span>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            <div className="flex-grow-1 border-top pt-3 overflow-auto">
-                <p className="small fw-bold text-success text-start mb-2">🎁 PREMIOS ACTIVOS ({addedRewards.length})</p>
-                {addedRewards.map((r, index) => (
-                    <div key={index} className="d-flex align-items-center mb-2 gap-2 bg-success bg-opacity-10 rounded-pill p-2">
-                        <span className="flex-grow-1 ms-3 text-start fw-bold text-success small">{r.name}</span>
-                        <span className="text-danger fw-bold cursor-pointer me-3" onClick={() => revertReward(index)}>🗑️</span>
-                    </div>
-                ))}
-            </div>
-
-            <div className="d-flex gap-3 mt-4">
-                <button onClick={onBack} className="btn btn-outline-secondary rounded-pill w-50 p-3 fw-bold">Atrás</button>
-                <button onClick={handleNext} className="btn text-white rounded-pill w-50 p-3 fw-bold shadow-sm" style={{ backgroundColor: "#32a89b" }} disabled={addedRewards.length === 0}>
-                    Siguiente
-                </button>
+            {/* PIE FIJO: Quitamos clases extras para que mande el CSS .wizard-footer */}
+            <div className="wizard-footer">
+                <p className="text-center text-muted small mb-2" style={{ fontSize: "0.75rem" }}>
+                    💡 Sugerencia: 20 🪙 = 1€
+                </p>
+                <ProgressBar step={step} />
+                <div className="d-flex gap-3 mt-1">
+                    <button onClick={onBack} className="btn-back">Atrás</button>
+                    <button onClick={handleNext} className="btn-next shadow-sm" disabled={addedRewards.length === 0}>Siguiente</button>
+                </div>
             </div>
         </div>
     );

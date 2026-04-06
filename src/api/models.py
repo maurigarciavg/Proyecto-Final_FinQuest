@@ -1,11 +1,8 @@
 from datetime import datetime
 from decimal import Decimal
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Boolean, DateTime, ForeignKey, Numeric, String, Text, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from werkzeug.security import check_password_hash, generate_password_hash
-
 
 db = SQLAlchemy()
 
@@ -132,7 +129,7 @@ class Task(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     coins: Mapped[int] = mapped_column(Integer, nullable=False)
-    days: Mapped[str] = mapped_column(String(100), nullable=False)
+    days: Mapped[str] = mapped_column(String(100), nullable=False) # Guardado como "L,M,X"
     child_id: Mapped[int] = mapped_column(ForeignKey("child.id"), nullable=False)
     child: Mapped["Child"] = relationship(back_populates="tasks")
 
@@ -141,7 +138,7 @@ class Task(db.Model):
             "id": self.id,
             "name": self.name,
             "coins": self.coins,
-            "days": self.days,
+            "days": self.days.split(",") if self.days else [],
             "child_id": self.child_id
         }
 
@@ -178,3 +175,4 @@ class GrandPrize(db.Model):
             "image_url": self.image_url,
             "child_id": self.child_id
         }
+    

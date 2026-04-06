@@ -1,36 +1,35 @@
 import React, { useState, useRef } from "react";
+import { ProgressBar } from "./ProgressBar";
+import "./ChildWizard.css";
 
-export const ChildGrandPrizeSet = ({ onBack, onNextStep }) => {
+export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
     const [goalName, setGoalName] = useState("");
-    const [goalAmount, setGoalAmount] = useState(10);
+    const [goalAmount, setGoalAmount] = useState(5000); // Sugerencia de ahorro a largo plazo
     const [preview, setPreview] = useState(null);
     const fileInputRef = useRef(null);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                alert("¡Foto demasiado grande! Por favor, elige una de menos de 2MB.");
+                e.target.value = "";
+                return;
+            }
             setPreview(URL.createObjectURL(file));
         }
     };
 
-    // Esta función ahora es la única responsable de cerrar el proceso
-    const handleFinalClick = (e) => {
-        if (e) e.preventDefault();
-
-        // Cambiamos los nombres para que coincidan con el modelo de la base de datos
-        const finalData = {
+    const handleFinalClick = () => {
+        onNextStep({
             name: goalName,
             coins: parseInt(goalAmount) || 0,
-            image_url: "" // De momento vacío hasta implementar Cloudinary
-        };
-
-        onNextStep(finalData);
+            image_url: "" // Aquí irá la lógica de subida al servidor si la implementas
+        });
     };
 
     return (
-        <div className="card shadow-lg border-0 p-4 h-100 w-100 d-flex flex-column animate__animated animate__fadeIn"
-            style={{ borderRadius: "30px", backgroundColor: "#f0fdfa" }}>
-
+        <div className="wizard-body-container animate__animated animate__fadeIn">
             <style>
                 {`
                     input::-webkit-outer-spin-button,
@@ -39,84 +38,90 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep }) => {
                 `}
             </style>
 
-            <h2 className="text-center fw-bold mb-4" style={{ color: "#32a89b" }}>Crear Gran Premio</h2>
+            {/* CUERPO CON SCROLL */}
+            <div className="wizard-body">
+                <h2 className="wizard-title">¡Gran Premio!</h2>
 
-            <div className="flex-grow-1 d-flex flex-column">
-                {/* --- CAMPOS DE TEXTO --- */}
-                <div className="d-flex gap-2 mb-4">
-                    <input
-                        type="text"
-                        className="form-control rounded-pill border-0 shadow-sm px-4 flex-grow-1"
-                        style={{ height: "50px", border: "2px solid #32a89b" }}
-                        placeholder="Gran premio (ej. Una Switch)"
-                        value={goalName}
-                        onChange={(e) => setGoalName(e.target.value)}
-                    />
-
-                    <div className="d-flex align-items-center bg-white rounded-pill shadow-sm px-3"
-                        style={{ border: "2px solid #32a89b", height: "50px", width: "160px" }}>
-                        <input
-                            type="number"
-                            className="form-control border-0 bg-transparent text-center fw-bold p-0"
-                            style={{ color: "#32a89b" }}
-                            value={goalAmount}
-                            onChange={(e) => setGoalAmount(e.target.value)}
+                {/* FORMULARIO DEL PREMIO */}
+                <div style={{ display: "flex", gap: "15px", marginBottom: "20px" }}>
+                    <div style={{ flex: "1" }}>
+                        <input 
+                            type="text" 
+                            className="wizard-input" 
+                            placeholder="Ej. Nintendo Switch" 
+                            value={goalName} 
+                            onChange={(e) => setGoalName(e.target.value)} 
                         />
-                        <span style={{ fontSize: "1.2rem", marginLeft: "5px" }}>🪙</span>
+                    </div>
+                    <div style={{ width: "150px" }}>
+                        <div style={{ 
+                            display: "flex", alignItems: "center", backgroundColor: "white", 
+                            borderRadius: "50px", border: "2px solid #e2e8f0", padding: "0 15px", height: "55px" 
+                        }}>
+                            <input 
+                                type="number" 
+                                style={{ border: "none", width: "100%", fontWeight: "bold", color: "#f39c12", outline: "none", fontSize: "1.1rem", textAlign: "center" }} 
+                                value={goalAmount} 
+                                onChange={(e) => setGoalAmount(e.target.value)} 
+                            />
+                            <span>🪙</span>
+                        </div>
                     </div>
                 </div>
+                
+                <p style={{ color: "#94a3b8", fontSize: "0.8rem", marginBottom: "30px", paddingLeft: "10px" }}>
+                    💡 20 monedas = 1€. Estimación de valor: <strong>{(goalAmount / 20).toFixed(2)}€</strong>
+                </p>
 
-                {/* --- SUBIDA DE IMAGEN --- */}
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    accept="image/*"
-                    onChange={handleImageChange}
-                />
-
-                <div
-                    className="flex-grow-1 d-flex flex-column align-items-center justify-content-center mb-4"
+                {/* SELECTOR DE IMAGEN */}
+                <input type="file" ref={fileInputRef} style={{ display: "none" }} accept="image/*" onChange={handleImageChange} />
+                
+                <div 
                     onClick={() => fileInputRef.current.click()}
                     style={{
-                        border: "2px dashed #32a89b",
-                        borderRadius: "20px",
+                        border: "3px dashed #32a89b",
+                        borderRadius: "30px",
                         backgroundColor: preview ? "white" : "rgba(50, 168, 155, 0.05)",
                         cursor: "pointer",
                         overflow: "hidden",
-                        minHeight: "150px"
-                    }}>
+                        minHeight: "220px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all 0.3s ease",
+                        marginTop: "10px"
+                    }}
+                >
                     {preview ? (
-                        <img src={preview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                        <img src={preview} alt="Preview" style={{ maxHeight: "200px", maxWidth: "100%", objectFit: "contain", padding: "10px" }} />
                     ) : (
-                        <div className="text-center">
-                            <span style={{ fontSize: "2.5rem" }}>🎁</span>
-                            <p className="mb-0 fw-bold mt-2" style={{ color: "#32a89b" }}>Añadir foto del premio</p>
+                        <div style={{ textAlign: "center" }}>
+                            <span style={{ fontSize: "3rem" }}>📸</span>
+                            <p style={{ margin: "10px 0 0 0", fontWeight: "bold", color: "#32a89b" }}>Subir foto del premio</p>
+                            <p style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Formato JPG o PNG (Max 2MB)</p>
                         </div>
                     )}
                 </div>
+            </div>
 
-                {/* --- BOTONES DE ACCIÓN --- */}
-                <div className="d-flex gap-3">
-                    <button
-                        type="button"
-                        className="btn btn-outline-secondary rounded-pill w-50 fw-bold p-3"
-                        onClick={onBack}
-                    >
+            {/* PIE FIJO */}
+            <div className="wizard-footer">
+                <ProgressBar step={step} />
+                <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
+                    <button type="button" className="btn-back" onClick={onBack}>
                         Atrás
                     </button>
-                    <button
-                        type="button" // Cambiado a button para evitar conflictos con onSubmit
-                        className="btn text-white rounded-pill w-50 fw-bold shadow-sm p-3"
-                        style={{ backgroundColor: "#32a89b" }}
-                        onClick={handleFinalClick}
-                        disabled={!goalName || !goalAmount}
+                    <button 
+                        type="button" 
+                        className="btn-next" 
+                        onClick={handleFinalClick} 
+                        disabled={!goalName || goalAmount <= 0}
                     >
-                        Finalizar
+                        ¡Finalizar!
                     </button>
                 </div>
             </div>
         </div>
     );
 };
-

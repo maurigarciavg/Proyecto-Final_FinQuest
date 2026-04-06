@@ -197,20 +197,18 @@ def create_order():
 
 
 @api.route("/child", methods=["POST"])
-# @jwt_required()
 def create_child():
-    """Crea un nuevo perfil de hijo vinculado a un usuario (ID 1 por defecto para pruebas)"""
+    """Crea un perfil infantil vinculado al padre (ID 1 temporal por desarrollo)"""
     data = request.get_json()
-
-    # Mientras no haya token, forzamos el ID del primer usuario creado
-    current_user_id = 1
+    # TODO: Integrar con get_jwt_identity() cuando el login esté listo
+    current_user_id = 1 
 
     name = data.get("name")
     age = data.get("age")
     pin = data.get("pin")
 
-    if not name or not age or not pin:
-        return jsonify({"message": "Faltan datos obligatorios"}), 400
+    if not all([name, age, pin]):
+        return jsonify({"message": "Nombre, edad y PIN son obligatorios"}), 400
 
     new_child = Child(
         name=name,
@@ -222,37 +220,29 @@ def create_child():
 
     db.session.add(new_child)
     db.session.commit()
-
-    return jsonify({
-        "message": "¡Perfil de hijo creado!",
-        "child": new_child.serialize()
-    }), 201
-
+    return jsonify({"message": "Perfil creado", "child": new_child.serialize()}), 201
 
 @api.route("/child/<int:child_id>/tasks", methods=["POST"])
-# @jwt_required()
 def create_tasks(child_id):
-    """Recibe una lista de tareas y las asigna a un hijo específico"""
+    """Asigna una lista de tareas recurrentes a un perfil específico"""
     data = request.get_json()
-
     if not isinstance(data, list):
-        return jsonify({"message": "Se esperaba una lista de tareas"}), 400
+        return jsonify({"message": "Formato de lista requerido"}), 400
 
-    for task_data in data:
+    for item in data:
         new_task = Task(
-            name=task_data.get("name"),
-            coins=task_data.get("coins"),
-            days=task_data.get("days"),
+            name=item.get("name"),
+            coins=max(0, int(item.get("coins", 0))), # Evita monedas negativas
+            days=item.get("days", ""),
             child_id=child_id
         )
         db.session.add(new_task)
 
     db.session.commit()
-    return jsonify({"message": f"¡{len(data)} tareas creadas para el hijo {child_id}!"}), 201
-
+    return jsonify({"message": f"{len(data)} tareas asignadas correctamente"}), 201
 
 @api.route("/child/<int:child_id>/small-goals", methods=["POST"])
-# @jwt_required()
+# @jwt_required()  <-- comentado hasta enlazar con la creacion de usuario
 def create_small_goals(child_id):
     """Asigna una lista de premios intermedios a un hijo"""
     data = request.get_json()
@@ -273,7 +263,7 @@ def create_small_goals(child_id):
 
 
 @api.route("/child/<int:child_id>/grand-prize", methods=["POST"])
-# @jwt_required()
+# @jwt_required()  <-- comentado hasta enlazar con la creacion de usuario
 def create_grand_prize(child_id):
     """Configura el premio final para un hijo"""
     data = request.get_json()
@@ -288,3 +278,16 @@ def create_grand_prize(child_id):
     db.session.add(new_prize)
     db.session.commit()
     return jsonify({"message": "¡Gran Premio configurado!"}), 201
+
+@api.route("/child/<int:child_id>/tasks", methods=["GET"])
+# @jwt_required()  <-- comentado hasta enlazar con la creacion de usuario
+def get_child_tasks(child_id):
+    """Obtiene todas las tareas asignadas a un niño específico"""
+    
+    tasks = Task.query.filter_by(child_id=child_id).all()
+    
+    results = [task.serialize() for task in tasks]
+    
+    return jsonify(results), 200
+
+
