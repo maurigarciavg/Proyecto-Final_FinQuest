@@ -1,8 +1,77 @@
+.missions-btn {
+  display: flex;
+  justify-content: space-between;
+}
 
+.tit_mission {
+  color: #29a38d;
+}
 
+h4 {
+  margin: 0;
+  padding: 4px 0px;
+}
 
-.missions-btn{
+.left_btn button {
+  background: none;
+  border: none;
+  padding: 4px 16px 4px 0px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+}
 
-    display: flex;
-    justify-content: space-between;
+.left_btn button.active {
+  color:#3dc9b6;
+  cursor: pointer;
+  
+}
+
+.filter-container {
+  padding: 4px 0px;
+}
+/* Contenedor principal de los botones de filtro */
+.sub-filters-wrapper {
+  display: inline-flex;
+  background-color: white;
+  border-radius: 5dvh; /* Hace el borde totalmente redondo */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
+  border: 1px solid #f0f0f0;
+}
+
+/* Estilo base de los botones */
+.sub-filter-btn {
+  border: none;
+  background: none;
+  padding: 2px 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  color: #4dbfb6; /* Color verde del texto cuando no está activo */
+}
+
+/* Estilo cuando el botón está ACTIVO */
+.sub-filter-btn.active {
+  background-color: #3dc9b6; /* El color verde de tu imagen */
+  color: white; /* Texto blanco para resaltar */
+}
+
+/* Estilo cuando pasas el mouse (opcional) */
+.sub-filter-btn:hover:not(.active) {
+  background-color: #f9f9f9;
+}
+
+.action-btn {
+  border: none;
+  background: #4dbfb6;
+  padding: 6px 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  color: white;
 }
