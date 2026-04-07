@@ -1,0 +1,89 @@
+/* Contenedor principal de fondo */
+.dashboard-wrapper {
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(at 0% 0%, #f2fcff 0%, transparent 50%),
+    radial-gradient(at 100% 0%, #e9f1f6 0%, transparent 50%),
+    radial-gradient(at 100% 100%, #f2fcff 0%, transparent 50%),
+    radial-gradient(at 0% 100%, #e9f1f6 0%, transparent 50%),
+    radial-gradient(at 50% 50%, #ffffff 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* El contenedor de las 3 columnas */
+.dashboard-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch; 
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 4rem); 
+  /* background-color: #eef9f7;  <- Opcional, si quieres ver el fondo del contenedor */
+}
+
+/* Configuración de Paneles (Escritorio) */
+.panel-left, 
+.panel-right {
+  flex: 0 0 25%; /* Ocupa exactamente el 25% */
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-center {
+  flex: 1; /* Toma el espacio restante (aprox 50%) */
+  display: flex;
+  flex-direction: column;
+  /* Eliminamos padding lateral aquí para que la card controle el espaciado interno */
+}
+
+/* Las cajas blancas redondeadas (Cards) */
+.card-container {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 24px; /* Mantengo tus 24px que se ven más modernos */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  flex-grow: 1; 
+  height: 100%;
+}
+
+/* --- Responsive --- */
+
+/* Tablets y Laptops pequeñas */
+@media (max-width: 1024px) {
+  .dashboard-wrapper {
+    padding: 1rem;
+  }
+
+  .dashboard-content {
+    flex-direction: column; /* Apila uno debajo de otro */
+    gap: 16px;
+    min-height: auto;
+  }
+
+  .panel-left,
+  .panel-center,
+  .panel-right {
+    width: 100%;
+    flex: none;
+  }
+
+  /* ELIMINADO EL ORDER: -1 */
+  /* Ahora el orden será: 
+     1. Papá Pérez (Left)
+     2. Misiones (Center)
+     3. Premios (Right) 
+  */
+}
+
+/* Ajustes finos para móviles muy pequeños */
+@media (max-width: 480px) {
+  .card-container {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+}
+

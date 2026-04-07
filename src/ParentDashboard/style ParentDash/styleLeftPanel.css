@@ -1,0 +1,78 @@
+/* 1. Contenedor del panel (asegura espacio entre título y contenido) */
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 2. El encabezado (Papá Pérez) arriba */
+.panel-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #1e293b;
+  letter-spacing: -0.025em;
+}
+
+/* 3. Contenedor de la "Fila" (Botón + UL) */
+.panel-content {
+  display: flex;
+  flex-direction: row; /* Alineación horizontal principal */
+  align-items: center; /* Centra verticalmente el botón con los hijos */
+  flex-wrap: wrap;    /* Permite que bajen si hay muchos hijos */
+  gap: 16px;          /* Espacio entre el botón y la lista */
+}
+
+/* 4. Estilo del botón */
+.btn-create {
+  padding: 10px 18px;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap; /* Evita que el texto del botón se rompa */
+  transition: transform 0.2s;
+}
+
+.btn-create:hover {
+  transform: translateY(-1px);
+  background-color: #4338ca;
+}
+
+/* 5. La lista de hijos (UL) - Convertida a fila */
+.children-list {
+  display: flex;
+  flex-direction: row; /* Pone los LI uno al lado del otro */
+  list-style: none;    /* Quita los puntos de la lista */
+  margin: 0;
+  padding: 0;
+  gap: 10px;           /* Espacio entre cada hijo */
+}
+
+/* 6. Cada ítem de hijo (LI) */
+.child-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  color: #475569;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+/* --- Ajuste Responsive --- */
+@media (max-width: 640px) {
+  /* En pantallas muy pequeñas, si no caben de lado, se apilan */
+  .panel-content, .children-list {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  
+  .child-item {
+    justify-content: center;
+  }
+}
