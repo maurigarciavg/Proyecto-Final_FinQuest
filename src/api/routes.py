@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import (
     create_access_token,
@@ -10,6 +11,8 @@ from flask_jwt_extended import (
 
 from api.models import Order, Product, User, db, Child, Task, SmallGoal, GrandPrize
 from api.utils import APIException
+from api.models import Child, Order, Product, Task, User, db
+from api.models import Child, Order, Product, Reward, Task, User, db
 
 
 api = Blueprint("api", __name__)
@@ -189,6 +192,79 @@ def create_order():
         "order": order.serialize()
     }), 201
 
+
+@api.route("/child-dashboard/<int:child_id>", methods=["GET"])
+def get_child_dashboard(child_id):
+    child = db.session.get(Child, child_id)
+    if child is None:
+        raise APIException("Child not found", status_code=404)
+
+    today = datetime.utcnow().date()
+
+    if child.last_login_date is None:
+        child.streak = 1
+    else:
+        last = child.last_login_date.date()
+        if last == today:
+            pass  # ya entró hoy, no cambia nada
+        elif (today - last).days == 1:
+            child.streak += 1  # entró ayer, suma racha
+        else:
+            child.streak = 1  # rompió la racha, reinicia
+
+    child.last_login_date = datetime.utcnow()
+    db.session.commit()
+
+    tasks = Task.query.filter_by(child_id=child_id).all()
+
+    tasks = Task.query.filter_by(child_id=child_id).all()
+    rewards = Reward.query.filter_by(child_id=child_id).all()
+
+    return jsonify({
+        "child": child.serialize(),
+        "tasks": [task.serialize() for task in tasks],
+        "rewards": [reward.serialize() for reward in rewards]
+    }), 200
+
+
+@api.route("/tasks/<int:task_id>/complete", methods=["PATCH"])
+def complete_task(task_id):
+    task = db.session.get(Task, task_id)
+    if task is None:
+        raise APIException("Task not found", status_code=404)
+
+    if task.status == "completed":
+        raise APIException("Task already completed", status_code=400)
+
+    task.status = "completed"
+    db.session.commit()
+
+    return jsonify({
+        "message": "Task marked as completed",
+        "task": task.serialize()
+    }), 200
+
+
+@api.route("/rewards/<int:reward_id>/redeem", methods=["POST"])
+def redeem_reward(reward_id):
+    reward = db.session.get(Reward, reward_id)
+    if reward is None:
+        raise APIException("Reward not found", status_code=404)
+
+    child = db.session.get(Child, reward.child_id)
+    if child.coins < reward.cost:
+        raise APIException("Not enough coins", status_code=400)
+
+    child.coins -= reward.cost
+    db.session.commit()
+
+    return jsonify({
+        "message": "Reward redeemed successfully",
+        "coins_remaining": child.coins,
+        "reward": reward.serialize()
+    }), 200
+
+    return jsonify(mock_child_dashboard), 200
 # ==========================================
 # ENDPOINTS PARA GESTIÓN DE PERFILES INFANTILES
 # ==========================================

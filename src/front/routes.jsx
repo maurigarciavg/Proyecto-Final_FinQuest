@@ -13,6 +13,7 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
+import { ChildDashboard } from "./pages/ChildDashboard";
 import { Login } from "./pages/Login";
 import { ProfilesPage } from "./pages/ProfilesPage.jsx";
 import { ChildRegistration } from "./components/ChildProfileCreation/ChildRegistration.jsx";
@@ -54,6 +55,10 @@ export const router = createBrowserRouter(
                         <Orders />
                     </PrivateRoute>
                 )}
+            />
+            <Route
+                path="child-dashboard"
+                element={<ChildDashboard />}
             />
 
             {/* 🎯 RUTA DEL WIZARD: Aquí es donde ocurre la magia de los 3 pasos */}
