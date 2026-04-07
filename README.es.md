@@ -1,3 +1,10 @@
+#PROYECTO FINAL - FINQUEST
+
+KANBAN
+https://trello.com/b/2KYME95B/finquest
+
+
+
 # Plantilla de WebApp con React JS y Flask API
 
 Construye aplicaciones web usando React.js para el front end y python/flask para tu API backend.

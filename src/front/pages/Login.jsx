@@ -13,7 +13,7 @@ export const Login = () => {
   const handleLogin = async () => {
     setError("");
     setLoading(true);
-
+    const rawUrl = import.meta.env.VITE_BACKEND_URL || "";
     try {
       const res = await fetch(
         "https://supreme-enigma-w4q77jgrqwv29q99-3001.app.github.dev/api/sign-in",

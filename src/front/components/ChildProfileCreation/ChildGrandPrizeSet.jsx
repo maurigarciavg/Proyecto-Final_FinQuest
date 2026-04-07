@@ -1,10 +1,11 @@
 import React, { useState, useRef } from "react";
 import { ProgressBar } from "./ProgressBar";
+import cashtorImg from "../../assets/img/Cashtor.jpg"; // 🔴 Importamos el avatar
 import "./ChildWizard.css";
 
-export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
+export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
     const [goalName, setGoalName] = useState("");
-    const [goalAmount, setGoalAmount] = useState(5000); // Sugerencia de ahorro a largo plazo
+    const [goalAmount, setGoalAmount] = useState(5000); 
     const [preview, setPreview] = useState(null);
     const fileInputRef = useRef(null);
 
@@ -24,26 +25,37 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
         onNextStep({
             name: goalName,
             coins: parseInt(goalAmount) || 0,
-            image_url: "" // Aquí irá la lógica de subida al servidor si la implementas
+            image_url: "" 
         });
     };
 
     return (
-        <div className="wizard-body-container animate__animated animate__fadeIn">
-            <style>
-                {`
-                    input::-webkit-outer-spin-button,
-                    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-                    input[type=number] { -moz-appearance: textfield; }
-                `}
-            </style>
+        <div className="wizard-step-wrapper animate__animated animate__fadeIn">
+            
+            {/* CABECERA */}
+            <div className="wizard-header">
+                {/* 🔴 SOLO EL AVATAR CORONANDO EL MODAL */}
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
+                    <img 
+                        src={cashtorImg} 
+                        alt="Avatar" 
+                        style={{ 
+                            width: "65px", 
+                            height: "65px", 
+                            borderRadius: "50%", 
+                            border: "3px solid #32a89b", 
+                            objectFit: "cover",
+                            boxShadow: "0 4px 10px rgba(50, 168, 155, 0.2)" 
+                        }} 
+                    />
+                </div>
+                
+                <h2 className="wizard-title" style={{ marginBottom: "10px" }}>¡Gran Premio!</h2>
+            </div>
 
-            {/* CUERPO CON SCROLL */}
+            {/* CUERPO CENTRAL */}
             <div className="wizard-body">
-                <h2 className="wizard-title">¡Gran Premio!</h2>
-
-                {/* FORMULARIO DEL PREMIO */}
-                <div style={{ display: "flex", gap: "15px", marginBottom: "20px" }}>
+                <div style={{ display: "flex", gap: "15px", marginBottom: "15px" }}>
                     <div style={{ flex: "1" }}>
                         <input 
                             type="text" 
@@ -53,27 +65,22 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
                             onChange={(e) => setGoalName(e.target.value)} 
                         />
                     </div>
-                    <div style={{ width: "150px" }}>
-                        <div style={{ 
-                            display: "flex", alignItems: "center", backgroundColor: "white", 
-                            borderRadius: "50px", border: "2px solid #e2e8f0", padding: "0 15px", height: "55px" 
-                        }}>
-                            <input 
-                                type="number" 
-                                style={{ border: "none", width: "100%", fontWeight: "bold", color: "#f39c12", outline: "none", fontSize: "1.1rem", textAlign: "center" }} 
-                                value={goalAmount} 
-                                onChange={(e) => setGoalAmount(e.target.value)} 
-                            />
-                            <span>🪙</span>
-                        </div>
+                    <div className="task-coin-input-wrapper" style={{width: "150px"}}>
+                        <input 
+                            type="number" 
+                            className="task-coin-input"
+                            style={{ fontSize: "1.2rem" }}
+                            value={goalAmount} 
+                            onChange={(e) => setGoalAmount(e.target.value)} 
+                        />
+                        <span>🪙</span>
                     </div>
                 </div>
                 
-                <p style={{ color: "#94a3b8", fontSize: "0.8rem", marginBottom: "30px", paddingLeft: "10px" }}>
-                    💡 20 monedas = 1€. Estimación de valor: <strong>{(goalAmount / 20).toFixed(2)}€</strong>
+                <p style={{ color: "#94a3b8", fontSize: "0.85rem", marginBottom: "30px", marginLeft: "15px" }}>
+                    💡 20 monedas = 1€. Estimación de valor: <strong style={{color: "#32a89b"}}>{(goalAmount / 20).toFixed(2)}€</strong>
                 </p>
 
-                {/* SELECTOR DE IMAGEN */}
                 <input type="file" ref={fileInputRef} style={{ display: "none" }} accept="image/*" onChange={handleImageChange} />
                 
                 <div 
@@ -90,7 +97,6 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
                         alignItems: "center",
                         justifyContent: "center",
                         transition: "all 0.3s ease",
-                        marginTop: "10px"
                     }}
                 >
                     {preview ? (
@@ -99,7 +105,7 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
                         <div style={{ textAlign: "center" }}>
                             <span style={{ fontSize: "3rem" }}>📸</span>
                             <p style={{ margin: "10px 0 0 0", fontWeight: "bold", color: "#32a89b" }}>Subir foto del premio</p>
-                            <p style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Formato JPG o PNG (Max 2MB)</p>
+                            <p style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "5px" }}>Formato JPG o PNG (Max 2MB)</p>
                         </div>
                     )}
                 </div>
@@ -108,7 +114,7 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
             {/* PIE FIJO */}
             <div className="wizard-footer">
                 <ProgressBar step={step} />
-                <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
+                <div className="footer-buttons">
                     <button type="button" className="btn-back" onClick={onBack}>
                         Atrás
                     </button>
