@@ -4,9 +4,9 @@
 
 /* 1. EL BÚNKER PRINCIPAL */
 .wizard-container {
-    width: 800px;
+    width: 650px; /* 🔴 REDUCIDO: Antes 800px, ahora 650px */
     height: 85vh; /* Se adapta a tu pantalla */
-    max-height: 750px;
+    max-height: 680px; /* 🔴 REDUCIDO: Antes 750px, ahora 680px */
     background-color: #f0fdfa;
     border-radius: 40px;
     display: flex;

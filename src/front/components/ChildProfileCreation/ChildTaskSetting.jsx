@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ProgressBar } from "./ProgressBar";
+import cashtorImg from "../../assets/img/Cashtor.jpg"; // 🔴 Importamos la imagen del avatar
 import "./ChildWizard.css"; 
 
 export const ChildTaskSetting = ({ onBack, onNextStep, step }) => {
@@ -43,7 +44,26 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step }) => {
         <div className="wizard-step-wrapper animate__animated animate__fadeIn">
             
             <div className="wizard-header">
-                <h2 className="wizard-title">Crear tareas de casa</h2>
+                
+                {/* 🔴 SOLO EL AVATAR CORONANDO EL MODAL */}
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
+                    <img 
+                        src={cashtorImg} 
+                        alt="Avatar del niño" 
+                        style={{ 
+                            width: "65px", 
+                            height: "65px", 
+                            borderRadius: "50%", 
+                            border: "3px solid #32a89b", 
+                            objectFit: "cover",
+                            boxShadow: "0 4px 10px rgba(50, 168, 155, 0.2)" 
+                        }} 
+                    />
+                </div>
+
+                {/* Título justo debajo */}
+                <h2 className="wizard-title" style={{ marginBottom: "25px" }}>Crear tareas de casa</h2>
+                
                 <div className="task-input-row">
                     <input
                         type="text"
@@ -62,7 +82,12 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step }) => {
                             onChange={(e) => setNewTaskCoins(e.target.value)}
                         />
                     </div>
-                    <button onClick={addNewTask} className="btn-next" style={{ width: "auto", padding: "0 25px" }}>
+                    {/* 🔴 Botón ajustado con height: "55px" */}
+                    <button 
+                        onClick={addNewTask} 
+                        className="btn-next" 
+                        style={{ width: "auto", padding: "0 25px", height: "55px", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >
                         Añadir
                     </button>
                 </div>

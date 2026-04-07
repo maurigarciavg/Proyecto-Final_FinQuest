@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { ProgressBar } from "./ProgressBar";
+import cashtorImg from "../../assets/img/Cashtor.jpg";
 import "./ChildWizard.css";
 
-export const ChildSmallGoals = ({ onBack, onNextStep, step }) => {
-    // Iniciamos directamente con los cupones base en la lista de "Añadidos"
+export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
+
+    const childName = formData?.child?.child?.name || formData?.child?.name || "Niño/a";
+
     const [addedRewards, setAddedRewards] = useState([
         { id: 1, name: "30 min de videojuegos", coins: 50 },
         { id: 2, name: "Elegir la cena del viernes", coins: 100 },
@@ -14,7 +17,6 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step }) => {
     const [newRewardName, setNewRewardName] = useState("");
     const [newRewardCoins, setNewRewardCoins] = useState(50);
 
-    // Añadir directamente a la lista final
     const addNewReward = () => {
         if (!newRewardName.trim()) return;
         const newR = {
@@ -27,7 +29,6 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step }) => {
         setNewRewardCoins(50);
     };
 
-    // Borrar cupón directamente de la lista
     const removeReward = (id) => {
         setAddedRewards(addedRewards.filter(r => r.id !== id));
     };
@@ -45,7 +46,25 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step }) => {
             
             {/* CABECERA */}
             <div className="wizard-header">
-                <h2 className="wizard-title">Crear Cupones</h2>
+                
+                {/* 🔴 SOLO EL AVATAR CORONANDO EL MODAL */}
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
+                    <img 
+                        src={cashtorImg} 
+                        alt="Avatar" 
+                        style={{ 
+                            width: "65px", 
+                            height: "65px", 
+                            borderRadius: "50%", 
+                            border: "3px solid #32a89b", 
+                            objectFit: "cover",
+                            boxShadow: "0 4px 10px rgba(50, 168, 155, 0.2)" 
+                        }} 
+                    />
+                </div>
+
+                {/* Título justo debajo */}
+                <h2 className="wizard-title" style={{ marginBottom: "25px" }}>Crear Cupones</h2>
                 
                 <div className="task-input-row">
                     <input
@@ -65,13 +84,17 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step }) => {
                             onChange={(e) => setNewRewardCoins(e.target.value)}
                         />
                     </div>
-                    <button onClick={addNewReward} className="btn-next" style={{ width: "auto", padding: "0 25px" }}>
+                    <button 
+                        onClick={addNewReward} 
+                        className="btn-next" 
+                        style={{ width: "auto", padding: "0 25px", height: "55px", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >
                         Añadir
                     </button>
                 </div>
             </div>
 
-            {/* CUERPO CENTRAL (Lista única) */}
+            {/* CUERPO CENTRAL */}
             <div className="wizard-body">
                 <label className="wizard-label task-list-label">
                     ✅ CUPONES ACTIVOS ({addedRewards.length})

@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
 import { ProgressBar } from "./ProgressBar";
+import cashtorImg from "../../assets/img/Cashtor.jpg"; // 🔴 Importamos el avatar
 import "./ChildWizard.css";
 
-export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
+export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
     const [goalName, setGoalName] = useState("");
     const [goalAmount, setGoalAmount] = useState(5000); 
     const [preview, setPreview] = useState(null);
@@ -31,10 +32,28 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
     return (
         <div className="wizard-step-wrapper animate__animated animate__fadeIn">
             
+            {/* CABECERA */}
             <div className="wizard-header">
-                <h2 className="wizard-title">¡Gran Premio!</h2>
+                {/* 🔴 SOLO EL AVATAR CORONANDO EL MODAL */}
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
+                    <img 
+                        src={cashtorImg} 
+                        alt="Avatar" 
+                        style={{ 
+                            width: "65px", 
+                            height: "65px", 
+                            borderRadius: "50%", 
+                            border: "3px solid #32a89b", 
+                            objectFit: "cover",
+                            boxShadow: "0 4px 10px rgba(50, 168, 155, 0.2)" 
+                        }} 
+                    />
+                </div>
+                
+                <h2 className="wizard-title" style={{ marginBottom: "10px" }}>¡Gran Premio!</h2>
             </div>
 
+            {/* CUERPO CENTRAL */}
             <div className="wizard-body">
                 <div style={{ display: "flex", gap: "15px", marginBottom: "15px" }}>
                     <div style={{ flex: "1" }}>
@@ -92,6 +111,7 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step }) => {
                 </div>
             </div>
 
+            {/* PIE FIJO */}
             <div className="wizard-footer">
                 <ProgressBar step={step} />
                 <div className="footer-buttons">
