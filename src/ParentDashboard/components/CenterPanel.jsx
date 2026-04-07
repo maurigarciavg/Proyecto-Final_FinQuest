@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import "../style ParentDash/styleCePanel.css";
 
+
 const CenterPanel = ({ childName, pendingTasksCount }) => {
     const [activeTab, setActiveTab] = useState('Tareas');
     // Estado para controlar el filtro interno (sub-pestañas)
@@ -69,19 +70,20 @@ const CenterPanel = ({ childName, pendingTasksCount }) => {
                 <div className="management-grid">
                     <div className='missions-btn'>
                         <div className="left_btn">
-                            <button 
+                            {/* 4. Agregamos onClick para cambiar la pestaña y una clase 'active' para CSS */}
+                            <button
                                 className={`manage-item ${activeTab === 'Tareas' ? 'active' : ''}`}
                                 onClick={() => handleTabChange('Tareas')}
                             >
                                 Tareas
                             </button>
-                            <button 
+                            <button
                                 className={`manage-item ${activeTab === 'Cupones' ? 'active' : ''}`}
                                 onClick={() => handleTabChange('Cupones')}
                             >
                                 Cupones
                             </button>
-                            <button 
+                            <button
                                 className={`manage-item ${activeTab === 'Gran Premio' ? 'active' : ''}`}
                                 onClick={() => handleTabChange('Gran Premio')}
                             >

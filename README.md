@@ -1,3 +1,7 @@
+#PROYECTO FINAL - FINQUEST
+
+KANBAN https://trello.com/b/2KYME95B/finquest
+
 # JWT Example: React + Flask
 
 Ejemplo full stack de autenticación JWT con catálogo público y páginas privadas.
