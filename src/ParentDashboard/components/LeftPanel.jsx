@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { ChildWizard } from "../../front/components/ChildProfileCreation/ChildWizard";
+import "../style ParentDash/styleLeftPanel.css";
 
 const LeftPanel = ({ parentName, childrenProfiles }) => {
   const [showWizard, setShowWizard] = useState(false);
