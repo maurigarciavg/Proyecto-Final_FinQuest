@@ -6,6 +6,8 @@ import { getChildDashboard } from "../services/childDashboard";
 import "../styles/child-dashboard.css";
 import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
+import monedas3 from "../assets/img/monedas3.png";
+import tickets from "../assets/img/tickets.png";
 
 export const ChildDashboard = () => {
     const [data, setData] = useState(null);
@@ -65,7 +67,7 @@ export const ChildDashboard = () => {
             { method: "PATCH" }
         );
         if (response.ok) {
-            const result = await getChildDashboard(2);
+            const result = await getChildDashboard(1);
             if (result) setData(result);
         }
     };
@@ -76,7 +78,7 @@ export const ChildDashboard = () => {
             { method: "POST" }
         );
         if (response.ok) {
-            const result = await getChildDashboard(2);
+            const result = await getChildDashboard(1);
             if (result) setData(result);
         }
     };
@@ -114,7 +116,11 @@ export const ChildDashboard = () => {
                                             ))}
                                         </div>
 
-                                        <div className="dashboard-streak__coins">🪙</div>
+                                        <img
+                                            className="dashboard-streak__coins-image"
+                                            src={monedas3}
+                                            alt="Monedas de racha"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -133,12 +139,17 @@ export const ChildDashboard = () => {
                                     </div>
 
                                     <div className="dashboard-shop">
-                                        <div className="dashboard-shop__image">🎟️</div>
+                                        <img
+                                            className="dashboard-shop__image"
+                                            src={tickets}
+                                            alt="Tickets de tienda"
+                                        />
                                         <p className="dashboard-shop__text">
                                             Entradas al cine y más
                                         </p>
                                     </div>
                                 </div>
+
                                 {showRewardModal && (
                                     <RewardModal
                                         rewards={data.rewards}
@@ -148,9 +159,13 @@ export const ChildDashboard = () => {
                                     />
                                 )}
 
-                                <div onClick={() => setShowTaskModal(true)} style={{ cursor: "pointer" }}>
+                                <div
+                                    onClick={() => setShowTaskModal(true)}
+                                    style={{ cursor: "pointer" }}
+                                >
                                     <TaskSection tasks={tasks} />
                                 </div>
+
                                 {showTaskModal && (
                                     <TaskModal
                                         tasks={tasks}
