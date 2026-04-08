@@ -1,4 +1,7 @@
 /* Sección Gran Premio */
+aside{
+    font-family: Arial, Helvetica, sans-serif;
+}
 .prize-card {
     text-align: center;
     background: #f8fafc;
@@ -12,10 +15,30 @@
 /* Calendario */
 .calendar-header h4 {
     text-transform: capitalize;
-    margin-bottom: 1rem;
+   
     color: #475569;
 }
 
+h4.calendar-title {
+    width: auto;              /* El ancho lo define el texto */
+    min-width: 140px;         /* Opcional: evita saltos bruscos entre meses cortos y largos */
+    text-align: center;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #1e293b;
+    text-transform: capitalize; /* "enero de 2026" -> "Enero de 2026" */
+    white-space: nowrap;      /* Evita que el año baje a la siguiente línea */
+}
+.calendar-nav {
+    display: flex;
+    flex-direction: row;      /* Todo en una fila */
+    align-items: center;      /* Centrado vertical perfecto */
+    justify-content: center;  /* Centra el conjunto en el panel */
+    gap: 15px;                /* Espacio constante entre flechas y texto */
+    width: 100%;
+    margin-bottom: 20px;
+}
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 columnas */
@@ -30,6 +53,11 @@
     padding-bottom: 5px;
 }
 
+button.nav-btn{
+background: none;
+border:none;
+
+}
 .calendar-day {
     aspect-ratio: 1/1;
     background: #fff;
@@ -59,6 +87,8 @@
     background-color: #6366f1;
     border-radius: 50%;
 }
+
+
 
 /* Modal */
 .modal-overlay {

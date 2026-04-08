@@ -10,8 +10,7 @@ from flask_jwt_extended import (
 )
 from api.utils import APIException
 
-from api.models import Child, Order, Product, Reward, Task, User, db, SmallGoal, GrandPrize
-
+from api.models import Child, Reward, Task, User, db, SmallGoal, GrandPrize
 
 api = Blueprint("api", __name__)
 
@@ -154,54 +153,6 @@ def me():
     return jsonify({"user": user.serialize()}), 200
 
 
-@api.route("/products", methods=["GET"])
-def get_products():
-    products = Product.query.filter_by(is_active=True).order_by(Product.id.asc()).all()
-    return jsonify({"products": [product.serialize() for product in products]}), 200
-
-
-@api.route("/orders", methods=["GET"])
-@jwt_required()
-def get_orders():
-    user = get_current_user()
-    orders = Order.query.filter_by(user_id=user.id).order_by(Order.created_at.desc()).all()
-    return jsonify({
-        "orders": [order.serialize() for order in orders],
-        "user": user.serialize()
-    }), 200
-
-
-@api.route("/orders", methods=["POST"])
-@jwt_required()
-def create_order():
-    user = get_current_user()
-    data = get_json_payload()
-
-    product_id = data.get("product_id")
-
-    if not product_id:
-        raise APIException("product_id is required", status_code=400)
-
-    try:
-        quantity = int(data.get("quantity", 1))
-        parsed_product_id = int(product_id)
-    except (TypeError, ValueError) as error:
-        raise APIException("product_id and quantity must be valid integers", status_code=400) from error
-
-    if quantity < 1:
-        raise APIException("Quantity must be at least 1", status_code=400)
-
-    product = db.session.get(Product, parsed_product_id)
-    if product is None or not product.is_active:
-        raise APIException("Product not found", status_code=404)
-
-    order = Order(
-        user_id=user.id,
-        product_id=product.id,
-        quantity=quantity,
-        status="paid",
-        unit_price=product.price
-    )
 
     db.session.add(order)
     db.session.commit()
