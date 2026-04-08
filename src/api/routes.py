@@ -45,10 +45,15 @@ def get_current_user():
     return user
 
 
-def validate_credentials(payload, require_name=False):
+def validate_signup(payload, require_name=False):
+    """
+    Validates the payload for sign-up (register)
+    """
     name = payload.get("name", "").strip()
     email = payload.get("email", "").strip().lower()
     password = payload.get("password", "")
+    parentalPIN = payload.get("parentalPIN", "").strip()
+    role = payload.get("role", "parent").strip()
 
     if require_name and len(name) < 2:
         raise APIException("Name must contain at least 2 characters", status_code=400)
@@ -59,7 +64,30 @@ def validate_credentials(payload, require_name=False):
     if len(password) < 6:
         raise APIException("Password must contain at least 6 characters", status_code=400)
 
-    return name, email, password
+    if role not in ["parent", "child"]:
+        raise APIException("Role must be 'parent' or 'child'", status_code=400)
+
+    if role == "parent":
+        if not parentalPIN or not parentalPIN.isdigit() or len(parentalPIN) != 4:
+            raise APIException("Parental PIN must be 4 digits for parents", status_code=400)
+
+    return name, email, password, role, parentalPIN
+
+
+def validate_login(payload):
+    """
+    Validates the payload for sign-in (login)
+    """
+    email = payload.get("email", "").strip().lower()
+    password = payload.get("password", "")
+
+    if "@" not in email:
+        raise APIException("Please provide a valid email address", status_code=400)
+
+    if len(password) < 6:
+        raise APIException("Password must contain at least 6 characters", status_code=400)
+
+    return email, password
 
 
 @api.route("/hello", methods=["GET"])
@@ -82,7 +110,7 @@ def handle_hello():
 @api.route("/signup", methods=["POST"])
 def sign_up():
     data = get_json_payload()
-    name, email, password = validate_credentials(data, require_name=True)
+    name, email, password, role, parentalPIN = validate_signup(data, require_name=True)
 
     existing_user = User.query.filter_by(email=email).one_or_none()
     if existing_user is not None:
@@ -91,6 +119,8 @@ def sign_up():
     new_user = User(
         email=email,
         name=name,
+        role=role,
+        parentalPIN=parentalPIN if role == "parent" else None,
         is_active=True
     )
     new_user.set_password(password)
@@ -106,7 +136,7 @@ def sign_up():
 @api.route("/token", methods=["POST"])
 def sign_in():
     data = get_json_payload()
-    _, email, password = validate_credentials(data)
+    email, password = validate_login(data)
 
     user = User.query.filter_by(email=email).one_or_none()
     if user is None or not user.check_password(password):
