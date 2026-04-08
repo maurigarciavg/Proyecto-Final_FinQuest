@@ -47,14 +47,7 @@ export const router = createBrowserRouter(
                 )}
             />
 
-            {/* <Route
-                path="orders"
-                element={(
-                    <PrivateRoute>
-                        <Orders />
-                    </PrivateRoute>
-                )}
-            /> */}
+            
             <Route
                 path="child-dashboard"
                 element={<ChildDashboard />}

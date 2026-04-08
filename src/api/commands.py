@@ -2,65 +2,13 @@ from decimal import Decimal
 
 import click
 
-from api.models import Order, Product, User, db
+from api.models import User, db
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
 Flask commands are usefull to run cronjobs or tasks outside of the API but sill in integration
 with youy database, for example: Import the price of bitcoin every night as 12am
 """
-
-
-SEEDED_PRODUCTS = [
-    {
-        "name": "JWT Starter Kit",
-        "slug": "jwt-starter-kit",
-        "description": "Pack de inicio con libreta, pegatinas y mini guia para practicar autenticacion.",
-        "category": "Learning",
-        "image_url": "https://picsum.photos/seed/jwt-starter-kit/900/600",
-        "price": Decimal("29.00")
-    },
-    {
-        "name": "React Route Map",
-        "slug": "react-route-map",
-        "description": "Poster visual para entender navegacion, layouts y rutas protegidas en React Router.",
-        "category": "Frontend",
-        "image_url": "https://picsum.photos/seed/react-route-map/900/600",
-        "price": Decimal("45.00")
-    },
-    {
-        "name": "Flask Auth Mug",
-        "slug": "flask-auth-mug",
-        "description": "Taza de edicion limitada para acompanar tus sesiones de backend y testing.",
-        "category": "Merch",
-        "image_url": "https://picsum.photos/seed/flask-auth-mug/900/600",
-        "price": Decimal("18.50")
-    },
-    {
-        "name": "Secure Cookies Notebook",
-        "slug": "secure-cookies-notebook",
-        "description": "Cuaderno reutilizable para diagramar sesiones, tokens y flujos de seguridad.",
-        "category": "Learning",
-        "image_url": "https://picsum.photos/seed/secure-cookies-notebook/900/600",
-        "price": Decimal("32.00")
-    },
-    {
-        "name": "API Testing Cards",
-        "slug": "api-testing-cards",
-        "description": "Tarjetas de referencia rapida con ejemplos de requests, headers y respuestas HTTP.",
-        "category": "Backend",
-        "image_url": "https://picsum.photos/seed/api-testing-cards/900/600",
-        "price": Decimal("24.90")
-    },
-    {
-        "name": "Deployment Survival Pack",
-        "slug": "deployment-survival-pack",
-        "description": "Bundle con checklist de variables de entorno, migraciones y despliegue continuo.",
-        "category": "DevOps",
-        "image_url": "https://picsum.photos/seed/deployment-survival-pack/900/600",
-        "price": Decimal("52.00")
-    }
-]
 
 
 def seed_user(name, email, password):
@@ -70,12 +18,6 @@ def seed_user(name, email, password):
     db.session.flush()
     return user
 
-
-def seed_product(product_data):
-    product = Product(**product_data, is_active=True)
-    db.session.add(product)
-    db.session.flush()
-    return product
 
 
 def setup_commands(app):

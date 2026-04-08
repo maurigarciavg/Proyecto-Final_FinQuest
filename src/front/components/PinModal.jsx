@@ -8,14 +8,22 @@ export const PinModal = ({ profile, onClose }) => {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    if (pin === profile.pin) {
+    // Validación básica
+    if (!pin || pin.length !== 4) {
+      setError("El PIN debe tener 4 dígitos");
+      return;
+    }
+
+    if (pin === profile.parentalPIN) {
       setError("");
-      // Redirección según rol
+
+      // 🔥 Redirección según rol
       if (profile.role === "parent") {
         navigate("/parentadmin");
-      } else {
-        navigate("/ChildDashboard");  // <-- ruta correcta para hijos
+      } else if (profile.role === "child") {
+        navigate("/child-dashboard"); // ⚠️ asegúrate de que esta ruta exista
       }
+
       onClose();
     } else {
       setError("PIN incorrecto, intenta de nuevo");
@@ -26,17 +34,29 @@ export const PinModal = ({ profile, onClose }) => {
     <div className="modal" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>Ingresa el PIN de {profile.name}</h2>
+
         <input
           type="password"
           maxLength={4}
           value={pin}
-          onChange={(e) => setPin(e.target.value)}
+          onChange={(e) => {
+            setPin(e.target.value);
+            setError(""); // limpia error al escribir
+          }}
           placeholder="••••"
         />
-        {error && <p style={{ color: "red", marginTop: "0.5rem" }}>{error}</p>}
+
+        {error && (
+          <p style={{ color: "red", marginTop: "0.5rem" }}>
+            {error}
+          </p>
+        )}
+
         <div style={{ marginTop: "1rem" }}>
           <button onClick={handleSubmit}>Entrar</button>
-          <button onClick={onClose} style={{ marginLeft: "1rem" }}>Cerrar</button>
+          <button onClick={onClose} style={{ marginLeft: "1rem" }}>
+            Cerrar
+          </button>
         </div>
       </div>
     </div>,

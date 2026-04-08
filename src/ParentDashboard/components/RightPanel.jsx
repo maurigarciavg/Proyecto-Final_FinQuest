@@ -3,18 +3,31 @@ import PropTypes from 'prop-types';
 import "../style ParentDash/styleRightPanel.css";
 
 const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
+    // 1. ESTADO: Controla qué mes y año estamos visualizando
+    const [viewDate, setViewDate] = useState(new Date());
     const [selectedTasks, setSelectedTasks] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Configuración de fecha actual
-    const now = new Date();
-    const currentMonthLabel = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(now);
+    // 2. CÁLCULOS DINÁMICOS basándonos en viewDate
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth(); // 0 (Enero) a 11 (Diciembre)
+
+    // Formatear el encabezado (ej: "abril de 2026")
+    const currentMonthLabel = new Intl.DateTimeFormat('es-ES', { 
+        month: 'long', 
+        year: 'numeric' 
+    }).format(viewDate);
     
-    // Obtener días del mes actual
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    // Obtener cuántos días tiene el mes actual de la vista
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+    // 3. FUNCIONES DE NAVEGACIÓN
+    const changeMonth = (offset) => {
+        // offset puede ser -1 (atrás) o 1 (adelante)
+        const newDate = new Date(year, month + offset, 1);
+        setViewDate(newDate);
+    };
 
     const handleDayClick = (day) => {
         // Formato YYYY-MM-DD para comparar con las tareas
@@ -41,11 +54,20 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
             {/* 2. Sección del Calendario */}
             <section className="calendar-section">
                 <header className="calendar-header">
-                    <h4>{currentMonthLabel}</h4>
+                    <div className="calendar-nav">
+                        <button className="nav-btn" onClick={() => changeMonth(-1)}>
+                            <i className="fa-solid fa-chevron-left"></i>
+                        </button>
+                        
+                        <h4 className="calendar-title">{currentMonthLabel}</h4>
+                        
+                        <button className="nav-btn" onClick={() => changeMonth(1)}>
+                            <i className="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </header>
                 
                 <div className="calendar-grid">
-                    {/* Cabecera simple de días (opcional) */}
                     {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(d => (
                         <div key={d} className="calendar-weekday">{d}</div>
                     ))}
@@ -79,7 +101,7 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                     <li key={t.id}>• {t.title} <span className="pts">+{t.points}pts</span></li>
                                 ))}
                             </ul>
-                        ) : <p>No hay tareas asignadas.</p>}
+                        ) : <p>No hay tareas asignadas para este día.</p>}
                         <button className="btn-close" onClick={() => setIsModalOpen(false)}>Cerrar</button>
                     </div>
                 </div>

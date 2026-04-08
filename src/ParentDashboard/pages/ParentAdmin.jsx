@@ -7,9 +7,9 @@ import "../style ParentDash/stylePAdmin.css";
 export const ParentAdmin = () => {
     // 1. Datos de los hijos
     const misHijos = [
-        { id: 1, name: "Hijo 1" },
-        { id: 2, name: "Hijo 2" }
-    ];
+    { id: 1, name: "Hijo 1", lastConnection: new Date() }, // Si usas fechas
+    { id: 2, name: "Hijo 2", lastConnection: new Date() }
+];
 
    
     const [tasks, setTasks] = useState([
