@@ -24,7 +24,6 @@ export const router = createBrowserRouter(
             <Route path="/" element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
-            <Route path="login" element={<Login />} />
             <Route path="profiles" element={<ProfilesPage />} />
             {/* <Route
                 path="profiles"
