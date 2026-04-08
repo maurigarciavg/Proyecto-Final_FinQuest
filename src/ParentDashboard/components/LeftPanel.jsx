@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { ChildWizard } from "../../front/components/ChildProfileCreation/ChildWizard";
+import "../style ParentDash/styleLeftPanel.css";
 
 const LeftPanel = ({ parentName, childrenProfiles }) => {
   const [showWizard, setShowWizard] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   return (
     <aside className="left-panel">
@@ -12,25 +14,39 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
       </header>
 
       <nav className="panel-content">
-        <button className="btn-create" onClick={() => setShowWizard(true)}>
-          + Crear perfil hijo
+        {/* Botón de Crear Perfil con lógica de selección */}
+        <button
+          className={`btn-create-child-profile ${selectedId === 'create' ? 'selected' : ''}`}
+          onClick={() => {
+            setShowWizard(true);
+            setSelectedId('create'); // Marcamos este botón como seleccionado
+          }}
+        >
+          <div className="plus-icon-container">
+            <i className="fa-solid fa-plus"></i>
+          </div>
+          <span>Crear perfil hijo</span>
         </button>
 
         {/* Lista de Perfiles */}
         <ul className="children-list">
-          {childrenProfiles && childrenProfiles.map((child) => (
-            <li key={child.id} className="child-item">
-              <span>{child.name}</span>
-
-              {/* Verificación ultra-segura para evitar el Uncaught TypeError */}
-              {child.date && !isNaN(new Date(child.date).getTime()) && (
-                <span>{new Date(child.date).toLocaleString()}</span>
-              )}
+          {childrenProfiles.map((child) => (
+            <li
+              key={child.id}
+              className={`child-item ${selectedId === child.id ? 'active' : ''}`}
+            >
+              <button
+                className="child-profile"
+                onClick={() => setSelectedId(child.id)}
+              >
+                <div className="avatar-wrapper">
+                  <img src={child.avatarUrl} className="child-avatar" />
+                </div>
+                <span className="child-name">{child.name}</span>
+              </button>
             </li>
           ))}
         </ul>
-
-
       </nav>
 
       {/* --- RENDERIZADO DEL MODAL --- */}

@@ -13,144 +13,162 @@
   letter-spacing: -0.025em;
 }
 
-/* Contenedor de Botón + Lista */
 .panel-content {
   display: flex;
-  flex-direction: row; /* En móvil, botón y lista van en fila */
+  flex-direction: row;
   align-items: flex-start;
   gap: 15px;
   width: 100%;
 }
 
+/* --- BOTONES (Estilos base comunes) --- */
+button.btn-create-child-profile,
+.child-profile {
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent; /* Evita saltos al activarse el borde */
+  background: none;
+}
+
 /* Botón Crear Perfil */
 button.btn-create-child-profile {
-  background-color: transparent;
-  border: 2px solid #3dc9b6;
   display: flex;
-  /* --- MÓVIL (Por defecto) --- */
-  flex-direction: row;      /* Icono al lado del texto */
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 20px 20px;
+  padding: 15px 20px; /* Ajustado para mejor balance */
   border-radius: 12px;
-  cursor: pointer;
   font-weight: bold;
-  font-size: 16px;
   color: #3dc9b6;
-  white-space: nowrap;
-  transition: all 0.2s;
-  flex-shrink: 0;           /* Importante: evita que se aplaste en la fila horizontal */
+  flex-shrink: 0;
 }
 
-button.btn-create-child-profile:hover {
-  background-color: #3dc9b6;
-  color: white;
+button.btn-create-child-profile:hover,
+.child-profile:hover {
+  background-color: rgba(61, 201, 182, 0.1); /* Hover sutil */
+  transform: translateY(-2px);
 }
 
-/* --- ESCRITORIO (Pantallas grandes) --- */
-@media (min-width: 1024px) {
-  button.btn-create-child-profile {
-    flex-direction: column;  /* Icono ARRIBA del texto */
-    width: 100%;             /* Ocupa todo el ancho del panel vertical */
-    padding: 20px 20px;      /* Más espacio vertical */
-    height: auto;
-    min-height: 100px;       /* Para que tenga presencia visual similar a los items de hijos */
-  }
-
-  .plus-icon-container {
-    font-size: 1.5rem;       /* El icono se ve más grande al estar arriba */
-    margin-bottom: 5px;
-  }
+/* ESTADO SELECCIONADO (Crear Perfil) */
+button.btn-create-child-profile.selected {
+  background-color: #f0fdfa; 
+  border: 2px solid #3dc9b6;
+  color: #3dc9b6; /* Corregido de morado a turquesa */
+  box-shadow: 0 4px 10px rgba(72, 201, 176, 0.2);
 }
 
-button.btn-create-child-profile:hover {
-  background-color: #3dc9b6;
-  color: white;
+/* Efecto de clic físico */
+.btn-create-child-profile:active,
+.child-profile:active {
+  transform: scale(0.95);
 }
 
-/* Lista de Hijos (POR DEFECTO: Horizontal con Scroll en móvil) */
+/* --- LISTA DE HIJOS --- */
 .children-list {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;      /* Forzamos que no bajen de línea */
-  overflow-x: auto;       /* Scroll horizontal si hay muchos */
+  flex-wrap: nowrap;
+  overflow-x: auto;
   list-style: none;
-  padding: 0 5px 10px 0;  /* Espacio extra abajo para el scrollbar */
+  padding: 0 0 10px 0;
   margin: 0;
   gap: 10px;
   -webkit-overflow-scrolling: touch;
   width: 100%;
 }
 
-/* Ítem de Hijo Individual */
-.child-item {
+.child-profile {
   display: flex;
-  flex-direction: column; /* Avatar arriba, nombre abajo */
+  flex-direction: column;
   align-items: center;
   padding: 15px;
-  background-color: #f1f5f9;
-  border: 1px solid #e2e8f0;
   border-radius: 15px;
   color: #475569;
-  min-width: 120px;      /* Tamaño mínimo en móvil */
-  white-space: nowrap;
-  transition: all 0.3s ease;
+  min-width: 120px;
+  min-height: 120px;
 }
 
-.child-item.active {
-  background-color: #fff;
-  border: 2px solid #48c9b0;
+/* ESTADO SELECCIONADO (Hijos) */
+.child-item.active .child-profile {
+  background-color: #f0fdfa;
+  border: 2px solid #3dc9b6;
+  transform: translateY(0);
   box-shadow: 0 4px 10px rgba(72, 201, 176, 0.2);
 }
 
-/* Elementos internos del Ítem */
-.avatar-wrapper {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 8px;
+.child-item.active .child-name {
+  color: #3dc9b6;
+  font-weight: bold;
 }
 
 .child-avatar {
-  width: 100%;
-  height: 100%;
+  width: 60px; /* Tamaño controlado */
+  height: 60px;
   object-fit: contain;
+  margin-bottom: 8px;
 }
 
 .child-name {
   font-weight: bold;
   font-size: 1rem;
   color: #48c9b0;
-  margin-bottom: 5px;
 }
 
-/* --- 2. MEDIA QUERY: ORDENADOR (Desktop) --- */
-
+/* --- 2. MEDIA QUERY: ESCRITORIO --- */
 @media (min-width: 1024px) {
-  /* Cambiamos el contenedor principal a vertical */
   .panel-content {
-    flex-direction: column; 
+    flex-direction: column;
     align-items: stretch;
   }
 
-  /* La lista de hijos ahora se apila hacia abajo */
+  button.btn-create-child-profile {
+    flex-direction: column;
+    width: 100%;
+    min-height: 100px;
+    padding: 20px 10px;
+  }
+
+  .plus-icon-container {
+    background-color: rgba(61, 201, 182, 0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  /* El icono también cambia si está seleccionado */
+  button.btn-create-child-profile.selected .plus-icon-container {
+    background-color: #3dc9b6;
+    color: white;
+  }
+
   .children-list {
     flex-direction: column;
     overflow-x: visible;
-    padding: 0;
     gap: 15px;
   }
 
   .child-item {
-    flex-direction: row;    /* En escritorio: Avatar a la izquierda, nombre a la derecha */
+    width: 100%;
+  }
+
+  .child-profile {
+    flex-direction: column; 
     justify-content: flex-start;
     gap: 15px;
     width: 100%;
     min-width: unset;
+    min-height: auto;
+    padding: 10px 15px;
   }
 
-  .avatar-wrapper {
-    width: 40px;            /* Avatar más pequeño en lista vertical */
+  .child-avatar {
+    width: 40px;
     height: 40px;
     margin-bottom: 0;
   }
