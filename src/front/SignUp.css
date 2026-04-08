@@ -1,25 +1,25 @@
 /* SignUp.css */
 
-/* Contenedor principal */
+/* Contenedor principal con fondo */
 .auth-section {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #0f172a; /* fondo oscuro consistente */
-  color: white;
-  padding: 2rem;
+
 }
 
 /* Card */
 .panel-card.auth-card {
-  width: 100%;
-  max-width: 400px;
-  background-size: cover;
-  background-position: center;
-  padding: 2rem;
+  width: 600px;
+  max-width: 100%;
+  min-height: 500px;
+  padding: 2rem 4rem;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  background-color: #EAF6F4;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,17 +28,30 @@
 /* Título */
 .section-title {
   text-align: center;
-  margin-bottom: 1.5rem;
-  color: #5a3e2b;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #3db7a4;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* Formulario */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form label{
+  color: #3db7a4;
 }
 
 /* Inputs */
 .auth-form .form-control {
   margin-bottom: 1rem;
-  padding: 0.8rem;
+  padding: 0.5rem;
   border-radius: 10px;
   border: none;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.85);
   font-size: 1rem;
 }
 
@@ -58,7 +71,13 @@
   background: #2ea393;
 }
 
-/* Footnote */
+/* Alertas de error */
+.alert.alert-danger {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Footnote / registro */
 .auth-footnote {
   margin-top: 1rem;
   text-align: center;
@@ -70,17 +89,44 @@
   text-decoration: none;
 }
 
-/* Alertas de error */
-.alert.alert-danger {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
+/* Wrapper relativo para card + imagen */
+.signup-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Imagen abajo izquierda */
+.signup-image {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 400px; 
+  pointer-events: none; 
+}
+
+.signup-image img {
+  width: 100%;
+  height: auto;
 }
 
 /* ========================= */
 /* 📱 RESPONSIVE */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .panel-card.auth-card {
+    width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-section {
+    padding: 1rem;
+  }
+
+  .panel-card.auth-card {
+    width: 100%;
     padding: 1.5rem;
+    min-height: auto;
   }
 
   .auth-form .form-control {

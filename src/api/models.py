@@ -15,6 +15,8 @@ class User(db.Model):
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
+    role: Mapped[str] = mapped_column(String(20), nullable=False, default="parent")  # nuevo
+    parentalPIN: Mapped[str] = mapped_column(String(4), nullable=True)  # nuevo
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
 
     orders: Mapped[list["Order"]] = relationship(
@@ -34,6 +36,8 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "name": self.name,
+            "role": self.role,               # agregamos role al serializar
+            "parentalPIN": self.parentalPIN, # opcional
             "is_active": self.is_active
         }
 

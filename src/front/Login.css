@@ -14,7 +14,7 @@
 /* Card con su propio fondo */
 .login-card {
   width: 400px;
-  height: 500px;
+  height: 550px;
   min-height: 500px;
   padding: 2rem;
   border-radius: 20px;
@@ -27,12 +27,13 @@
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: baseline;
 }
 
 /* Título */
 .login-title {
   text-align: center;
+  margin-top: 50px;
   margin-bottom: 1.5rem;
   color: #5a3e2b;
 }
