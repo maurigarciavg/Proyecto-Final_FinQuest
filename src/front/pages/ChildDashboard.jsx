@@ -15,7 +15,7 @@ export const ChildDashboard = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            const result = await getChildDashboard(2);
+            const result = await getChildDashboard(1);
 
             if (!result) {
                 setError(true);

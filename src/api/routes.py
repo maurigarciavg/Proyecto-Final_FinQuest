@@ -37,7 +37,8 @@ def get_current_user():
     try:
         user_id = int(identity)
     except (TypeError, ValueError) as error:
-        raise APIException("Invalid token identity", status_code=401) from error
+        raise APIException("Invalid token identity",
+                           status_code=401) from error
 
     user = db.session.get(User, user_id)
     if user is None:
@@ -52,13 +53,16 @@ def validate_credentials(payload, require_name=False):
     password = payload.get("password", "")
 
     if require_name and len(name) < 2:
-        raise APIException("Name must contain at least 2 characters", status_code=400)
+        raise APIException(
+            "Name must contain at least 2 characters", status_code=400)
 
     if "@" not in email:
-        raise APIException("Please provide a valid email address", status_code=400)
+        raise APIException(
+            "Please provide a valid email address", status_code=400)
 
     if len(password) < 6:
-        raise APIException("Password must contain at least 6 characters", status_code=400)
+        raise APIException(
+            "Password must contain at least 6 characters", status_code=400)
 
     return name, email, password
 
@@ -87,7 +91,8 @@ def sign_up():
 
     existing_user = User.query.filter_by(email=email).one_or_none()
     if existing_user is not None:
-        raise APIException("A user with this email already exists", status_code=409)
+        raise APIException(
+            "A user with this email already exists", status_code=409)
 
     new_user = User(
         email=email,
@@ -126,7 +131,8 @@ def me():
 
 @api.route("/products", methods=["GET"])
 def get_products():
-    products = Product.query.filter_by(is_active=True).order_by(Product.id.asc()).all()
+    products = Product.query.filter_by(
+        is_active=True).order_by(Product.id.asc()).all()
     return jsonify({"products": [product.serialize() for product in products]}), 200
 
 
@@ -134,7 +140,8 @@ def get_products():
 @jwt_required()
 def get_orders():
     user = get_current_user()
-    orders = Order.query.filter_by(user_id=user.id).order_by(Order.created_at.desc()).all()
+    orders = Order.query.filter_by(user_id=user.id).order_by(
+        Order.created_at.desc()).all()
     return jsonify({
         "orders": [order.serialize() for order in orders],
         "user": user.serialize()
@@ -156,7 +163,8 @@ def create_order():
         quantity = int(data.get("quantity", 1))
         parsed_product_id = int(product_id)
     except (TypeError, ValueError) as error:
-        raise APIException("product_id and quantity must be valid integers", status_code=400) from error
+        raise APIException(
+            "product_id and quantity must be valid integers", status_code=400) from error
 
     if quantity < 1:
         raise APIException("Quantity must be at least 1", status_code=400)
@@ -207,7 +215,6 @@ def get_child_dashboard(child_id):
 
     tasks = Task.query.filter_by(child_id=child_id).all()
 
-    tasks = Task.query.filter_by(child_id=child_id).all()
     rewards = Reward.query.filter_by(child_id=child_id).all()
 
     return jsonify({
@@ -223,15 +230,14 @@ def complete_task(task_id):
     if task is None:
         raise APIException("Task not found", status_code=404)
 
-    if task.status == "completed":
-        raise APIException("Task already completed", status_code=400)
-
-    task.status = "completed"
+    child = db.session.get(Child, task.child_id)
+    child.total_coins += task.coins
     db.session.commit()
 
     return jsonify({
-        "message": "Task marked as completed",
-        "task": task.serialize()
+        "message": "Task completed, coins added",
+        "task": task.serialize(),
+        "total_coins": child.total_coins
     }), 200
 
 
@@ -242,15 +248,15 @@ def redeem_reward(reward_id):
         raise APIException("Reward not found", status_code=404)
 
     child = db.session.get(Child, reward.child_id)
-    if child.coins < reward.cost:
+    if child.total_coins < reward.cost:
         raise APIException("Not enough coins", status_code=400)
 
-    child.coins -= reward.cost
+    child.total_coins -= reward.cost
     db.session.commit()
 
     return jsonify({
         "message": "Reward redeemed successfully",
-        "coins_remaining": child.coins,
+        "coins_remaining": child.total_coins,
         "reward": reward.serialize()
     }), 200
 
@@ -267,7 +273,7 @@ def create_child():
     """Crea un perfil infantil vinculado al padre (ID 1 temporal por desarrollo)"""
     data = request.get_json()
     # TODO: Integrar con get_jwt_identity() cuando el login esté listo
-    current_user_id = 1 
+    current_user_id = 1
 
     name = data.get("name")
     age = data.get("age")
@@ -288,6 +294,7 @@ def create_child():
     db.session.commit()
     return jsonify({"message": "Perfil creado", "child": new_child.serialize()}), 201
 
+
 @api.route("/child/<int:child_id>/tasks", methods=["POST"])
 def create_tasks(child_id):
     """Asigna una lista de tareas recurrentes a un perfil específico"""
@@ -298,7 +305,7 @@ def create_tasks(child_id):
     for item in data:
         new_task = Task(
             name=item.get("name"),
-            coins=max(0, int(item.get("coins", 0))), # Evita monedas negativas
+            coins=max(0, int(item.get("coins", 0))),  # Evita monedas negativas
             days=item.get("days", ""),
             child_id=child_id
         )
@@ -306,6 +313,7 @@ def create_tasks(child_id):
 
     db.session.commit()
     return jsonify({"message": f"{len(data)} tareas asignadas correctamente"}), 201
+
 
 @api.route("/child/<int:child_id>/small-goals", methods=["POST"])
 # @jwt_required()  <-- comentado hasta enlazar con la creacion de usuario
@@ -345,15 +353,14 @@ def create_grand_prize(child_id):
     db.session.commit()
     return jsonify({"message": "¡Gran Premio configurado!"}), 201
 
+
 @api.route("/child/<int:child_id>/tasks", methods=["GET"])
 # @jwt_required()  <-- comentado hasta enlazar con la creacion de usuario
 def get_child_tasks(child_id):
     """Obtiene todas las tareas asignadas a un niño específico"""
-    
+
     tasks = Task.query.filter_by(child_id=child_id).all()
-    
+
     results = [task.serialize() for task in tasks]
-    
+
     return jsonify(results), 200
-
-
