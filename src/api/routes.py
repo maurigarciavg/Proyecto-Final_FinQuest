@@ -73,7 +73,8 @@ def validate_signup(payload, require_name=False):
 
     if role == "parent":
         if not parentalPIN or not parentalPIN.isdigit() or len(parentalPIN) != 4:
-            raise APIException("Parental PIN must be 4 digits for parents", status_code=400)
+            raise APIException(
+                "Parental PIN must be 4 digits for parents", status_code=400)
 
     return name, email, password, role, parentalPIN
 
@@ -86,10 +87,12 @@ def validate_login(payload):
     password = payload.get("password", "")
 
     if "@" not in email:
-        raise APIException("Please provide a valid email address", status_code=400)
+        raise APIException(
+            "Please provide a valid email address", status_code=400)
 
     if len(password) < 6:
-        raise APIException("Password must contain at least 6 characters", status_code=400)
+        raise APIException(
+            "Password must contain at least 6 characters", status_code=400)
 
     return email, password
 
@@ -114,7 +117,8 @@ def handle_hello():
 @api.route("/signup", methods=["POST"])
 def sign_up():
     data = get_json_payload()
-    name, email, password, role, parentalPIN = validate_signup(data, require_name=True)
+    name, email, password, role, parentalPIN = validate_signup(
+        data, require_name=True)
 
     existing_user = User.query.filter_by(email=email).one_or_none()
     if existing_user is not None:
@@ -156,8 +160,6 @@ def sign_in():
 def me():
     user = get_current_user()
     return jsonify({"user": user.serialize()}), 200
-
-
 
     db.session.add(order)
     db.session.commit()
@@ -246,13 +248,11 @@ def redeem_reward(reward_id):
 # NOTA: Se ha comentado @jwt_required temporalmente para pruebas sin Login completo.
 
 
-@api.route("/child", methods=["POST"])
-def create_child():
+@api.route("/child/<int:current_user_id>", methods=["POST"])
+def create_child(current_user_id):
     """Crea un perfil infantil vinculado al padre (ID 1 temporal por desarrollo)"""
     data = request.get_json()
-    # TODO: Integrar con get_jwt_identity() cuando el login esté listo
-    current_user_id = 1
-
+    print(current_user_id)
     name = data.get("name")
     age = data.get("age")
     pin = data.get("pin")
@@ -340,5 +340,16 @@ def get_child_tasks(child_id):
     tasks = Task.query.filter_by(child_id=child_id).all()
 
     results = [task.serialize() for task in tasks]
+
+    return jsonify(results), 200
+
+
+@api.route("/parent/<int:parent_id>/children", methods=["GET"])
+# @jwt_required()  <-- comentado hasta enlazar con la creacion de usuario
+def get_children(parent_id):
+    print(parent_id)
+    children = Child.query.filter_by(parent_id=parent_id).all()
+
+    results = [child.serialize() for child in children]
 
     return jsonify(results), 200

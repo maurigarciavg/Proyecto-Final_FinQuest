@@ -15,6 +15,8 @@ export const ChildDashboard = () => {
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
 
+    console.log(data);
+
     //Te escucho :D vamos a otra meet :D
     //PASO LINK 
     useEffect(() => {

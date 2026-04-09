@@ -5,6 +5,7 @@ import { ChildSmallGoals } from "./ChildSmallGoals";
 import { ChildGrandPrizeSet } from "./ChildGrandPrizeSet";
 import { ChildSummary } from "./ChildSummary"; // ¡Importante importar el nuevo componente!
 import "./ChildWizard.css";
+import { useNavigate } from "react-router-dom";
 
 export const ChildWizard = ({ onClose }) => {
     const [step, setStep] = useState(1);
@@ -16,6 +17,8 @@ export const ChildWizard = ({ onClose }) => {
         smallGoals: [],
         grandPrize: null
     });
+    const navigate = useNavigate();
+
 
     // Esta función solo avanza de paso y guarda datos locales (del paso 1 al 4)
     const handleNext = (newData) => {
@@ -41,6 +44,10 @@ export const ChildWizard = ({ onClose }) => {
         setSaveError(null);
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
+        const userObject = JSON.parse(user);
+
+
 
         const getHeaders = () => {
             const headers = { "Content-Type": "application/json" };
@@ -59,7 +66,7 @@ export const ChildWizard = ({ onClose }) => {
                 avatar: fullData.child.child.avatar || "default_avatar.png"
             };
 
-            const childResponse = await fetch(`${baseUrl}/api/child`, {
+            const childResponse = await fetch(`${baseUrl}api/child/${userObject.id}`, {
                 method: "POST",
                 headers: getHeaders(),
                 body: JSON.stringify(childData)
@@ -98,6 +105,8 @@ export const ChildWizard = ({ onClose }) => {
 
             // Si todo va bien, quitamos el estado de "Cargando"
             setIsSaving(false);
+            navigate("/parentadmin");
+
 
         } catch (error) {
             console.error("❌ ERROR CRÍTICO BACKEND:", error.message);

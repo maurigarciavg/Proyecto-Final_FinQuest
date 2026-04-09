@@ -22,6 +22,9 @@ class User(db.Model):
     is_active: Mapped[bool] = mapped_column(
         Boolean(), nullable=False, default=True)
 
+    children: Mapped[list["Child"]] = relationship(
+        back_populates="parent", cascade="all, delete-orphan")
+
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)
 
@@ -35,7 +38,8 @@ class User(db.Model):
             "name": self.name,
             "role": self.role,               # agregamos role al serializar
             "parentalPIN": self.parentalPIN,  # opcional
-            "is_active": self.is_active
+            "is_active": self.is_active,
+            "children": [child.serialize() for child in self.children] if self.children else []
         }
 
 # ==========================================
@@ -55,6 +59,8 @@ class Child(db.Model):
     last_login_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     parent_id: Mapped[int] = mapped_column(
         ForeignKey("user.id"), nullable=False)
+
+    parent: Mapped["User"] = relationship(back_populates="children")
 
     tasks: Mapped[list["Task"]] = relationship(
         back_populates="child", cascade="all, delete-orphan")
