@@ -21,7 +21,7 @@ export const ProfilesPage = () => {
           return;
         }
 
-        const data = await apiRequest("/api/profile", {
+        const data = await apiRequest("api/profile", {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -66,6 +66,14 @@ export const ProfilesPage = () => {
               <p>PIN: {profile.parentalPIN}</p>
             </div>
           ))}
+
+          <div
+            className="profile-card"
+            onClick={() => navigate("/child-dashboard")}
+          >
+            <img src={cashtorImg} />
+            <p>hijo</p>
+          </div>
         </div>
       )}
 

@@ -1,7 +1,7 @@
 export const getChildDashboard = async (childId) => {
     try {
         const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/child-dashboard/${childId}`
+            `${import.meta.env.VITE_BACKEND_URL}api/child-dashboard/${childId}`
         );
 
         if (!response.ok) {

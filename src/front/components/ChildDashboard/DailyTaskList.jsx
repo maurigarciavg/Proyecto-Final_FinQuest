@@ -16,7 +16,7 @@ export const DailyTaskList = ({ childId }) => {
         const fetchTasks = async () => {
             try {
                 const baseUrl = process.env.BACKEND_URL.replace(/\/$/, "");
-                const response = await fetch(`${baseUrl}/api/child/${childId}/tasks`);
+                const response = await fetch(`${baseUrl}api/child/${childId}/tasks`);
                 if (response.ok) {
                     const data = await response.json();
                     

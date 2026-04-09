@@ -16,7 +16,7 @@ export const Profile = () => {
             dispatch({ type: "auth_request" });
 
             try {
-                const data = await apiRequest("/api/profile", {
+                const data = await apiRequest("api/profile", {
                     headers: authHeaders(store.token)
                 });
 
@@ -113,8 +113,8 @@ export const Profile = () => {
                                     <p>Cada usuario solo ve las compras asociadas a su <code>user_id</code>.</p>
                                 </div>
                             </div>
-                            <Link className="btn btn-primary-soft mt-4" to="/orders">
-                                Ver mis ordenes
+                            <Link className="btn btn-primary-soft mt-4" to="/parentadmin">
+                                Panel de control
                             </Link>
                         </div>
                     </div>

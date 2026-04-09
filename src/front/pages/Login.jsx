@@ -9,6 +9,7 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  console.log("Hola");
 
   const handleLogin = async () => {
     setError("");
@@ -16,7 +17,7 @@ export const Login = () => {
     const rawUrl = import.meta.env.VITE_BACKEND_URL || "";
     try {
       const res = await fetch(
-        "https://supreme-enigma-w4q77jgrqwv29q99-3001.app.github.dev/api/sign-in",
+        import.meta.env.VITE_BACKEND_URL,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -50,7 +51,7 @@ export const Login = () => {
 
   return (
     <div className="login-container">
-      
+
       {/* Card izquierda */}
       <div className="login-card">
         <h3 className="login-title">¡Bienvenido de nuevo!</h3>

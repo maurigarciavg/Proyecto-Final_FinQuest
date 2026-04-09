@@ -50,7 +50,7 @@ export const SignUp = () => {
         }
 
         try {
-            const data = await apiRequest("/api/sign-up", {
+            const data = await apiRequest("api/sign-up", {
                 method: "POST",
                 body: JSON.stringify({
                     ...formData,

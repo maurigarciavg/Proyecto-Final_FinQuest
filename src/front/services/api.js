@@ -45,6 +45,7 @@ const parseResponse = async (response) => {
 
 
 export async function apiRequest(path, options = {}) {
+
     const hasBody = Boolean(options.body);
     const response = await fetch(`${getBackendUrl()}${path}`, {
         ...options,

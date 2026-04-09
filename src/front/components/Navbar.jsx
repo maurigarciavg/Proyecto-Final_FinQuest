@@ -36,8 +36,8 @@ export const Navbar = () => {
                         </NavLink>
                         {store.token ? (
                             <>
-                                <NavLink className="nav-link" to="/orders">
-                                    Mis ordenes
+                                <NavLink className="nav-link" to="parentadmin">
+                                    Panel de control
                                 </NavLink>
                                 <NavLink className="nav-link" to="/profile">
                                     Mi perfil

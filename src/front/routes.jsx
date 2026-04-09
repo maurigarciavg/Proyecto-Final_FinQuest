@@ -25,7 +25,7 @@ export const router = createBrowserRouter(
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
             <Route path="profiles" element={<ProfilesPage />} />
-            {/* <Route
+            <Route
                 path="profiles"
                 element={
                     <PrivateRoute>
@@ -73,8 +73,6 @@ export const router = createBrowserRouter(
             />
 
 
-
-            {/* 🎯 RUTA DEL WIZARD: Aquí es donde ocurre la magia de los 3 pasos */}
 
             <Route path="*" element={<NotFound />} />
         </Route>

@@ -10,10 +10,10 @@ export const Home = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-       
+
 
         return () => {
-            
+
         };
     }, []);
 
@@ -30,7 +30,7 @@ export const Home = () => {
         dispatch({ type: "checkout_request" });
 
         try {
-            
+
         } catch (error) {
             if (error.status === 401) {
                 dispatch({
@@ -59,7 +59,7 @@ export const Home = () => {
                                 <code> profile/me</code>, compra protegida y vistas privadas en React.
                             </p>
                             <div className="d-flex flex-wrap gap-3">
-                                <Link className="btn btn-primary-soft" to={store.token ? "/orders" : "/sign-up"}>
+                                <Link className="btn btn-primary-soft" to={store.token ? "/parentadmin" : "/sign-up"}>
                                     {store.token ? "Ver mis ordenes" : "Crear cuenta"}
                                 </Link>
                                 <Link className="btn btn-ghost" to={store.token ? "/profile" : "/sign-in"}>
@@ -100,7 +100,7 @@ export const Home = () => {
                         </p>
                     </div>
 
-                   
+
 
                     <div className="row g-4">
                     </div>

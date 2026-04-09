@@ -27,7 +27,7 @@ export const Layout = () => {
             dispatch({ type: "auth_request" });
 
             try {
-                const data = await apiRequest("/api/me", {
+                const data = await apiRequest("api/me", {
                     headers: authHeaders(store.token)
                 });
 

@@ -39,8 +39,7 @@ export const ChildWizard = ({ onClose }) => {
     const handleFinalSubmit = async (fullData) => {
         setIsSaving(true);
         setSaveError(null);
-        const rawUrl = import.meta.env.VITE_BACKEND_URL || "";
-        const baseUrl = rawUrl.replace(/\/$/, "").replace("3000", "3001");
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const token = localStorage.getItem("token");
 
         const getHeaders = () => {
@@ -76,17 +75,17 @@ export const ChildWizard = ({ onClose }) => {
 
             // 2. Crear todo lo demás en paralelo
             await Promise.all([
-                fetch(`${baseUrl}/api/child/${childId}/tasks`, {
+                fetch(`${baseUrl}api/child/${childId}/tasks`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(fullData.tasks)
                 }),
-                fetch(`${baseUrl}/api/child/${childId}/small-goals`, {
+                fetch(`${baseUrl}api/child/${childId}/small-goals`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(fullData.smallGoals)
                 }),
-                fetch(`${baseUrl}/api/child/${childId}/grand-prize`, {
+                fetch(`${baseUrl}api/child/${childId}/grand-prize`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify({

@@ -16,11 +16,12 @@ class User(db.Model):
         String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
-    role: Mapped[str] = mapped_column(String(20), nullable=False, default="parent")  # nuevo
+    role: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="parent")  # nuevo
     parentalPIN: Mapped[str] = mapped_column(String(4), nullable=True)  # nuevo
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), nullable=False, default=True)
 
-   
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)
 
@@ -33,7 +34,7 @@ class User(db.Model):
             "email": self.email,
             "name": self.name,
             "role": self.role,               # agregamos role al serializar
-            "parentalPIN": self.parentalPIN, # opcional
+            "parentalPIN": self.parentalPIN,  # opcional
             "is_active": self.is_active
         }
 
