@@ -17,7 +17,7 @@ export const SignUp = () => {
     });
 
     if (store.token) {
-        return <Navigate to="/profile-selection" replace />;
+        return <Navigate to="/child-registration" replace />;
     }
 
     const handleChange = (event) => {
@@ -71,7 +71,7 @@ export const SignUp = () => {
                 payload: `Cuenta creada para ${data.user.name}.`
             });
 
-            navigate("/profile-selection", { replace: true });
+            navigate("/child-registration", { replace: true });
         } catch (error) {
             dispatch({
                 type: "auth_failure",

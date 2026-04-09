@@ -1,9 +1,9 @@
 .child-dashboard {
   min-height: 100vh;
-  background: #eaf3f7;
   padding: 24px 18px 40px;
-  font-family: Arial, sans-serif;
+  background: #eaf3f7;
   color: #1f1f1f;
+  font-family: Arial, sans-serif;
 }
 
 .child-dashboard__container {
@@ -26,9 +26,9 @@
 }
 
 .child-dashboard__message {
-  background: #ffffff;
-  border-radius: 24px;
   padding: 28px;
+  border-radius: 24px;
+  background: #ffffff;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
@@ -39,21 +39,21 @@
 .child-dashboard__spinner {
   width: 42px;
   height: 42px;
+  margin: 0 auto 14px;
   border: 4px solid #d9e4ea;
   border-top-color: #1f8ca8;
   border-radius: 50%;
-  margin: 0 auto 14px;
   animation: spin 0.9s linear infinite;
 }
 
 .child-topbar {
-  background: #dfe8ed;
-  border-radius: 22px;
-  padding: 22px 26px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 22px;
+  padding: 22px 26px;
+  border-radius: 22px;
+  background: #dfe8ed;
 }
 
 .child-topbar__profile {
@@ -66,13 +66,8 @@
 .child-topbar__avatar {
   width: 52px;
   height: 52px;
-  border-radius: 50%;
-  background: #fff3d6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .child-topbar__label {
@@ -85,13 +80,14 @@
   margin: 0;
   font-size: 1.9rem;
   font-weight: 800;
+  line-height: 1.1;
 }
 
 .child-topbar__stats {
   display: flex;
-  gap: 28px;
   flex: 1;
   justify-content: flex-end;
+  gap: 28px;
   flex-wrap: wrap;
 }
 
@@ -100,7 +96,13 @@
 }
 
 .child-topbar__stat-head {
+  display: flex;
+  align-items: center;
   margin-bottom: 8px;
+}
+
+.child-topbar__stat-head--coins {
+  gap: 10px;
 }
 
 .child-topbar__stat-title {
@@ -108,17 +110,22 @@
   font-weight: 800;
 }
 
+.child-topbar__coins-icon {
+  width: 48px;
+  height: auto;
+  object-fit: contain;
+}
+
 .progress-track {
   width: 100%;
   height: 14px;
+  overflow: hidden;
   border-radius: 999px;
   background: #cfe0e0;
-  overflow: hidden;
 }
 
 .progress-track--large {
   height: 16px;
-  margin-top: 12px;
 }
 
 .progress-fill {
@@ -140,9 +147,9 @@
 
 .dashboard-panel,
 .goal-card {
-  background: #eef2f4;
-  border-radius: 24px;
   padding: 26px;
+  border-radius: 24px;
+  background: #eef2f4;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
@@ -151,11 +158,11 @@
   margin: 0;
   font-size: 1.9rem;
   font-weight: 800;
+  line-height: 1.1;
 }
 
 .dashboard-panel__top {
-  margin-top: 18px;
-  margin-bottom: 22px;
+  margin: 18px 0 22px;
 }
 
 .dashboard-panel__bottom {
@@ -166,9 +173,9 @@
 
 .dashboard-placeholder,
 .task-summary-card {
-  background: #ffffff;
-  border-radius: 24px;
   padding: 22px;
+  border-radius: 24px;
+  background: #ffffff;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
@@ -199,12 +206,13 @@
 .task-summary-card__badge {
   width: 38px;
   height: 38px;
-  border-radius: 50%;
-  color: #ffffff;
-  font-weight: 800;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 800;
+  flex-shrink: 0;
 }
 
 .dashboard-placeholder__badge {
@@ -220,18 +228,13 @@
   margin: 0;
   font-size: 1.6rem;
   font-weight: 800;
-}
-
-.dashboard-placeholder__text {
-  margin: 0;
-  color: #5e5e5e;
-  font-weight: 600;
+  line-height: 1.1;
 }
 
 .dashboard-streak {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 18px;
 }
 
@@ -251,12 +254,12 @@
 .dashboard-streak__check {
   width: 42px;
   height: 42px;
-  border-radius: 50%;
-  background: #d9d9d9;
-  color: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  background: #d9d9d9;
+  color: #ffffff;
   font-size: 1.6rem;
   font-weight: 800;
 }
@@ -271,9 +274,11 @@
   font-weight: 500;
 }
 
-.dashboard-streak__coins {
-  font-size: 4rem;
-  line-height: 1;
+.dashboard-streak__coins-image {
+  width: 92px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .dashboard-shop {
@@ -287,8 +292,9 @@
 }
 
 .dashboard-shop__image {
-  font-size: 5rem;
-  line-height: 1;
+  width: 150px;
+  height: auto;
+  object-fit: contain;
 }
 
 .dashboard-shop__text {
@@ -308,8 +314,9 @@
 }
 
 .task-summary-card__image {
-  font-size: 84px;
-  line-height: 1;
+  width: 130px;
+  height: auto;
+  object-fit: contain;
   margin-bottom: 6px;
 }
 
@@ -321,16 +328,25 @@
 
 .task-summary-card__reward {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 2rem;
   font-weight: 900;
   color: #20b8a7;
 }
 
+.task-summary-card__coin-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
 .goal-card__box {
   margin-top: 14px;
-  background: #ffffff;
-  border-radius: 28px;
   padding: 24px;
+  border-radius: 28px;
+  background: #ffffff;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
@@ -342,14 +358,16 @@
 
 .goal-card__hero {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 18px;
 }
 
 .goal-card__image {
-  font-size: 72px;
-  line-height: 1;
+  width: 180px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .goal-card__price {
@@ -369,6 +387,20 @@
   font-weight: 800;
 }
 
+.goal-card__progress-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.goal-card__coins-image {
+  width: 88px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .goal-card__progress-text {
   margin: 14px 0 10px;
   text-align: center;
@@ -384,9 +416,9 @@
 
 .goal-card__button {
   width: 100%;
+  padding: 18px 20px;
   border: none;
   border-radius: 18px;
-  padding: 18px 20px;
   background: #48c3b8;
   color: #ffffff;
   font-size: 1.1rem;
@@ -396,6 +428,102 @@
 
 .goal-card__button:hover {
   opacity: 0.95;
+}
+
+.task-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.task-modal {
+  position: relative;
+  width: 90%;
+  max-width: 860px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 32px;
+  border-radius: 24px;
+  background: #eaf3f7;
+}
+
+.task-modal__close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  border: none;
+  background: none;
+  color: #1f1f1f;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.task-modal__title {
+  margin: 0 0 24px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.task-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.task-modal__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.task-modal__item-image {
+  font-size: 3rem;
+}
+
+.task-modal__item-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.task-modal__item-coins {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #20b8a7;
+}
+
+.task-modal__item-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: #48c3b8;
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.task-modal__item-btn--done {
+  background: #a3d9a5;
+  cursor: default;
+}
+
+.task-modal__item-btn--disabled {
+  background: #d9d9d9;
+  cursor: not-allowed;
 }
 
 @keyframes spin {
@@ -438,7 +566,8 @@
   .goal-card,
   .goal-card__box,
   .dashboard-placeholder,
-  .task-summary-card {
+  .task-summary-card,
+  .task-modal {
     border-radius: 20px;
   }
 
@@ -449,6 +578,10 @@
     font-size: 1.5rem;
   }
 
+  .child-topbar__name {
+    font-size: 1.5rem;
+  }
+
   .goal-card__hero {
     flex-direction: column;
     align-items: flex-start;
@@ -456,10 +589,6 @@
 
   .goal-card__price-number {
     font-size: 2.4rem;
-  }
-
-  .child-topbar__name {
-    font-size: 1.5rem;
   }
 
   .dashboard-streak {
@@ -477,109 +606,76 @@
     font-size: 1.2rem;
   }
 
-  .dashboard-streak__coins {
-    font-size: 3rem;
+  .dashboard-streak__coins-image {
+    width: 72px;
   }
-}
 
-.task-modal__overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.task-modal {
-  background: #eaf3f7;
-  border-radius: 24px;
-  padding: 32px;
-  width: 90%;
-  max-width: 860px;
-  max-height: 85vh;
-  overflow-y: auto;
-  position: relative;
-}
-
-.task-modal__close {
-  position: absolute;
-  top: 18px;
-  right: 22px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #1f1f1f;
-}
-
-.task-modal__title {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 800;
-  margin: 0 0 24px;
-}
-
-.task-modal__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.task-modal__item {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  text-align: center;
-}
-
-.task-modal__item-image {
-  font-size: 3rem;
-}
-
-.task-modal__item-name {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.task-modal__item-coins {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 800;
-  color: #20b8a7;
-}
-
-.task-modal__item-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: none;
-  background: #48c3b8;
-  color: #ffffff;
-  font-size: 1.4rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.task-modal__item-btn--done {
-  background: #a3d9a5;
-  cursor: default;
-}
-
-@media (max-width: 640px) {
   .task-modal__grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+.child-topbar__stats {
+  align-items: flex-start;
+}
 
-.task-modal__item-btn--disabled {
-  background: #d9d9d9;
-  cursor: not-allowed;
+.child-topbar__stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.child-topbar__stat-head {
+  min-height: 44px;
+}
+
+.child-topbar__stat-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.2;
+}
+
+.dashboard-placeholder__header,
+.task-summary-card__header {
+  align-items: flex-start;
+  min-height: 58px;
+}
+
+.dashboard-placeholder__title,
+.task-summary-card__title {
+  line-height: 1.15;
+}
+
+.task-summary-card__task-name {
+  min-height: 2.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.goal-card__name {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.goal-card__progress-row {
+  min-height: 88px;
+}
+
+.goal-card__progress-text strong {
+  margin-right: 4px;
+}
+
+.dashboard-shop,
+.task-summary-card__content {
+  padding-top: 8px;
+}
+
+@media (max-width: 980px) {
+  .child-topbar__stats {
+    align-items: stretch;
+  }
 }

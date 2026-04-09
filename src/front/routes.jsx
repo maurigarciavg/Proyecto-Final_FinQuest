@@ -21,12 +21,11 @@ import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Layout />} errorElement={<NotFound />}>
-            <Route index element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
-            <Route path="login" element={<Login />} />
-
-            <Route
+            <Route path="profiles" element={<ProfilesPage />} />
+            {/* <Route
                 path="profiles"
                 element={
                     <PrivateRoute>
@@ -53,6 +52,8 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
+
+
             <Route
                 path="child-dashboard"
                 element={(

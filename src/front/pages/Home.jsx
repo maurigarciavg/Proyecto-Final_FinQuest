@@ -10,40 +10,12 @@ export const Home = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        let isMounted = true;
-
-        const loadProducts = async () => {
-            dispatch({ type: "products_request" });
-
-            try {
-                const data = await apiRequest("/api/products");
-
-                if (!isMounted) {
-                    return;
-                }
-
-                dispatch({
-                    type: "products_success",
-                    payload: data.products
-                });
-            } catch (error) {
-                if (!isMounted) {
-                    return;
-                }
-
-                dispatch({
-                    type: "products_failure",
-                    payload: error.message
-                });
-            }
-        };
-
-        loadProducts();
+       
 
         return () => {
-            isMounted = false;
+            
         };
-    }, [dispatch]);
+    }, []);
 
     const handlePurchase = async (productId) => {
         if (!store.token) {
@@ -58,20 +30,7 @@ export const Home = () => {
         dispatch({ type: "checkout_request" });
 
         try {
-            const data = await apiRequest("/api/orders", {
-                method: "POST",
-                headers: authHeaders(store.token),
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: 1
-                })
-            });
-
-            dispatch({
-                type: "checkout_success",
-                payload: data.order
-            });
-            navigate("/orders");
+            
         } catch (error) {
             if (error.status === 401) {
                 dispatch({
@@ -82,10 +41,6 @@ export const Home = () => {
                 return;
             }
 
-            dispatch({
-                type: "checkout_failure",
-                payload: error.message
-            });
         }
     };
 
@@ -145,49 +100,9 @@ export const Home = () => {
                         </p>
                     </div>
 
-                    {store.errors.products ? (
-                        <div className="alert alert-danger">{store.errors.products}</div>
-                    ) : null}
-                    {store.errors.checkout ? (
-                        <div className="alert alert-danger">{store.errors.checkout}</div>
-                    ) : null}
+                   
 
                     <div className="row g-4">
-                        {store.loading.products ? (
-                            <div className="col-12">
-                                <div className="panel-card text-center">
-                                    <p className="mb-0">Cargando productos...</p>
-                                </div>
-                            </div>
-                        ) : store.products.map((product) => (
-                            <div className="col-md-6 col-xl-4" key={product.id}>
-                                <article className="product-card">
-                                    <img
-                                        className="product-image"
-                                        src={product.image_url}
-                                        alt={product.name}
-                                    />
-                                    <div className="product-body">
-                                        <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
-                                            <div>
-                                                <p className="product-category">{product.category}</p>
-                                                <h3 className="product-title">{product.name}</h3>
-                                            </div>
-                                            <span className="price-pill">${product.price.toFixed(2)}</span>
-                                        </div>
-                                        <p className="product-copy">{product.description}</p>
-                                        <button
-                                            className="btn btn-primary-soft w-100"
-                                            onClick={() => handlePurchase(product.id)}
-                                            disabled={store.loading.checkout}
-                                            type="button"
-                                        >
-                                            {store.token ? "Comprar ahora" : "Entrar para comprar"}
-                                        </button>
-                                    </div>
-                                </article>
-                            </div>
-                        ))}
                     </div>
                 </div>
             </section>

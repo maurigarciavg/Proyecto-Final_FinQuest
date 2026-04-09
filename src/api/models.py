@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Boolean, DateTime, ForeignKey, Numeric, String, Text, Integer
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -12,7 +12,8 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="parent")  # nuevo
@@ -49,6 +50,8 @@ class Child(db.Model):
     pin: Mapped[str] = mapped_column(String(4), nullable=False)
     avatar: Mapped[str] = mapped_column(String(255), nullable=True)
     total_coins: Mapped[int] = mapped_column(Integer, default=0)
+    streak: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    last_login_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     parent_id: Mapped[int] = mapped_column(
         ForeignKey("user.id"), nullable=False)
 
@@ -66,7 +69,8 @@ class Child(db.Model):
             "age": self.age,
             "avatar": self.avatar,
             "total_coins": self.total_coins,
-            "parent_id": self.parent_id
+            "parent_id": self.parent_id,
+            "streak": self.streak,
         }
 
 
