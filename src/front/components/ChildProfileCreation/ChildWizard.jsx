@@ -3,14 +3,14 @@ import { ChildRegistration } from "./ChildRegistration";
 import { ChildTaskSetting } from "./ChildTaskSetting";
 import { ChildSmallGoals } from "./ChildSmallGoals";
 import { ChildGrandPrizeSet } from "./ChildGrandPrizeSet";
-import { ChildSummary } from "./ChildSummary"; // ¡Importante importar el nuevo componente!
+import { ChildSummary } from "./ChildSummary"; 
 import "./ChildWizard.css";
 import { useNavigate } from "react-router-dom";
 
 export const ChildWizard = ({ onClose }) => {
     const [step, setStep] = useState(1);
-    const [isSaving, setIsSaving] = useState(false); // Para mostrar "Guardando..." en el paso 5
-    const [saveError, setSaveError] = useState(null); // Por si falla el backend
+    const [isSaving, setIsSaving] = useState(false); 
+    const [saveError, setSaveError] = useState(null); 
     const [formData, setFormData] = useState({
         child: null,
         tasks: [],
@@ -19,8 +19,6 @@ export const ChildWizard = ({ onClose }) => {
     });
     const navigate = useNavigate();
 
-
-    // Esta función solo avanza de paso y guarda datos locales (del paso 1 al 4)
     const handleNext = (newData) => {
         setFormData(prev => ({ ...prev, ...newData }));
         setStep(step + 1);
@@ -28,26 +26,22 @@ export const ChildWizard = ({ onClose }) => {
 
     const handleBack = () => setStep(step - 1);
 
-    // Esta función se dispara cuando el paso 4 llama a onNextStep
     const handleTransitionToSummary = (finalGrandPrizeData) => {
-        // 1. Guardamos el premio en el estado
         const updatedData = { ...formData, grandPrize: finalGrandPrizeData };
         setFormData(updatedData);
-        // 2. Avanzamos al paso 5 para que el usuario vea la pantalla final
         setStep(5);
-        // 3. Ejecutamos la subida a base de datos en segundo plano
         handleFinalSubmit(updatedData);
     };
 
     const handleFinalSubmit = async (fullData) => {
         setIsSaving(true);
         setSaveError(null);
+        
+        // baseUrl ya no tiene barra al final gracias al cambio en el .env
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("user");
         const userObject = JSON.parse(user);
-
-
 
         const getHeaders = () => {
             const headers = { "Content-Type": "application/json" };
@@ -58,7 +52,7 @@ export const ChildWizard = ({ onClose }) => {
         };
 
         try {
-            // 1. Crear el Niño
+            // 1. Crear el Niño - Añadida la "/" antes de api
             const childData = {
                 name: fullData.child.child.name,
                 age: fullData.child.child.age,
@@ -66,7 +60,7 @@ export const ChildWizard = ({ onClose }) => {
                 avatar: fullData.child.child.avatar || "default_avatar.png"
             };
 
-            const childResponse = await fetch(`${baseUrl}api/child/${userObject.id}`, {
+            const childResponse = await fetch(`${baseUrl}/api/child/${userObject.id}`, {
                 method: "POST",
                 headers: getHeaders(),
                 body: JSON.stringify(childData)
@@ -80,19 +74,19 @@ export const ChildWizard = ({ onClose }) => {
             const childResult = await childResponse.json();
             const childId = childResult.child.id;
 
-            // 2. Crear todo lo demás en paralelo
+            // 2. Crear todo lo demás en paralelo - Añadidas las "/" antes de api
             await Promise.all([
-                fetch(`${baseUrl}api/child/${childId}/tasks`, {
+                fetch(`${baseUrl}/api/child/${childId}/tasks`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(fullData.tasks)
                 }),
-                fetch(`${baseUrl}api/child/${childId}/small-goals`, {
+                fetch(`${baseUrl}/api/child/${childId}/small-goals`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(fullData.smallGoals)
                 }),
-                fetch(`${baseUrl}api/child/${childId}/grand-prize`, {
+                fetch(`${baseUrl}/api/child/${childId}/grand-prize`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify({
@@ -103,10 +97,11 @@ export const ChildWizard = ({ onClose }) => {
                 })
             ]);
 
-            // Si todo va bien, quitamos el estado de "Cargando"
             setIsSaving(false);
-            navigate("/parentadmin");
-
+            // Pequeño retardo para que el usuario vea el mensaje de éxito antes de redirigir
+            setTimeout(() => {
+                navigate("/parentadmin");
+            }, 1500);
 
         } catch (error) {
             console.error("❌ ERROR CRÍTICO BACKEND:", error.message);
@@ -128,7 +123,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 2 && (
                 <ChildTaskSetting
                     step={step}
-                    formData={formData} // 🔴 AÑADIMOS ESTO
+                    formData={formData}
                     onBack={handleBack}
                     onNextStep={(tasksData) => handleNext({ tasks: tasksData })}
                 />
@@ -137,7 +132,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 3 && (
                 <ChildSmallGoals
                     step={step}
-                    formData={formData} // 🔴 AÑADIMOS ESTO
+                    formData={formData}
                     onBack={handleBack}
                     onNextStep={(goalsData) => handleNext({ smallGoals: goalsData })}
                 />
@@ -146,7 +141,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 4 && (
                 <ChildGrandPrizeSet
                     step={step}
-                    formData={formData} // 🔴 AÑADIMOS ESTO
+                    formData={formData}
                     onBack={handleBack}
                     onNextStep={handleTransitionToSummary}
                 />

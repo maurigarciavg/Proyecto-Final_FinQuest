@@ -15,22 +15,22 @@ export const ProfilesPage = () => {
     const fetchProfiles = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log("TOKEN:", token);
-        if (!token) {
-          navigate("/sign-in");
-          return;
-        }
+        const user = JSON.parse(localStorage.getItem("user"));
 
-        const data = await apiRequest("api/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+        if (!token) { navigate("/sign-in"); return; }
+
+        const childrenData = await apiRequest(`api/parent/${user.id}/children`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
 
-        setProfiles(data.profiles || [data.user]); // fallback por si devuelve un solo user
+        setProfiles([
+          { ...user, role: "parent" }, 
+          ...childrenData.map(child => ({ ...child, role: "child" }))
+        ]);
+        
         setLoading(false);
       } catch (error) {
-        console.error("Error cargando perfil: ", error);
+        console.error("Error cargando perfiles: ", error);
         setLoading(false);
       }
     };
@@ -56,24 +56,17 @@ export const ProfilesPage = () => {
         <div className="profiles-grid">
           {profiles.map((profile) => (
             <div
-              key={profile.id}
+              key={`${profile.role}-${profile.id}`}
               className="profile-card"
               onClick={() => handleProfileClick(profile)}
             >
               <img src={cashtorImg} alt={profile.name} /> {/* imagen fija */}
               <p>{profile.name.toUpperCase()}</p>
               <p>Rol: {profile.role.toUpperCase()}</p>
-              <p>PIN: {profile.parentalPIN}</p>
+              {/* IMPORTANTE: Usamos la propiedad correcta según el rol para que no salga vacío */}
+              <p>PIN: {profile.role === "parent" ? profile.parentalPIN : profile.pin}</p>
             </div>
           ))}
-
-          <div
-            className="profile-card"
-            onClick={() => navigate("/child-dashboard")}
-          >
-            <img src={cashtorImg} />
-            <p>hijo</p>
-          </div>
         </div>
       )}
 

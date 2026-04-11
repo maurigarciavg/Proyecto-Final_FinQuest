@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // 👈 Importante para el ID dinámico
 import { ChildHeader } from "../components/ChildHeader";
 import { GoalSection } from "../components/GoalSection";
 import { TaskSection } from "../components/TaskSection";
@@ -10,18 +11,15 @@ import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
 
 export const ChildDashboard = () => {
+    const { childId } = useParams();
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
 
-    console.log(data);
-
-    //Te escucho :D vamos a otra meet :D
-    //PASO LINK 
     useEffect(() => {
         const loadData = async () => {
-            const result = await getChildDashboard(2);
+            const result = await getChildDashboard(childId);
 
             if (!result) {
                 setError(true);
@@ -31,8 +29,10 @@ export const ChildDashboard = () => {
             setData(result);
         };
 
-        loadData();
-    }, []);
+        if (childId) {
+            loadData();
+        }
+    }, [childId]);
 
     if (error) {
         return (
@@ -65,24 +65,27 @@ export const ChildDashboard = () => {
 
     const { child, tasks } = data;
 
+    // Handlers corregidos con rutas dinámicas y barras correctas
     const handleComplete = async (taskId) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/tasks/${taskId}/complete`,
+            `${baseUrl}/api/tasks/${taskId}/complete`,
             { method: "PATCH" }
         );
         if (response.ok) {
-            const result = await getChildDashboard(1);
+            const result = await getChildDashboard(childId);
             if (result) setData(result);
         }
     };
 
     const handleRedeem = async (rewardId) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/rewards/${rewardId}/redeem`,
+            `${baseUrl}/api/rewards/${rewardId}/redeem`,
             { method: "POST" }
         );
         if (response.ok) {
-            const result = await getChildDashboard(1);
+            const result = await getChildDashboard(childId);
             if (result) setData(result);
         }
     };
@@ -157,7 +160,7 @@ export const ChildDashboard = () => {
                                 {showRewardModal && (
                                     <RewardModal
                                         rewards={data.rewards}
-                                        coins={child.coins}
+                                        coins={child.total_coins} // 👈 Cambiado a total_coins según tu modelo
                                         onClose={() => setShowRewardModal(false)}
                                         onRedeem={handleRedeem}
                                     />

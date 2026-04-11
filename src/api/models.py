@@ -70,6 +70,7 @@ class Child(db.Model):
             "id": self.id,
             "name": self.name,
             "age": self.age,
+            "pin": self.pin,
             "avatar": self.avatar,
             "total_coins": self.total_coins,
             "parent_id": self.parent_id,
@@ -82,21 +83,20 @@ class Task(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     coins: Mapped[int] = mapped_column(Integer, nullable=False)
-    days: Mapped[str] = mapped_column(String(100), nullable=False)  # "L,M,X"
-    # ✅ NUEVO: pending | pending_validation | completed
-    status: Mapped[str] = mapped_column(
-        String(20), nullable=False, default="pending")
-    child_id: Mapped[int] = mapped_column(
-        ForeignKey("child.id"), nullable=False)
+    days: Mapped[str] = mapped_column(String(100), nullable=False) 
+    status: Mapped[str] = mapped_column(String(50), default="pending") # pending, pending_validation, completed
+    last_completed: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    child_id: Mapped[int] = mapped_column(ForeignKey("child.id"), nullable=False)
     child: Mapped["Child"] = relationship(back_populates="tasks")
- 
+
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
             "coins": self.coins,
             "days": self.days.split(",") if self.days else [],
-            "status": self.status,  # ✅ NUEVO
+            "status": self.status,
+            "last_completed": self.last_completed.isoformat() if self.last_completed else None,
             "child_id": self.child_id
         }
  

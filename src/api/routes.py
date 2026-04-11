@@ -160,38 +160,49 @@ def get_child_dashboard(child_id):
     child = db.session.get(Child, child_id)
     if child is None:
         raise APIException("Child not found", status_code=404)
- 
+
     today = datetime.utcnow().date()
- 
+
+    # --- 1. LÓGICA DE RACHA (STREAK) ---
     if child.last_login_date is None:
         child.streak = 1
     else:
         last = child.last_login_date.date()
-        if last == today:
-            pass
-        elif (today - last).days == 1:
-            child.streak += 1
-        else:
-            child.streak = 1
- 
+        if last < today:
+            if (today - last).days == 1:
+                child.streak += 1
+            else:
+                child.streak = 1
+    
     child.last_login_date = datetime.utcnow()
-    db.session.commit()
- 
+
+    # --- 2. RESETEO DE TAREAS Y FILTRADO ---
     tasks = Task.query.filter_by(child_id=child_id).all()
-    rewards = Reward.query.filter_by(child_id=child_id).all()
- 
+    
+    dias_map = {0: "L", 1: "M", 2: "X", 3: "J", 4: "V", 5: "S", 6: "D"}
+    hoy_letra = dias_map[datetime.utcnow().weekday()]
+
+    tasks_filtradas = []
+    for task in tasks:
+        if task.status == "completed" and task.last_completed:
+            if task.last_completed.date() < today:
+                task.status = "pending"
+        
+        if hoy_letra in task.days:
+            tasks_filtradas.append(task.serialize())
+
+    db.session.commit()
+
     return jsonify({
         "child": child.serialize(),
-        "tasks": [task.serialize() for task in tasks],
-        "rewards": [reward.serialize() for reward in rewards]
+        "tasks": tasks_filtradas,
+        "rewards": [r.serialize() for r in Reward.query.filter_by(child_id=child_id).all()]
     }), 200
  
  
-# ==========================================
+
 # ✅ ÉPICA: Marcar tarea como completada
-# El niño pulsa el botón → status pasa a "pending_validation"
-# NO se suman monedas todavía
-# ==========================================
+
 @api.route("/tasks/<int:task_id>/complete", methods=["PATCH"])
 def complete_task(task_id):
     task = db.session.get(Task, task_id)
@@ -213,12 +224,8 @@ def complete_task(task_id):
     }), 200
  
  
-# ==========================================
 # ✅ ÉPICA: El padre aprueba o rechaza la tarea
-# Body: { "approved": true } o { "approved": false }
-# Si aprueba → suma monedas + status "completed"
-# Si rechaza → vuelve a "pending"
-# ==========================================
+
 @api.route("/tasks/<int:task_id>/validate", methods=["PATCH"])
 def validate_task(task_id):
     task = db.session.get(Task, task_id)
