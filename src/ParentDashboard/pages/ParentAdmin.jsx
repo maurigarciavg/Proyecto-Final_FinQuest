@@ -1,51 +1,106 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useGlobalReducer from '../../front/hooks/useGlobalReducer.jsx'; 
 import LeftPanel from '../components/LeftPanel';
 import CenterPanel from '../components/CenterPanel';
 import RightPanel from '../components/RightPanel';
 import "../style ParentDash/stylePAdmin.css";
 
 export const ParentAdmin = () => {
-    // 1. Datos de los hijos
-    const misHijos = [
-    { id: 1, name: "Hijo 1", lastConnection: new Date() }, // Si usas fechas
-    { id: 2, name: "Hijo 2", lastConnection: new Date() }
-];
+    const { store } = useGlobalReducer();
+    const [selectedChildId, setSelectedChildId] = useState(null);
+    const [selectedChildName, setSelectedChildName] = useState("Hijo");
 
-   
-    const [tasks, setTasks] = useState([
-        { id: 101, title: "Lavar platos", date: "2026-04-06", points: 10 },
-        { id: 102, title: "Hacer la cama", date: "2026-04-06", points: 5 },
-        { id: 103, title: "Estudiar", date: "2026-04-07", points: 20 },
-    ]);
+    const [tasks, setTasks] = useState([]);
+    const [cupones, setCupones] = useState([]);
+    const [granPremio, setGranPremio] = useState(null);
+
+    const misHijos = store.user?.children || [];
+
+    const handleApproveTask = async (taskId) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/tasks/${taskId}/complete`, {
+                method: 'PATCH'
+            });
+            if (response.ok) {
+                setTasks(prev => prev.map(t => t.id === taskId ? { ...t, done: true } : t));
+            }
+        } catch (error) {
+            console.error("Error al aprobar tarea:", error);
+        }
+    };
+
+    const handleRedeem = (id, type) => {
+        if (type === 'coupon') {
+            setCupones(prev => prev.map(c => c.id === id ? { ...c, redeemed: true } : c));
+        } else {
+            setGranPremio(prev => prev ? { ...prev, redeemed: true } : null);
+        }
+    };
+
+    useEffect(() => {
+        if (!selectedChildId) return;
+
+        const fetchData = async () => {
+            const baseUrl = import.meta.env.VITE_BACKEND_URL;
+            try {
+                // Tareas
+                const resT = await fetch(`${baseUrl}/api/child/${selectedChildId}/tasks`);
+                if (resT.ok) {
+                    const data = await resT.json();
+                    setTasks(Array.isArray(data) ? data.map(t => ({ id: t.id, title: t.name, points: t.coins, done: false })) : []);
+                }
+
+                // Cupones
+                const resC = await fetch(`${baseUrl}/api/child/${selectedChildId}/small-goals`);
+                if (resC.ok) {
+                    const data = await resC.json();
+                    setCupones(Array.isArray(data) ? data.map(c => ({ ...c, redeemed: false })) : []);
+                }
+
+                // Gran Premio
+                const resP = await fetch(`${baseUrl}/api/child/${selectedChildId}/grand-prize`);
+                if (resP.ok) {
+                    const data = await resP.json();
+                    const prize = Array.isArray(data) ? data[0] : data;
+                    setGranPremio(prize && prize.id ? { ...prize, redeemed: false } : null);
+                }
+            } catch (err) { console.error("Error cargando datos:", err); }
+        };
+        fetchData();
+    }, [selectedChildId]);
 
     return (
         <div className="dashboard-wrapper">
             <div className="dashboard-content">
-                
-                {/* 1. Left Panel (Identidad y Selección) */}
                 <aside className="panel-left">
-                    <div className="card-container">
-                        <LeftPanel parentName="Papá Pérez" childrenProfiles={misHijos} />
-                    </div>
+                    <LeftPanel 
+                        parentName={store.user?.name || "Papá"} 
+                        childrenProfiles={misHijos} 
+                        onSelectChild={(child) => {
+                            setSelectedChildId(child.id);
+                            setSelectedChildName(child.name);
+                        }}
+                    />
                 </aside>
-
-                {/* 2. Center Panel (Gestión de Tareas) */}
                 <main className="panel-center">
-                    <div className="card-container">
-                        <CenterPanel childName="Hijo 1" pendingTasksCount={3} />
-                    </div>
+                    <CenterPanel 
+                        childName={selectedChildName} 
+                        pendingTasksCount={tasks.filter(t => !t.done).length} 
+                        tasksList={tasks}
+                        couponsList={cupones}
+                        grandPrize={granPremio}
+                        onApproveTask={handleApproveTask}
+                        onRedeem={handleRedeem}
+                    />
                 </main>
-
-                {/* 3. Right Panel (Premios y Calendario con Tareas) */}
                 <section className="panel-right">
-                    <div className="card-container">
-                        <RightPanel 
-                            grandPrizeName="Cine en familia" 
-                            tasks={tasks} 
-                        />
-                    </div>
+                    {/* Imagen por defecto también aquí para el panel derecho */}
+                    <RightPanel 
+                        grandPrizeName={granPremio?.name} 
+                        grandPrizeImage="https://cdn-icons-png.flaticon.com/512/3112/3112946.png"
+                        tasks={tasks} 
+                    />
                 </section>
-
             </div>
         </div>
     );

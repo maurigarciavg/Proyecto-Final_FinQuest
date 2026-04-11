@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { ChildWizard } from "../../front/components/ChildProfileCreation/ChildWizard";
 import "../style ParentDash/styleLeftPanel.css";
 
-const LeftPanel = ({ parentName, childrenProfiles }) => {
+// 🚀 Imagen provisional (vuestro Castor)
+import defaultAvatar from "../../front/assets/img/Castor-1.png";
+
+const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
   const [showWizard, setShowWizard] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -14,12 +17,11 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
       </header>
 
       <nav className="panel-content">
-        {/* Botón de Crear Perfil con lógica de selección */}
         <button
           className={`btn-create-child-profile ${selectedId === 'create' ? 'selected' : ''}`}
           onClick={() => {
             setShowWizard(true);
-            setSelectedId('create'); // Marcamos este botón como seleccionado
+            setSelectedId('create');
           }}
         >
           <div className="plus-icon-container">
@@ -28,7 +30,6 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
           <span>Crear perfil hijo</span>
         </button>
 
-        {/* Lista de Perfiles */}
         <ul className="children-list">
           {childrenProfiles.map((child) => (
             <li
@@ -37,10 +38,18 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
             >
               <button
                 className="child-profile"
-                onClick={() => setSelectedId(child.id)}
+                onClick={() => {
+                  setSelectedId(child.id);
+                  if (onSelectChild) onSelectChild(child);
+                }}
               >
                 <div className="avatar-wrapper">
-                  <img src={child.avatarUrl} className="child-avatar" />
+                  <img
+                    src={child.avatar?.startsWith('http') ? child.avatar : defaultAvatar}
+                    className="child-avatar"
+                    alt={child.name}
+                    onError={(e) => { e.target.src = defaultAvatar }}
+                  />
                 </div>
                 <span className="child-name">{child.name}</span>
               </button>
@@ -49,54 +58,13 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
         </ul>
       </nav>
 
-      {/* --- RENDERIZADO DEL MODAL --- */}
       {showWizard && (
-        <div className="wizard-modal-overlay" style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.75)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999
-        }}>
-          <div className="wizard-modal-container" style={{
-            position: 'relative',
-            /* 🔴 HEMOS ELIMINADO width, height y overflow: hidden 🔴 */
-            /* Ahora este div abrazará perfectamente a tu ChildWizard sin aplastarlo */
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            {/* Botón de cerrar (X roja) */}
+        <div className="wizard-modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+          <div className="wizard-modal-container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <button
               onClick={() => setShowWizard(false)}
-              style={{
-                position: 'absolute',
-                top: '15px',
-                right: '15px',
-                background: '#ff5f56',
-                color: 'white',
-                border: 'none',
-                borderRadius: '50%',
-                width: '32px',
-                height: '32px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                zIndex: 10001,
-                boxShadow: '0 2px 5px rgba(0,0,0,0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Tu componente Wizard con el prop onClose */}
+              style={{ position: 'absolute', top: '15px', right: '15px', background: '#ff5f56', color: 'white', border: 'none', borderRadius: '50%', width: '32px', height: '32px', fontWeight: 'bold', cursor: 'pointer', zIndex: 10001, boxShadow: '0 2px 5px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >✕</button>
             <ChildWizard onClose={() => setShowWizard(false)} />
           </div>
         </div>
@@ -107,7 +75,8 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
 
 LeftPanel.propTypes = {
   parentName: PropTypes.string.isRequired,
-  childrenProfiles: PropTypes.array.isRequired
+  childrenProfiles: PropTypes.array.isRequired,
+  onSelectChild: PropTypes.func
 };
 
 export default LeftPanel;

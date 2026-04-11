@@ -2,112 +2,77 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import "../style ParentDash/styleCePanel.css";
 
-
-const CenterPanel = ({ childName, pendingTasksCount }) => {
+const CenterPanel = ({ 
+    childName, 
+    pendingTasksCount, 
+    tasksList = [], 
+    couponsList = [], 
+    grandPrize = null, 
+    onApproveTask,
+    onRedeem 
+}) => {
     const [activeTab, setActiveTab] = useState('Tareas');
-    // Estado para controlar el filtro interno (sub-pestañas)
-    const [subFilter, setSubFilter] = useState('principal'); // 'principal' o 'secundario'
+    const [subFilter, setSubFilter] = useState('principal'); 
 
-    // Resetear el sub-filtro al cambiar de pestaña principal
     const handleTabChange = (tab) => {
         setActiveTab(tab);
-        setSubFilter('principal'); // Por defecto, al cambiar de pestaña, vuelve a la primera opción
+        setSubFilter('principal'); 
     };
 
-    const getActionButtonText = () => {
-        switch (activeTab) {
-            case 'Tareas': return 'Nueva Tarea';
-            case 'Cupones': return 'Nuevo Cupón';
-            case 'Gran Premio': return 'Crear Gran Premio';
-            default: return '+ Nuevo';
-        }
-    };
-
-    // Renderizado dinámico de los botones de sub-filtro
     const renderSubFilters = () => {
-        let labels = { first: '', second: '' };
-
-        if (activeTab === 'Tareas') {
-            labels = { first: 'Por hacer', second: 'Aprobadas' };
-        } else if (activeTab === 'Cupones' || activeTab === 'Gran Premio') {
-            labels = { first: 'Sin canjear', second: 'Canjeado' };
-        }
-
+        let labels = activeTab === 'Tareas' ? { f: 'Por hacer', s: 'Aprobadas' } : { f: 'Sin canjear', s: 'Canjeado' };
         return (
             <div className="filter-container">
                 <div className="sub-filters-wrapper">
-                    <button 
-                        className={`sub-filter-btn ${subFilter === 'principal' ? 'active' : ''}`}
-                        onClick={() => setSubFilter('principal')}
-                    >
-                        {labels.first}
-                    </button>
-                    <button 
-                        className={`sub-filter-btn ${subFilter === 'secundario' ? 'active' : ''}`}
-                        onClick={() => setSubFilter('secundario')}
-                    >
-                        {labels.second}
-                    </button>
+                    <button className={`sub-filter-btn ${subFilter === 'principal' ? 'active' : ''}`} onClick={() => setSubFilter('principal')}>{labels.f}</button>
+                    <button className={`sub-filter-btn ${subFilter === 'secundario' ? 'active' : ''}`} onClick={() => setSubFilter('secundario')}>{labels.s}</button>
                 </div>
             </div>
         );
     };
 
+    // Imagen por defecto para evitar errores de carga
+    const defaultPrizeImg = "https://cdn-icons-png.flaticon.com/512/3112/3112946.png";
+
     return (
         <main className="center-panel">
-            <header className="center-header">
-                <h2 className='tit_mission'>Misiones de {childName}</h2>
-            </header>
-
-            <section className="pending-status">
-                <div className="status-card">
-                    <h4>Tareas pendientes por aprobar: <strong>{pendingTasksCount}</strong></h4>
-                </div>
-            </section>
-
+            <header className="center-header"><h2>Misiones de {childName}</h2></header>
+            <section className="pending-status"><div className="status-card"><h4>Pendientes: <strong>{pendingTasksCount}</strong></h4></div></section>
             <section className="mission-management">
-                <h4>Gestión de Misiones</h4>
                 <div className="management-grid">
                     <div className='missions-btn'>
                         <div className="left_btn">
-                            {/* 4. Agregamos onClick para cambiar la pestaña y una clase 'active' para CSS */}
-                            <button
-                                className={`manage-item ${activeTab === 'Tareas' ? 'active' : ''}`}
-                                onClick={() => handleTabChange('Tareas')}
-                            >
-                                Tareas
-                            </button>
-                            <button
-                                className={`manage-item ${activeTab === 'Cupones' ? 'active' : ''}`}
-                                onClick={() => handleTabChange('Cupones')}
-                            >
-                                Cupones
-                            </button>
-                            <button
-                                className={`manage-item ${activeTab === 'Gran Premio' ? 'active' : ''}`}
-                                onClick={() => handleTabChange('Gran Premio')}
-                            >
-                                Gran Premio
-                            </button>
-                        </div>
-
-                        <div className="right_btn">
-                            <button className="action-btn">
-                                {getActionButtonText()}
-                            </button>
+                            {['Tareas', 'Cupones', 'Gran Premio'].map(tab => (
+                                <button key={tab} className={`manage-item ${activeTab === tab ? 'active' : ''}`} onClick={() => handleTabChange(tab)}>{tab}</button>
+                            ))}
                         </div>
                     </div>
-
-                    {/* Renderizamos los nuevos botones debajo de las pestañas principales */}
-                    <div className="filter-container">
-                        {renderSubFilters()}
-                    </div>
-
+                    {renderSubFilters()}
                     <div className='Lista'>
-                        <p>
-                            Mostrando: <strong>{activeTab}</strong> 
-                            {subFilter === 'principal' ? ' (Pendientes/Sin canjear)' : ' (Aprobadas/Canjeados)'}
-                        </p>
+                        {/* Tareas */}
+                        {activeTab === 'Tareas' && tasksList.filter(t => subFilter === 'principal' ? !t.done : t.done).map(t => (
+                            <div key={t.id} className="task-row-item" style={{display:'flex', justifyContent:'space-between', padding:'10px', borderBottom:'1px solid #eee'}}>
+                                <span>{t.title}</span>
+                                <div><span>🪙 {t.points}</span> {subFilter === 'principal' && <button onClick={() => onApproveTask(t.id)}>Aprobar</button>}</div>
+                            </div>
+                        ))}
+                        {/* Cupones */}
+                        {activeTab === 'Cupones' && couponsList.filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed).map(c => (
+                            <div key={c.id} className="task-row-item" style={{display:'flex', justifyContent:'space-between', padding:'10px', borderBottom:'1px solid #eee'}}>
+                                <span>{c.name}</span>
+                                <div><span>🪙 {c.coins}</span> {subFilter === 'principal' && <button onClick={() => onRedeem(c.id, 'coupon')}>Canjear</button>}</div>
+                            </div>
+                        ))}
+                        {/* Gran Premio - Corregido 'grandPrize' */}
+                        {activeTab === 'Gran Premio' && grandPrize && ((subFilter === 'principal' && !grandPrize.redeemed) || (subFilter === 'secundario' && grandPrize.redeemed)) && (
+                            <div className="task-row-item" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px', borderBottom:'1px solid #eee'}}>
+                                <div style={{display:'flex', alignItems:'center'}}>
+                                    <img src={defaultPrizeImg} alt="prize" style={{width:'30px', marginRight:'10px'}} />
+                                    <span>{grandPrize.name}</span>
+                                </div>
+                                <div><span>🪙 {grandPrize.coins}</span> {subFilter === 'principal' && <button onClick={() => onRedeem(grandPrize.id, 'prize')}>Canjear Final</button>}</div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -117,7 +82,12 @@ const CenterPanel = ({ childName, pendingTasksCount }) => {
 
 CenterPanel.propTypes = {
     childName: PropTypes.string.isRequired,
-    pendingTasksCount: PropTypes.number.isRequired
+    pendingTasksCount: PropTypes.number.isRequired,
+    tasksList: PropTypes.array,
+    couponsList: PropTypes.array,
+    grandPrize: PropTypes.object,
+    onApproveTask: PropTypes.func,
+    onRedeem: PropTypes.func
 };
 
 export default CenterPanel;

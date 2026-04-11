@@ -276,9 +276,7 @@ def redeem_reward(reward_id):
     }), 200
  
  
-# ==========================================
 # ENDPOINTS PARA GESTIÓN DE PERFILES INFANTILES
-# ==========================================
  
 @api.route("/child/<int:current_user_id>", methods=["POST"])
 def create_child(current_user_id):
