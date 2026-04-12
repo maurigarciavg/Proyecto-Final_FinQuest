@@ -37,7 +37,6 @@ export const ChildWizard = ({ onClose }) => {
         setIsSaving(true);
         setSaveError(null);
         
-        // baseUrl ya no tiene barra al final gracias al cambio en el .env
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("user");
@@ -52,18 +51,17 @@ export const ChildWizard = ({ onClose }) => {
         };
 
         try {
-            // 1. Crear el Niño - Añadida la "/" antes de api
-            const childData = {
+            const childPayload = {
                 name: fullData.child.child.name,
                 age: fullData.child.child.age,
                 pin: fullData.child.child.pin,
                 avatar: fullData.child.child.avatar || "default_avatar.png"
             };
 
-            const childResponse = await fetch(`${baseUrl}/api/child/${userObject.id}`, {
+            const childResponse = await fetch(`${baseUrl}api/child/${userObject.id}`, {
                 method: "POST",
                 headers: getHeaders(),
-                body: JSON.stringify(childData)
+                body: JSON.stringify(childPayload)
             });
 
             if (!childResponse.ok) {
@@ -74,19 +72,21 @@ export const ChildWizard = ({ onClose }) => {
             const childResult = await childResponse.json();
             const childId = childResult.child.id;
 
-            // 2. Crear todo lo demás en paralelo - Añadidas las "/" antes de api
             await Promise.all([
-                fetch(`${baseUrl}/api/child/${childId}/tasks`, {
+
+                fetch(`${baseUrl}api/child/${childId}/tasks`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(fullData.tasks)
                 }),
-                fetch(`${baseUrl}/api/child/${childId}/small-goals`, {
+
+                fetch(`${baseUrl}api/child/${childId}/small-goals`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(fullData.smallGoals)
                 }),
-                fetch(`${baseUrl}/api/child/${childId}/grand-prize`, {
+
+                fetch(`${baseUrl}api/child/${childId}/grand-prize`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify({
@@ -98,9 +98,9 @@ export const ChildWizard = ({ onClose }) => {
             ]);
 
             setIsSaving(false);
-            // Pequeño retardo para que el usuario vea el mensaje de éxito antes de redirigir
+            
             setTimeout(() => {
-                navigate("/parentadmin");
+                window.location.href = "/parentadmin";
             }, 1500);
 
         } catch (error) {
@@ -158,4 +158,3 @@ export const ChildWizard = ({ onClose }) => {
         </div>
     );
 };
-

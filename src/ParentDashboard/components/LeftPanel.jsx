@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { ChildWizard } from "../../front/components/ChildProfileCreation/ChildWizard";
 import "../style ParentDash/styleLeftPanel.css";
-
-// 🚀 Imagen provisional (vuestro Castor)
+// 🚀 Imagen provisional del Castor
 import defaultAvatar from "../../front/assets/img/Castor-1.png";
 
 const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {

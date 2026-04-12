@@ -1,6 +1,5 @@
 from datetime import datetime
 from decimal import Decimal
- 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -63,7 +62,7 @@ class Child(db.Model):
     small_goals: Mapped[list["SmallGoal"]] = relationship(
         back_populates="child", cascade="all, delete-orphan")
     grand_prize: Mapped["GrandPrize"] = relationship(
-        back_populates="child", cascade="all, delete-orphan")
+        back_populates="child", cascade="all, delete-orphan", uselist=False) # uselist=False porque es 1 premio por niño
  
     def serialize(self):
         return {
@@ -75,6 +74,8 @@ class Child(db.Model):
             "total_coins": self.total_coins,
             "parent_id": self.parent_id,
             "streak": self.streak,
+            "small_goals": [goal.serialize() for goal in self.small_goals] if self.small_goals else [],
+            "grand_prize": self.grand_prize.serialize() if self.grand_prize else None
         }
  
  
@@ -142,7 +143,7 @@ class GrandPrize(db.Model):
 class Reward(db.Model):
     __tablename__ = "reward"
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(120), nullable=False)  # ✅ NUEVO
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
     cost: Mapped[int] = mapped_column(Integer, nullable=False)
     child_id: Mapped[int] = mapped_column(
         ForeignKey("child.id"), nullable=False)
@@ -150,7 +151,7 @@ class Reward(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,  # ✅ NUEVO
+            "name": self.name,
             "cost": self.cost,
             "child_id": self.child_id
         }
