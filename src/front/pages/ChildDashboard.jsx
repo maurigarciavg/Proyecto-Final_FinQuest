@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ChildHeader } from "../components/ChildHeader";
 import { GoalSection } from "../components/GoalSection";
 import { TaskSection } from "../components/TaskSection";
@@ -10,29 +11,26 @@ import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
 
 export const ChildDashboard = () => {
+    const { childId } = useParams();
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
 
-    console.log(data);
+    const loadData = async () => {
+        const result = await getChildDashboard(childId);
+        if (!result) {
+            setError(true);
+            return;
+        }
+        setData(result);
+    };
 
-    //Te escucho :D vamos a otra meet :D
-    //PASO LINK 
     useEffect(() => {
-        const loadData = async () => {
-            const result = await getChildDashboard(2);
-
-            if (!result) {
-                setError(true);
-                return;
-            }
-
-            setData(result);
-        };
-
-        loadData();
-    }, []);
+        if (childId) {
+            loadData();
+        }
+    }, [childId]);
 
     if (error) {
         return (
@@ -63,27 +61,39 @@ export const ChildDashboard = () => {
         );
     }
 
-    const { child, tasks } = data;
+    const { child, tasks, rewards } = data;
 
     const handleComplete = async (taskId) => {
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/tasks/${taskId}/complete`,
-            { method: "PATCH" }
-        );
-        if (response.ok) {
-            const result = await getChildDashboard(1);
-            if (result) setData(result);
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(
+                `${baseUrl}api/tasks/${taskId}/complete`,
+                { method: "PATCH" }
+            );
+            if (response.ok) {
+                await loadData();
+            }
+        } catch (err) {
+            console.error("Error al completar tarea:", err);
         }
     };
 
     const handleRedeem = async (rewardId) => {
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/rewards/${rewardId}/redeem`,
-            { method: "POST" }
-        );
-        if (response.ok) {
-            const result = await getChildDashboard(1);
-            if (result) setData(result);
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(
+                `${baseUrl}api/rewards/${rewardId}/redeem`,
+                { method: "POST" }
+            );
+            if (response.ok) {
+                await loadData();
+                setShowRewardModal(false);
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || "No tienes suficientes monedas");
+            }
+        } catch (err) {
+            console.error("Error al canjear premio:", err);
         }
     };
 
@@ -103,7 +113,7 @@ export const ChildDashboard = () => {
                                 <div className="dashboard-placeholder dashboard-placeholder--streak">
                                     <div className="dashboard-placeholder__streak-header">
                                         <h2 className="dashboard-placeholder__title">
-                                            Tu racha de {child.streak} días seguidos 🔥
+                                            Tu racha de {child.streak} {child.streak === 1 ? 'día' : 'días'} 🔥
                                         </h2>
                                     </div>
 
@@ -136,10 +146,8 @@ export const ChildDashboard = () => {
                                     style={{ cursor: "pointer" }}
                                 >
                                     <div className="dashboard-placeholder__header">
-                                        <span className="dashboard-placeholder__badge">1</span>
-                                        <h2 className="dashboard-placeholder__title">
-                                            Tienda
-                                        </h2>
+                                        <span className="dashboard-placeholder__badge">{rewards?.length || 0}</span>
+                                        <h2 className="dashboard-placeholder__title">Tienda</h2>
                                     </div>
 
                                     <div className="dashboard-shop">
@@ -148,16 +156,14 @@ export const ChildDashboard = () => {
                                             src={tickets}
                                             alt="Tickets de tienda"
                                         />
-                                        <p className="dashboard-shop__text">
-                                            Entradas al cine y más
-                                        </p>
+                                        <p className="dashboard-shop__text">Canjea tus monedas</p>
                                     </div>
                                 </div>
 
                                 {showRewardModal && (
                                     <RewardModal
-                                        rewards={data.rewards}
-                                        coins={child.coins}
+                                        rewards={rewards}
+                                        coins={child.total_coins}
                                         onClose={() => setShowRewardModal(false)}
                                         onRedeem={handleRedeem}
                                     />

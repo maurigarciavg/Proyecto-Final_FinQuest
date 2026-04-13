@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { ProgressBar } from "./ProgressBar";
-import cashtorImg from "../../assets/img/Cashtor.jpg";
+// Importamos el avatar por defecto (puedes elegir el que prefieras de los 4)
+import defaultAvatar from "../../assets/img/Profiles/Children/child_9.png";
 import "./ChildWizard.css";
 
 export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
 
+    // 🟢 Extraemos el avatar seleccionado en el paso 1 desde el formData
+    const selectedAvatar = formData?.child?.child?.avatar || formData?.child?.avatar || defaultAvatar;
     const childName = formData?.child?.child?.name || formData?.child?.name || "Niño/a";
 
     const [addedRewards, setAddedRewards] = useState([
@@ -47,10 +50,10 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
             {/* CABECERA */}
             <div className="wizard-header">
                 
-                {/* 🔴 SOLO EL AVATAR CORONANDO EL MODAL */}
+                {/* 🟢 AHORA MUESTRA EL AVATAR ELEGIDO POR EL PADRE */}
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
                     <img 
-                        src={cashtorImg} 
+                        src={selectedAvatar} 
                         alt="Avatar" 
                         style={{ 
                             width: "65px", 
@@ -60,11 +63,13 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
                             objectFit: "cover",
                             boxShadow: "0 4px 10px rgba(50, 168, 155, 0.2)" 
                         }} 
+                        // Si la ruta falla, ponemos el avatar por defecto
+                        onError={(e) => { e.target.src = defaultAvatar; }}
                     />
                 </div>
 
                 {/* Título justo debajo */}
-                <h2 className="wizard-title" style={{ marginBottom: "25px" }}>Crear Cupones</h2>
+                <h2 className="wizard-title" style={{ marginBottom: "25px" }}>Crear Cupones para {childName}</h2>
                 
                 <div className="task-input-row">
                     <input

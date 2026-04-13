@@ -3,14 +3,14 @@ import { ChildRegistration } from "./ChildRegistration";
 import { ChildTaskSetting } from "./ChildTaskSetting";
 import { ChildSmallGoals } from "./ChildSmallGoals";
 import { ChildGrandPrizeSet } from "./ChildGrandPrizeSet";
-import { ChildSummary } from "./ChildSummary"; // ¡Importante importar el nuevo componente!
+import { ChildSummary } from "./ChildSummary"; 
 import "./ChildWizard.css";
 import { useNavigate } from "react-router-dom";
 
 export const ChildWizard = ({ onClose }) => {
     const [step, setStep] = useState(1);
-    const [isSaving, setIsSaving] = useState(false); // Para mostrar "Guardando..." en el paso 5
-    const [saveError, setSaveError] = useState(null); // Por si falla el backend
+    const [isSaving, setIsSaving] = useState(false); 
+    const [saveError, setSaveError] = useState(null); 
     const [formData, setFormData] = useState({
         child: null,
         tasks: [],
@@ -19,8 +19,6 @@ export const ChildWizard = ({ onClose }) => {
     });
     const navigate = useNavigate();
 
-
-    // Esta función solo avanza de paso y guarda datos locales (del paso 1 al 4)
     const handleNext = (newData) => {
         setFormData(prev => ({ ...prev, ...newData }));
         setStep(step + 1);
@@ -28,26 +26,21 @@ export const ChildWizard = ({ onClose }) => {
 
     const handleBack = () => setStep(step - 1);
 
-    // Esta función se dispara cuando el paso 4 llama a onNextStep
     const handleTransitionToSummary = (finalGrandPrizeData) => {
-        // 1. Guardamos el premio en el estado
         const updatedData = { ...formData, grandPrize: finalGrandPrizeData };
         setFormData(updatedData);
-        // 2. Avanzamos al paso 5 para que el usuario vea la pantalla final
         setStep(5);
-        // 3. Ejecutamos la subida a base de datos en segundo plano
         handleFinalSubmit(updatedData);
     };
 
     const handleFinalSubmit = async (fullData) => {
         setIsSaving(true);
         setSaveError(null);
+        
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("user");
         const userObject = JSON.parse(user);
-
-
 
         const getHeaders = () => {
             const headers = { "Content-Type": "application/json" };
@@ -58,18 +51,19 @@ export const ChildWizard = ({ onClose }) => {
         };
 
         try {
-            // 1. Crear el Niño
-            const childData = {
+            // 👶 1. Payload del niño (Aseguramos que el avatar llegue aquí)
+            const childPayload = {
                 name: fullData.child.child.name,
                 age: fullData.child.child.age,
                 pin: fullData.child.child.pin,
+                // Si no se eligió avatar, ponemos uno por defecto
                 avatar: fullData.child.child.avatar || "default_avatar.png"
             };
 
             const childResponse = await fetch(`${baseUrl}api/child/${userObject.id}`, {
                 method: "POST",
                 headers: getHeaders(),
-                body: JSON.stringify(childData)
+                body: JSON.stringify(childPayload)
             });
 
             if (!childResponse.ok) {
@@ -80,7 +74,7 @@ export const ChildWizard = ({ onClose }) => {
             const childResult = await childResponse.json();
             const childId = childResult.child.id;
 
-            // 2. Crear todo lo demás en paralelo
+            // 🛠️ 2. Guardado masivo de tareas, cupones y premio final
             await Promise.all([
                 fetch(`${baseUrl}api/child/${childId}/tasks`, {
                     method: "POST",
@@ -103,10 +97,12 @@ export const ChildWizard = ({ onClose }) => {
                 })
             ]);
 
-            // Si todo va bien, quitamos el estado de "Cargando"
             setIsSaving(false);
-            navigate("/parentadmin");
-
+            
+            // Redirección al panel de administración del padre
+            setTimeout(() => {
+                window.location.href = "/parentadmin";
+            }, 1500);
 
         } catch (error) {
             console.error("❌ ERROR CRÍTICO BACKEND:", error.message);
@@ -120,6 +116,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 1 && (
                 <ChildRegistration
                     step={step}
+                    // Recibimos los datos incluyendo el avatar elegido
                     onNextStep={(childData) => handleNext({ child: childData })}
                     onClose={onClose}
                 />
@@ -128,7 +125,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 2 && (
                 <ChildTaskSetting
                     step={step}
-                    formData={formData} // 🔴 AÑADIMOS ESTO
+                    formData={formData}
                     onBack={handleBack}
                     onNextStep={(tasksData) => handleNext({ tasks: tasksData })}
                 />
@@ -137,7 +134,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 3 && (
                 <ChildSmallGoals
                     step={step}
-                    formData={formData} // 🔴 AÑADIMOS ESTO
+                    formData={formData}
                     onBack={handleBack}
                     onNextStep={(goalsData) => handleNext({ smallGoals: goalsData })}
                 />
@@ -146,7 +143,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 4 && (
                 <ChildGrandPrizeSet
                     step={step}
-                    formData={formData} // 🔴 AÑADIMOS ESTO
+                    formData={formData}
                     onBack={handleBack}
                     onNextStep={handleTransitionToSummary}
                 />
@@ -163,4 +160,3 @@ export const ChildWizard = ({ onClose }) => {
         </div>
     );
 };
-

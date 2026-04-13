@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { ProgressBar } from "./ProgressBar";
-import cashtorImg from "../../assets/img/Cashtor.jpg"; // 🔴 Importamos la imagen del avatar
+import defaultAvatar from "../../assets/img/Profiles/Children/child_9.png";
 import "./ChildWizard.css"; 
 
-export const ChildTaskSetting = ({ onBack, onNextStep, step }) => {
+export const ChildTaskSetting = ({ onBack, onNextStep, step, formData }) => {
+    const selectedAvatar = formData?.child?.child?.avatar || formData?.child?.avatar || defaultAvatar;
+    const childName = formData?.child?.child?.name || formData?.child?.name || "Niño/a";
+
     const [addedTasks, setAddedTasks] = useState([
         { id: 1, name: "Hacer los deberes", coins: 10, days: ["L", "M", "X", "J", "V"] },
         { id: 2, name: "Sacar al perro", coins: 22, days: ["L", "M", "X", "J", "V"] },
@@ -45,10 +48,9 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step }) => {
             
             <div className="wizard-header">
                 
-                {/* 🔴 SOLO EL AVATAR CORONANDO EL MODAL */}
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
                     <img 
-                        src={cashtorImg} 
+                        src={selectedAvatar} 
                         alt="Avatar del niño" 
                         style={{ 
                             width: "65px", 
@@ -58,11 +60,11 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step }) => {
                             objectFit: "cover",
                             boxShadow: "0 4px 10px rgba(50, 168, 155, 0.2)" 
                         }} 
+                        onError={(e) => { e.target.src = defaultAvatar; }}
                     />
                 </div>
 
-                {/* Título justo debajo */}
-                <h2 className="wizard-title" style={{ marginBottom: "25px" }}>Crear tareas de casa</h2>
+                <h2 className="wizard-title" style={{ marginBottom: "25px" }}>Misiones para {childName}</h2>
                 
                 <div className="task-input-row">
                     <input
@@ -82,7 +84,7 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step }) => {
                             onChange={(e) => setNewTaskCoins(e.target.value)}
                         />
                     </div>
-                    {/* 🔴 Botón ajustado con height: "55px" */}
+                    
                     <button 
                         onClick={addNewTask} 
                         className="btn-next" 

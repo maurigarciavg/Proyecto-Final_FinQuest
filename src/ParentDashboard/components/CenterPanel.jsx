@@ -91,3 +91,4 @@ CenterPanel.propTypes = {
 };
 
 export default CenterPanel;
+

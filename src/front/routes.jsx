@@ -24,7 +24,8 @@ export const router = createBrowserRouter(
             <Route path="/" element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
-            <Route path="profiles" element={<ProfilesPage />} />
+            
+   
             <Route
                 path="profiles"
                 element={
@@ -33,8 +34,6 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 }
             />
-
-
 
             <Route
                 path="parentadmin"
@@ -53,9 +52,8 @@ export const router = createBrowserRouter(
                 )}
             />
 
-
             <Route
-                path="child-dashboard"
+                path="child-dashboard/:childId" 
                 element={(
                     <PrivateRoute>
                         <ChildDashboard />
@@ -71,8 +69,6 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
-
-
 
             <Route path="*" element={<NotFound />} />
         </Route>

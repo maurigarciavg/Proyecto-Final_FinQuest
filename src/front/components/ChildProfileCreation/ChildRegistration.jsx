@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import cashtorImg from "../../assets/img/Cashtor.jpg";
+// Importación de avatares con la ruta corregida para evitar el error de Vite
+import avatar1 from "../../assets/img/Profiles/Children/child_9.png";
+import avatar2 from "../../assets/img/Profiles/Children/child_7.png";
+import avatar3 from "../../assets/img/Profiles/Children/child_4.png";
+import avatar4 from "../../assets/img/Profiles/Children/child_5.png";
 import { ProgressBar } from "./ProgressBar";
 import "./ChildWizard.css"; 
 
@@ -7,45 +11,47 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [pin, setPin] = useState("");
-    const [selectedAvatar, setSelectedAvatar] = useState(1); // Cashtor Red por defecto
+    const [selectedAvatar, setSelectedAvatar] = useState(1); 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
+    // Mapeamos los ID a las imágenes reales que acabamos de importar
     const avatars = [
-        { id: 1, img: cashtorImg, name: "Cashtor Red" },
-        { id: 2, img: cashtorImg, name: "Cashtor Scuba" },
-        { id: 3, img: cashtorImg, name: "Cashtor Pink" },
-        { id: 4, img: cashtorImg, name: "Cashtor Flower" }
+        { id: 1, img: avatar1, name: "Niño 1" },
+        { id: 2, img: avatar2, name: "Niño 2" },
+        { id: 3, img: avatar3, name: "Niño 3" },
+        { id: 4, img: avatar4, name: "Niño 4" }
     ];
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (pin.length !== 4) return;
         setIsSubmitting(true);
-        // Simulamos un pequeño tiempo de carga para que el botón muestre "Cargando..."
+        // Simulamos un pequeño tiempo de carga
         await new Promise(resolve => setTimeout(resolve, 800));
         setIsSubmitting(false);
         setIsSuccess(true);
     };
 
     const handleConfirmAndNext = () => {
+        const currentAvatarObj = avatars.find(av => av.id === selectedAvatar);
         const childData = {
             name: name,
             age: parseInt(age),
             pin: pin,
-            avatar: `avatar_${selectedAvatar}.png`
+            // Guardamos la ruta real de la imagen para que el backend la persista
+            avatar: currentAvatarObj ? currentAvatarObj.img : avatar1
         };
         onNextStep({ child: childData });
     };
 
-    // Buscamos la imagen del avatar seleccionado para mostrarla en el resumen
     const currentAvatar = avatars.find(av => av.id === selectedAvatar) || avatars[0];
 
     return (
         <div className="wizard-step-wrapper animate__animated animate__fadeIn">
             
             {isSuccess ? (
-                /* VISTA DE ÉXITO (Enfocada al padre/madre) */
+                /* VISTA DE ÉXITO */
                 <>
                     <div className="wizard-header text-center pb-0">
                         <h2 className="wizard-title mb-2">¡Perfil Creado!</h2>
@@ -154,7 +160,6 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
                         </div>
                     </div>
 
-                    {/* PIE DE PÁGINA FIJO */}
                     <div className="wizard-footer">
                         <ProgressBar step={step} />
                         <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>

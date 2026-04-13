@@ -1,10 +1,10 @@
 import React from "react";
-import cashtorImg from "../../assets/img/Cashtor.jpg"; // Ajusta la ruta si es necesario
+import defaultAvatar from "../../assets/img/Profiles/Children/child_9.png";
 import "./ChildWizard.css";
 
 export const ChildSummary = ({ formData, isSaving, saveError, onClose }) => {
-    // Extraemos los datos para que el código sea más limpio abajo
     const childName = formData.child?.child?.name || "Niño/a";
+    const selectedAvatar = formData.child?.child?.avatar || defaultAvatar;
     const totalTasks = formData.tasks?.length || 0;
     const totalCoupons = formData.smallGoals?.length || 0;
     const grandPrizeName = formData.grandPrize?.name || "Sin premio";
@@ -22,11 +22,10 @@ export const ChildSummary = ({ formData, isSaving, saveError, onClose }) => {
 
             <div className="wizard-body d-flex flex-column align-items-center justify-content-center" style={{ paddingTop: "0" }}>
                 
-                {/* Imagen central */}
                 <div style={{ marginBottom: "30px", marginTop: "10px" }}>
                     <img 
-                        src={cashtorImg} 
-                        alt="Éxito" 
+                        src={selectedAvatar} 
+                        alt="Avatar seleccionado" 
                         style={{ 
                             width: "140px", 
                             height: "140px", 
@@ -35,10 +34,10 @@ export const ChildSummary = ({ formData, isSaving, saveError, onClose }) => {
                             objectFit: "cover",
                             boxShadow: "0 10px 25px rgba(50, 168, 155, 0.3)"
                         }} 
+                        onError={(e) => { e.target.src = defaultAvatar; }}
                     />
                 </div>
 
-                {/* Resumen de configuración */}
                 <div style={{ 
                     backgroundColor: "white", 
                     borderRadius: "20px", 
@@ -68,7 +67,6 @@ export const ChildSummary = ({ formData, isSaving, saveError, onClose }) => {
                     </div>
                 </div>
 
-                {/* Mensaje de estado (Guardando / Error) */}
                 <div style={{ marginTop: "20px", textAlign: "center", minHeight: "24px" }}>
                     {isSaving && <span style={{ color: "#32a89b", fontWeight: "bold" }}>⏳ Guardando configuración en la base de datos...</span>}
                     {saveError && <span style={{ color: "#e74c3c", fontWeight: "bold" }}>❌ Error: {saveError}</span>}
@@ -81,7 +79,7 @@ export const ChildSummary = ({ formData, isSaving, saveError, onClose }) => {
                 <button 
                     onClick={onClose} 
                     className="btn-next" 
-                    disabled={isSaving} // No dejamos cerrar hasta que termine de guardar
+                    disabled={isSaving} 
                     style={{ 
                         backgroundColor: isSaving ? "#a5d6d1" : "#32a89b",
                         cursor: isSaving ? "not-allowed" : "pointer"

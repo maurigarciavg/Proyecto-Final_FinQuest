@@ -8,20 +8,21 @@ export const PinModal = ({ profile, onClose }) => {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    // Validación básica
     if (!pin || pin.length !== 4) {
       setError("El PIN debe tener 4 dígitos");
       return;
     }
 
-    if (pin === profile.parentalPIN) {
+    const correctPin = profile.role === "parent" ? profile.parentalPIN : profile.pin;
+
+    // Convertimos ambos a String para asegurar la comparación
+    if (String(pin) === String(correctPin)) {
       setError("");
 
-      // 🔥 Redirección según rol
       if (profile.role === "parent") {
         navigate("/parentadmin");
       } else if (profile.role === "child") {
-        navigate("/child-dashboard"); // ⚠️ asegúrate de que esta ruta exista
+        navigate(`/child-dashboard/${profile.id}`); 
       }
 
       onClose();
@@ -41,7 +42,7 @@ export const PinModal = ({ profile, onClose }) => {
           value={pin}
           onChange={(e) => {
             setPin(e.target.value);
-            setError(""); // limpia error al escribir
+            setError(""); 
           }}
           placeholder="••••"
         />

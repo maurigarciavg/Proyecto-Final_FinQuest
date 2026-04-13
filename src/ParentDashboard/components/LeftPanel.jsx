@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { ChildWizard } from "../../front/components/ChildProfileCreation/ChildWizard";
 import "../style ParentDash/styleLeftPanel.css";
-
-// 🚀 Imagen provisional (vuestro Castor)
 import defaultAvatar from "../../front/assets/img/Castor-1.png";
 
 const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
@@ -45,9 +43,9 @@ const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
               >
                 <div className="avatar-wrapper">
                   <img
-                    src={child.avatar?.startsWith('http') ? child.avatar : defaultAvatar}
+                    src={child.avatar || defaultAvatar}
                     className="child-avatar"
-                    alt={child.name}
+                    alt={`Avatar de ${child.name}`}
                     onError={(e) => { e.target.src = defaultAvatar }}
                   />
                 </div>
