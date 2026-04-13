@@ -5,7 +5,7 @@ import "./ChildWizard.css";
 
 export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
     // Extraemos el avatar dinámico del paso 1
-    const selectedAvatar = formData?.child?.child?.aimport "../styles/index.css"; vatar || formData?.child?.avatar || defaultAvatar;
+    const selectedAvatar = formData?.child?.child?.avatar || formData?.child?.avatar || defaultAvatar;
     
     const [goalName, setGoalName] = useState("");
     const [goalAmount, setGoalAmount] = useState(5000); 
