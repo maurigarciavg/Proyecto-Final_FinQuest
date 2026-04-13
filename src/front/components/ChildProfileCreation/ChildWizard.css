@@ -54,7 +54,7 @@
 .wizard-title {
     color: #32a89b;
     font-weight: 800;
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -146,3 +146,43 @@
 
 .footer-suggestion { text-align: center; color: #94a3b8 !important; font-size: 0.8rem; margin-bottom: 10px; }
 .footer-buttons { display: flex; gap: 15px; margin-top: 15px; }
+
+
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Separa las columnas */
+    padding: 10px 20px;
+    /* ... resto de tus estilos ... */
+}
+
+.task-name {
+    flex: 1; /* Toma todo el espacio de la izquierda */
+    text-align: left;
+}
+
+.task-coins-display {
+    width: 90px; /* Columna de monedas siempre de 90px */
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.text-red {
+    color: #ef4444; /* Un rojo vibrante tipo Tailwind */
+}
+
+.btn-delete-task {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0 5px 0 20px;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.btn-delete-task:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+

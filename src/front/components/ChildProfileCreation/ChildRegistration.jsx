@@ -5,13 +5,13 @@ import avatar2 from "../../assets/img/Profiles/Children/child_7.png";
 import avatar3 from "../../assets/img/Profiles/Children/child_4.png";
 import avatar4 from "../../assets/img/Profiles/Children/child_5.png";
 import { ProgressBar } from "./ProgressBar";
-import "./ChildWizard.css"; 
+import "./ChildWizard.css";
 
 export const ChildRegistration = ({ onClose, onNextStep, step }) => {
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [pin, setPin] = useState("");
-    const [selectedAvatar, setSelectedAvatar] = useState(1); 
+    const [selectedAvatar, setSelectedAvatar] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
@@ -39,17 +39,18 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
             name: name,
             age: parseInt(age),
             pin: pin,
-            // Guardamos la ruta real de la imagen para que el backend la persista
+            // Enviamos la referencia de la imagen importada
             avatar: currentAvatarObj ? currentAvatarObj.img : avatar1
         };
-        onNextStep({ child: childData });
+        // IMPORTANTE: Para que ChildWizard funcione con el código que revisamos antes:
+        onNextStep({ child: { child: childData } });
     };
 
     const currentAvatar = avatars.find(av => av.id === selectedAvatar) || avatars[0];
 
     return (
         <div className="wizard-step-wrapper animate__animated animate__fadeIn">
-            
+
             {isSuccess ? (
                 /* VISTA DE ÉXITO */
                 <>
@@ -59,23 +60,23 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
 
                     <div className="wizard-body d-flex flex-column align-items-center justify-content-center" style={{ paddingTop: "0" }}>
                         <div className="avatar-preview-container" style={{ marginTop: "20px" }}>
-                            <img src={currentAvatar.img} alt="Avatar seleccionado" 
-                                style={{ 
-                                    width: "130px", 
-                                    height: "130px", 
-                                    borderRadius: "50%", 
-                                    border: "5px solid #32a89b", 
+                            <img src={currentAvatar.img} alt="Avatar seleccionado"
+                                style={{
+                                    width: "130px",
+                                    height: "130px",
+                                    borderRadius: "50%",
+                                    border: "5px solid #32a89b",
                                     objectFit: "cover",
                                     boxShadow: "0 10px 25px rgba(50, 168, 155, 0.3)"
-                                }} 
+                                }}
                             />
                         </div>
                         <h3 style={{ color: "#32a89b", marginTop: "20px", fontWeight: "bold" }}>{name}</h3>
                         <p style={{ color: "#64748b", marginBottom: "40px", textAlign: "center", fontSize: "1.1rem" }}>
-                            El espacio para tu hijo/a ya está listo.<br/>¿Configuramos sus metas y tareas ahora?
+                            El espacio para tu hijo/a ya está listo.<br />¿Configuramos sus metas y tareas ahora?
                         </p>
                     </div>
-                    
+
                     <div className="wizard-footer">
                         <button className="btn-next" style={{ marginBottom: "15px" }} onClick={handleConfirmAndNext}>
                             Sí, asignar primeras tareas
@@ -87,14 +88,14 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
                 </>
             ) : (
                 /* FORMULARIO DE REGISTRO */
-                <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', height: '100%', width: '100%'}}>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
                     <div className="wizard-header">
                         <h2 className="wizard-title">Crear Perfil del niño/a</h2>
                     </div>
 
                     <div className="wizard-body">
                         {/* NOMBRE */}
-                        <div style={{marginBottom: "20px"}}>
+                        <div style={{ marginBottom: "20px" }}>
                             <label className="wizard-label">Nombre del perfil</label>
                             <input
                                 type="text"

@@ -21,16 +21,18 @@ export const ChildWizard = ({ onClose }) => {
 
     const handleNext = (newData) => {
         setFormData(prev => ({ ...prev, ...newData }));
-        setStep(step + 1);
+        setStep(prev => prev + 1);
     };
 
-    const handleBack = () => setStep(step - 1);
+    const handleBack = () => setStep(prev => prev - 1);
 
     const handleTransitionToSummary = (finalGrandPrizeData) => {
-        const updatedData = { ...formData, grandPrize: finalGrandPrizeData };
-        setFormData(updatedData);
+        // Creamos la versión final de los datos localmente
+        const finalData = { ...formData, grandPrize: finalGrandPrizeData };
+        setFormData(finalData);
         setStep(5);
-        handleFinalSubmit(updatedData);
+        // Enviamos la variable local 'finalData' para asegurar que el backend reciba todo
+        handleFinalSubmit(finalData);
     };
 
     const handleFinalSubmit = async (fullData) => {
@@ -39,73 +41,88 @@ export const ChildWizard = ({ onClose }) => {
         
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const token = localStorage.getItem("token");
-        const user = localStorage.getItem("user");
-        const userObject = JSON.parse(user);
+        const user = JSON.parse(localStorage.getItem("user"));
 
-        const getHeaders = () => {
-            const headers = { "Content-Type": "application/json" };
-            if (token && token !== "null" && token !== "undefined") {
-                headers["Authorization"] = `Bearer ${token}`;
-            }
-            return headers;
+        if (!user?.id) {
+            setSaveError("No se encontró la sesión del usuario.");
+            setIsSaving(false);
+            return;
+        }
+
+        const headers = { 
+            "Content-Type": "application/json",
+            ...(token && { "Authorization": `Bearer ${token}` })
         };
 
         try {
-            // 👶 1. Payload del niño (Aseguramos que el avatar llegue aquí)
+            // 👶 1. Crear el Perfil del Niño
+            const childInfo = fullData.child?.child || fullData.child; 
             const childPayload = {
-                name: fullData.child.child.name,
-                age: fullData.child.child.age,
-                pin: fullData.child.child.pin,
-                // Si no se eligió avatar, ponemos uno por defecto
-                avatar: fullData.child.child.avatar || "default_avatar.png"
+                name: childInfo.name,
+                age: parseInt(childInfo.age) || 0,
+                pin: childInfo.pin?.toString(), // Aseguramos que sea string
+                avatar: childInfo.avatar || "default_avatar.png"
             };
 
-            const childResponse = await fetch(`${baseUrl}api/child/${userObject.id}`, {
+            const childResponse = await fetch(`${baseUrl}api/child/${user.id}`, {
                 method: "POST",
-                headers: getHeaders(),
+                headers: headers,
                 body: JSON.stringify(childPayload)
             });
 
             if (!childResponse.ok) {
                 const errorData = await childResponse.json();
-                throw new Error(errorData.message || "Fallo al crear el perfil");
+                throw new Error(errorData.message || "Error al crear el perfil del niño.");
             }
 
             const childResult = await childResponse.json();
             const childId = childResult.child.id;
 
-            // 🛠️ 2. Guardado masivo de tareas, cupones y premio final
-            await Promise.all([
+            // 🛠️ 2. Guardado masivo paralelo (Tasks, Goals, Prize)
+            const requests = [
                 fetch(`${baseUrl}api/child/${childId}/tasks`, {
                     method: "POST",
-                    headers: getHeaders(),
+                    headers: headers,
                     body: JSON.stringify(fullData.tasks)
                 }),
                 fetch(`${baseUrl}api/child/${childId}/small-goals`, {
                     method: "POST",
-                    headers: getHeaders(),
+                    headers: headers,
                     body: JSON.stringify(fullData.smallGoals)
-                }),
-                fetch(`${baseUrl}api/child/${childId}/grand-prize`, {
-                    method: "POST",
-                    headers: getHeaders(),
-                    body: JSON.stringify({
-                        name: fullData.grandPrize.name,
-                        coins: parseInt(fullData.grandPrize.coins),
-                        image_url: fullData.grandPrize.image_url || ""
-                    })
                 })
-            ]);
+            ];
+
+            // Solo agregamos el Gran Premio si existe
+            if (fullData.grandPrize) {
+                requests.push(
+                    fetch(`${baseUrl}api/child/${childId}/grand-prize`, {
+                        method: "POST",
+                        headers: headers,
+                        body: JSON.stringify({
+                            name: fullData.grandPrize.name,
+                            coins: parseInt(fullData.grandPrize.coins) || 0,
+                            image_url: fullData.grandPrize.image_url || ""
+                        })
+                    })
+                );
+            }
+
+            const responses = await Promise.all(requests);
+
+            if (responses.some(r => !r.ok)) {
+                throw new Error("El perfil se creó, pero hubo un error guardando las tareas o premios.");
+            }
 
             setIsSaving(false);
             
-            // Redirección al panel de administración del padre
+            // Redirección con éxito
             setTimeout(() => {
-                window.location.href = "/parentadmin";
-            }, 1500);
+                onClose(); 
+                navigate("/parentadmin");
+            }, 2000);
 
         } catch (error) {
-            console.error("❌ ERROR CRÍTICO BACKEND:", error.message);
+            console.error("❌ ERROR CRÍTICO:", error.message);
             setSaveError(error.message);
             setIsSaving(false);
         }
@@ -116,8 +133,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 1 && (
                 <ChildRegistration
                     step={step}
-                    // Recibimos los datos incluyendo el avatar elegido
-                    onNextStep={(childData) => handleNext({ child: childData })}
+                    onNextStep={handleNext}
                     onClose={onClose}
                 />
             )}

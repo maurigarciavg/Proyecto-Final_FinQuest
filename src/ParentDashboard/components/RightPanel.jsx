@@ -4,9 +4,10 @@ import "../style ParentDash/styleRightPanel.css";
 
 const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
     const [viewDate, setViewDate] = useState(new Date());
-    const [viewMode, setViewMode] = useState('month'); 
+    const [viewMode, setViewMode] = useState('month');
 
-    // --- AYUDANTES DE FECHA ---
+
+
     const formatDateKey = (date) => {
         const y = date.getFullYear();
         const m = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -17,11 +18,9 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
     const getLabel = () => {
         const options = { month: 'long', year: 'numeric' };
         if (viewMode === 'day') options.day = 'numeric';
-        // En vista semana, podemos mostrar un rango (opcional) o el mes actual
         return new Intl.DateTimeFormat('es-ES', options).format(viewDate).replace(/ de /g, " ");
     };
 
-    // --- LÓGICA DE NAVEGACIÓN ---
     const navigate = (offset) => {
         const newDate = new Date(viewDate);
         if (viewMode === 'month') newDate.setMonth(viewDate.getMonth() + offset);
@@ -30,29 +29,24 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
         setViewDate(newDate);
     };
 
-    // --- CÁLCULO DE DÍAS Y HUECOS ---
     const getDaysToRender = () => {
         const tempDate = new Date(viewDate);
-
         if (viewMode === 'month') {
             const year = tempDate.getFullYear();
             const month = tempDate.getMonth();
             const firstDayOfMonth = new Date(year, month, 1).getDay();
-            const offset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+            const offset = (firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1);
             const totalDays = new Date(year, month + 1, 0).getDate();
-            
             return {
                 offsetDays: Array.from({ length: offset }),
                 realDays: Array.from({ length: totalDays }, (_, i) => new Date(year, month, i + 1))
             };
-        } 
-        
+        }
         if (viewMode === 'week') {
             const dayOfWeek = tempDate.getDay();
-            const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+            const diffToMonday = (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
             const monday = new Date(tempDate);
             monday.setDate(tempDate.getDate() - diffToMonday);
-            
             const weekDays = [];
             for (let i = 0; i < 7; i++) {
                 const d = new Date(monday);
@@ -61,26 +55,54 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
             }
             return { offsetDays: [], realDays: weekDays };
         }
-
         return { offsetDays: [], realDays: [new Date(viewDate)] };
     };
 
     const { offsetDays, realDays } = getDaysToRender();
 
-    // --- NUEVA LÓGICA AL HACER CLIC ---
     const handleDayClick = (date) => {
-        // Si ya estamos en vista día, no hacemos nada
         if (viewMode === 'day') return;
-
-        // 1. Cambiamos la fecha seleccionada a la del día clickeado
         setViewDate(date);
-        // 2. Saltamos automáticamente a la vista de "Día"
         setViewMode('day');
     };
 
+    // --- FUNCIÓN DE FILTRADO ROBUSTA ---
+    const getTasksForDate = (date) => {
+        if (!tasks || tasks.length === 0) return [];
+
+        const dateStr = formatDateKey(date); // YYYY-MM-DD
+
+        // Mapeo de JS (0-6) a tus letras del Wizard
+        // 0 es Domingo, 1 es Lunes...
+        const dayMap = {
+            1: "L",
+            2: "M",
+            3: "X",
+            4: "J",
+            5: "V",
+            6: "S",
+            0: "D"
+        };
+
+        const dayLetter = dayMap[date.getDay()];
+
+        return tasks.filter(t => {
+            if (!t) return false;
+
+            // 1. Si la tarea tiene una fecha específica
+            if (t.date && t.date.substring(0, 10) === dateStr) return true;
+
+            // 2. Si la tarea tiene recurrencia por días (L, M, X...)
+            if (t.days && Array.isArray(t.days)) {
+                // Comparamos la letra del día actual con las letras en la tarea
+                return t.days.includes(dayLetter);
+            }
+
+            return false;
+        });
+    };
     return (
         <aside className="right-panel">
-            {/* Sección del Gran Premio */}
             <section className="grand-prize-section">
                 <h3>Gran Premio</h3>
                 <div className="prize-card">
@@ -91,9 +113,9 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
 
             <hr className="divider" />
 
-            {/* Sección del Calendario */}
             <section className="calendar-section">
                 <header className="calendar-header">
+
                     <div className="view-selector">
                         <button className={viewMode === 'day' ? 'active' : ''} onClick={() => setViewMode('day')}>Día</button>
                         <button className={viewMode === 'week' ? 'active' : ''} onClick={() => setViewMode('week')}>Semana</button>
@@ -104,7 +126,7 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                         <button className="nav-btn" onClick={() => navigate(-1)}>
                             <i className="fa-solid fa-chevron-left"></i>
                         </button>
-                        <h4 className="calendar-title" style={{textTransform: 'capitalize'}}>{getLabel()}</h4>
+                        <h4 className="calendar-title" style={{ textTransform: 'capitalize' }}>{getLabel()}</h4>
                         <button className="nav-btn" onClick={() => navigate(1)}>
                             <i className="fa-solid fa-chevron-right"></i>
                         </button>
@@ -116,48 +138,64 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                         <div key={d} className="calendar-weekday">{d}</div>
                     ))}
 
-                    {/* Huecos en Mes */}
                     {viewMode === 'month' && offsetDays.map((_, i) => (
                         <div key={`empty-${i}`} className="calendar-day empty"></div>
                     ))}
 
-                    {/* Días Reales */}
                     {realDays.map((date, idx) => {
-                        const dateStr = formatDateKey(date);
-                        const dayTasks = tasks.filter(t => t.date === dateStr);
+                        const dayTasks = getTasksForDate(date);
                         const isToday = new Date().toDateString() === date.toDateString();
-                        const dayName = new Intl.DateTimeFormat('es-ES', { weekday: 'short' }).format(date);
+                        const dayNameShort = new Intl.DateTimeFormat('es-ES', { weekday: 'short' }).format(date);
 
                         return (
                             <div
-                                key={idx}
+                                key={`${idx}-${date.getTime()}`}
                                 className={`calendar-day ${isToday ? 'today' : ''} view-${viewMode}`}
                                 onClick={() => handleDayClick(date)}
                             >
                                 <div className="day-card-header">
-                                    <span className="day-name-label">{viewMode !== 'month' ? dayName : ''}</span>
+                                    <span className="day-name-label">{viewMode !== 'month' ? dayNameShort : ''}</span>
                                     <span className="day-number">{date.getDate()}</span>
                                 </div>
 
                                 <div className="tasks-container">
+                                    {/* Casos de vista Día o Semana */}
                                     {(viewMode === 'week' || viewMode === 'day') ? (
                                         <div className="tasks-list-inline">
                                             {dayTasks.length > 0 ? (
-                                                dayTasks.map(t => (
-                                                    <div key={t.id} className="task-pill">
-                                                        <span className="task-title-inline">{t.title}</span>
-                                                        <span className="task-coins">🪙{t.points}</span>
-                                                    </div>
-                                                ))
+                                                <>
+                                                    {/* LÓGICA DE RENDERIZADO CONDICIONAL */}
+                                                    {dayTasks.map((t, i) => {
+                                                        // Si estamos en semana, solo mostramos las 2 primeras
+                                                        if (viewMode === 'week' && i >= 2) return null;
+
+                                                        return (
+                                                            <div key={`${t.id}-${date.getTime()}`} className="task-pill">
+                                                                {/* Usamos un span con clase para controlar el texto largo */}
+                                                                <span className="task-title-inline">{t.title}</span>
+                                                                <span className="task-coins">🪙{t.points}</span>
+                                                            </div>
+                                                        );
+                                                    })}
+
+                                                    {/* MOSTRAR PUNTOS SOLO EN SEMANA SI HAY MÁS DE 2 */}
+                                                    {viewMode === 'week' && dayTasks.length > 2 && (
+                                                        <div className="more-tasks-indicator">
+                                                            + {dayTasks.length - 2}
+                                                        </div>
+                                                    )}
+                                                </>
                                             ) : (
                                                 <span className="no-tasks">Sin tareas</span>
                                             )}
                                         </div>
                                     ) : (
+                                        /* VISTA DE MES (Se mantiene igual con los puntitos) */
                                         <div className="dots-container">
-                                            {dayTasks.slice(0, 3).map(t => (
-                                                <span key={t.id} className="task-dot"></span>
+                                            {dayTasks.slice(0, 3).map((t, i) => (
+                                                <span key={`${t.id}-${i}`} className="task-dot"></span>
                                             ))}
+                                            {dayTasks.length > 3 && <span className="task-dot-plus">+</span>}
                                         </div>
                                     )}
                                 </div>

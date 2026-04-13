@@ -8,6 +8,12 @@ const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
   const [showWizard, setShowWizard] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
+  // Cierra el wizard y limpia el estado de selección
+  const handleCloseWizard = () => {
+    setShowWizard(false);
+    if (selectedId === 'create') setSelectedId(null);
+  };
+
   return (
     <aside className="left-panel">
       <header className="panel-header">
@@ -46,7 +52,7 @@ const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
                     src={child.avatar || defaultAvatar}
                     className="child-avatar"
                     alt={`Avatar de ${child.name}`}
-                    onError={(e) => { e.target.src = defaultAvatar }}
+                    onError={(e) => { e.target.src = defaultAvatar}}
                   />
                 </div>
                 <span className="child-name">{child.name}</span>
@@ -56,14 +62,60 @@ const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
         </ul>
       </nav>
 
+      {/* --- MODAL DEL WIZARD --- */}
       {showWizard && (
-        <div className="wizard-modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
-          <div className="wizard-modal-container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div 
+          className="wizard-modal-overlay" 
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            width: '100vw', 
+            height: '100vh', 
+            backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            zIndex: 9999 
+          }}
+        >
+          <div 
+            className="wizard-modal-container" 
+            style={{ 
+              position: 'relative', 
+              backgroundColor: '#fff', 
+              borderRadius: '15px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+              overflow: 'hidden' 
+            }}
+          >
+            {/* Botón X - Siempre Rojo */}
             <button
-              onClick={() => setShowWizard(false)}
-              style={{ position: 'absolute', top: '15px', right: '15px', background: '#ff5f56', color: 'white', border: 'none', borderRadius: '50%', width: '32px', height: '32px', fontWeight: 'bold', cursor: 'pointer', zIndex: 10001, boxShadow: '0 2px 5px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >✕</button>
-            <ChildWizard onClose={() => setShowWizard(false)} />
+              onClick={handleCloseWizard}
+              style={{ 
+                position: 'absolute', 
+                top: '15px', 
+                right: '15px', 
+                background: '#ff5f56', // Rojo intenso
+                color: 'white',        // Texto blanco para contraste
+                border: 'none', 
+                borderRadius: '50%', 
+                width: '30px', 
+                height: '30px', 
+                fontWeight: 'bold', 
+                cursor: 'pointer', 
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+               
+              }}
+            >
+              ✕
+            </button>
+
+            {/* Componente del Wizard */}
+            <ChildWizard onClose={handleCloseWizard} />
           </div>
         </div>
       )}

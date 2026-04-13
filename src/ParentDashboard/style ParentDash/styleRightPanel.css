@@ -93,9 +93,10 @@ button.nav-btn {
     position: relative;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Evita desbordamientos globales */
 }
 
-.calendar-day:hover {  background-color: rgba(61, 201, 182, 0.1); }
+.calendar-day:hover { background-color: rgba(61, 201, 182, 0.1); }
 
 .calendar-day.empty {
     background: transparent;
@@ -108,7 +109,7 @@ button.nav-btn {
     background: #f0fdfa;
 }
 
-/* Vista Mes: Celdas cuadradas */
+/* VISTA MES */
 .grid-month {
     grid-template-columns: repeat(7, 1fr);
 }
@@ -119,7 +120,7 @@ button.nav-btn {
     justify-content: center;
 }
 
-/* Vista Semana: 3 columnas, altura fija uniforme */
+/* VISTA SEMANA: 3 columnas, altura fija uniforme */
 .grid-week {
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
@@ -127,17 +128,17 @@ button.nav-btn {
 
 .calendar-day.view-week {
     aspect-ratio: auto;
-    height: 140px; /* Altura fija para uniformidad */
-    padding: 10px;
+    height: 120px; /* Altura fija para que no crezca */
+    padding: 8px;
     align-items: center;
 }
 
 .grid-week .calendar-day:nth-child(7) {
-    grid-column: 2 / 3; /* Centra el domingo en la última fila */
+    grid-column: 2 / 3;
     width: 100%;
 }
 
-/* Vista Día: Ocupa todo el ancho */
+/* VISTA DÍA */
 .grid-day {
     grid-template-columns: 1fr;
 }
@@ -145,18 +146,23 @@ button.nav-btn {
 .calendar-day.view-day {
     min-height: 200px;
     padding: 15px;
+    cursor: default;
 }
 
-/* --- ENCABEZADO DE CELDA (Nombre y Número juntos) --- */
+.calendar-day.view-day:hover { background: #fff; }
+.calendar-day.view-day.today:hover { background: #f0fdfa; }
+
+/* --- ENCABEZADO DE CELDA --- */
 .day-card-header {
     display: flex;
-    justify-content: center; /* Centra el conjunto */
-    align-items: baseline;  /* Alinea el texto por la base */
-    gap: 6px;               /* Espacio corto entre nombre y número */
+    justify-content: center;
+    align-items: baseline;
+    gap: 6px;
     width: 100%;
     border-bottom: 1px solid #f1f5f9;
     padding-bottom: 6px;
     margin-bottom: 8px;
+    flex-shrink: 0; /* Que el header no se encoja */
 }
 
 .day-name-label {
@@ -172,12 +178,61 @@ button.nav-btn {
     color: #1e293b;
 }
 
-/* --- TAREAS Y PUNTOS --- */
+/* --- TAREAS Y CONTENEDORES --- */
+.tasks-container {
+    width: 100%;   
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Muro de contención */
+    flex-grow: 1;
+}
+
+.tasks-list-inline {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden; /* Evita scroll innecesario en semana */
+}
+
+/* La "Píldora" de la tarea */
+.task-pill {
+    background: #f0fdfa;
+    border-radius: 6px;
+    padding: 2px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 2px solid #3dc9b6;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Truncado de texto (El truco de los ...) */
+.task-title-inline {
+    font-size: 10px;
+    color: #334155;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    margin-right: 4px;
+}
+
+.task-coins {
+    font-size: 10px;
+    font-weight: bold;
+    color: #1e293b;
+    white-space: nowrap;
+}
+
+/* --- INDICADORES Y PUNTOS --- */
 .dots-container {
     display: flex;
+    justify-content: center;
     gap: 2px;
     margin-top: 2px;
-    height: 4px;
+    height: 6px;
 }
 
 .task-dot {
@@ -187,38 +242,20 @@ button.nav-btn {
     border-radius: 50%;
 }
 
-.tasks-list-inline {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    overflow-y: auto;
-    padding-right: 2px;
+.more-tasks-indicator {
+    font-size: 0.7rem;
+    color: #64748b;
+    padding-top: 2px;
+    font-weight: 500;
+    text-align: center;
+    font-style: italic;
 }
 
-.task-pill {
-    background: #f8fafc;
-    border-radius: 6px;
-    padding: 4px 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 3px solid #3dc9b6;
-}
-
-.task-title-inline {
-    font-size: 11px;
-    color: #334155;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 75%;
-}
-
-.task-coins {
-    font-size: 11px;
+.task-dot-plus {
+    font-size: 10px;
+    color: #32a89b;
     font-weight: bold;
-    color: #1e293b;
+    line-height: 5px;
 }
 
 .no-tasks {
@@ -226,20 +263,5 @@ button.nav-btn {
     color: #cbd5e1;
     font-style: italic;
     text-align: center;
-    margin-top: 10px;
-}
-
-/* --- DESACTIVAR HOVER EN VISTA DÍA --- */
-
-.calendar-day.view-day {
-    cursor: default; /* Cambia la mano por el cursor normal */
-}
-
-.calendar-day.view-day:hover {
-    background: #fff; /* Mantiene el fondo blanco original */
-    /* Si el día es "hoy", mantenemos su color especial */
-}
-
-.calendar-day.view-day.today:hover {
-    background: #f0fdfa; /* Mantiene el color verde suave de 'hoy' */
+    margin-top: 5px;
 }
