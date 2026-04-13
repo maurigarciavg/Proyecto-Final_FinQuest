@@ -157,7 +157,7 @@ export const ChildDashboard = () => {
                                 {showRewardModal && (
                                     <RewardModal
                                         rewards={data.rewards}
-                                        coins={child.coins}
+                                        coins={child.total_coins}
                                         onClose={() => setShowRewardModal(false)}
                                         onRedeem={handleRedeem}
                                     />
