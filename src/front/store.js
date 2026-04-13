@@ -14,7 +14,7 @@ const readPersistedSession = () => {
     const parsedSession = JSON.parse(rawSession);
     return {
       token: parsedSession.token || null,
-      user: parsedSession.user || null
+      user: parsedSession.user || null,
     };
   } catch (error) {
     window.localStorage.removeItem(AUTH_STORAGE_KEY);
@@ -34,7 +34,7 @@ export const persistSession = (token, user) => {
 
   window.localStorage.setItem(
     AUTH_STORAGE_KEY,
-    JSON.stringify({ token, user })
+    JSON.stringify({ token, user }),
   );
 };
 
@@ -45,21 +45,22 @@ export const initialStore = () => {
     token: persistedSession.token,
     user: persistedSession.user,
     authChecked: false,
+    currentChild: null,
     products: [],
     orders: [],
     loading: {
       auth: false,
       products: false,
       orders: false,
-      checkout: false
+      checkout: false,
     },
     errors: {
       auth: null,
       products: null,
       orders: null,
-      checkout: null
+      checkout: null,
     },
-    notice: null
+    notice: null,
   };
 };
 
@@ -69,7 +70,7 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         loading: { ...store.loading, auth: true },
-        errors: { ...store.errors, auth: null }
+        errors: { ...store.errors, auth: null },
       };
 
     case "auth_success":
@@ -79,7 +80,7 @@ export default function storeReducer(store, action = {}) {
         user: action.payload.user,
         authChecked: true,
         loading: { ...store.loading, auth: false },
-        errors: { ...store.errors, auth: null }
+        errors: { ...store.errors, auth: null },
       };
 
     case "auth_failure":
@@ -87,14 +88,14 @@ export default function storeReducer(store, action = {}) {
         ...store,
         loading: { ...store.loading, auth: false },
         errors: { ...store.errors, auth: action.payload },
-        authChecked: true
+        authChecked: true,
       };
 
     case "finish_auth_check":
       return {
         ...store,
         authChecked: true,
-        loading: { ...store.loading, auth: false }
+        loading: { ...store.loading, auth: false },
       };
 
     case "clear_session":
@@ -104,16 +105,21 @@ export default function storeReducer(store, action = {}) {
         user: null,
         orders: [],
         authChecked: true,
-        loading: { ...store.loading, auth: false, orders: false, checkout: false },
+        loading: {
+          ...store.loading,
+          auth: false,
+          orders: false,
+          checkout: false,
+        },
         errors: { ...store.errors, auth: null, orders: null, checkout: null },
-        notice: action.payload || "Sesion cerrada."
+        notice: action.payload || "Sesion cerrada.",
       };
 
     case "products_request":
       return {
         ...store,
         loading: { ...store.loading, products: true },
-        errors: { ...store.errors, products: null }
+        errors: { ...store.errors, products: null },
       };
 
     case "products_success":
@@ -121,21 +127,21 @@ export default function storeReducer(store, action = {}) {
         ...store,
         products: action.payload,
         loading: { ...store.loading, products: false },
-        errors: { ...store.errors, products: null }
+        errors: { ...store.errors, products: null },
       };
 
     case "products_failure":
       return {
         ...store,
         loading: { ...store.loading, products: false },
-        errors: { ...store.errors, products: action.payload }
+        errors: { ...store.errors, products: action.payload },
       };
 
     case "orders_request":
       return {
         ...store,
         loading: { ...store.loading, orders: true },
-        errors: { ...store.errors, orders: null }
+        errors: { ...store.errors, orders: null },
       };
 
     case "orders_success":
@@ -143,21 +149,21 @@ export default function storeReducer(store, action = {}) {
         ...store,
         orders: action.payload,
         loading: { ...store.loading, orders: false },
-        errors: { ...store.errors, orders: null }
+        errors: { ...store.errors, orders: null },
       };
 
     case "orders_failure":
       return {
         ...store,
         loading: { ...store.loading, orders: false },
-        errors: { ...store.errors, orders: action.payload }
+        errors: { ...store.errors, orders: action.payload },
       };
 
     case "checkout_request":
       return {
         ...store,
         loading: { ...store.loading, checkout: true },
-        errors: { ...store.errors, checkout: null }
+        errors: { ...store.errors, checkout: null },
       };
 
     case "checkout_success":
@@ -166,26 +172,32 @@ export default function storeReducer(store, action = {}) {
         orders: [action.payload, ...store.orders],
         loading: { ...store.loading, checkout: false },
         errors: { ...store.errors, checkout: null },
-        notice: "Orden creada correctamente."
+        notice: "Orden creada correctamente.",
       };
 
     case "checkout_failure":
       return {
         ...store,
         loading: { ...store.loading, checkout: false },
-        errors: { ...store.errors, checkout: action.payload }
+        errors: { ...store.errors, checkout: action.payload },
       };
 
     case "set_notice":
       return {
         ...store,
-        notice: action.payload
+        notice: action.payload,
       };
 
     case "clear_notice":
       return {
         ...store,
-        notice: null
+        notice: null,
+      };
+
+    case "set_child":
+      return {
+        ...store,
+        currentChild: action.payload,
       };
 
     default:

@@ -9,6 +9,7 @@ import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
 import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
+import useGlobalReducer from "../hooks/useGlobalReducer";  
 
 export const ChildDashboard = () => {
     const { childId } = useParams();
@@ -16,6 +17,7 @@ export const ChildDashboard = () => {
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
+    const { store } = useGlobalReducer();    
 
     const loadData = async () => {
         const result = await getChildDashboard(childId);

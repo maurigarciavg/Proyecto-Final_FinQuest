@@ -6,6 +6,7 @@ import { ChildGrandPrizeSet } from "./ChildGrandPrizeSet";
 import { ChildSummary } from "./ChildSummary"; 
 import "./ChildWizard.css";
 import { useNavigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 
 export const ChildWizard = ({ onClose }) => {
     const [step, setStep] = useState(1);
@@ -18,6 +19,7 @@ export const ChildWizard = ({ onClose }) => {
         grandPrize: null
     });
     const navigate = useNavigate();
+    const { dispatch } = useGlobalReducer();
 
     const handleNext = (newData) => {
         setFormData(prev => ({ ...prev, ...newData }));
@@ -38,9 +40,9 @@ export const ChildWizard = ({ onClose }) => {
         setSaveError(null);
         
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        const token = localStorage.getItem("token");
-        const user = localStorage.getItem("user");
-        const userObject = JSON.parse(user);
+        const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
+        const token = session.token;
+        const userObject = session.user;
 
         const getHeaders = () => {
             const headers = { "Content-Type": "application/json" };
@@ -97,6 +99,14 @@ export const ChildWizard = ({ onClose }) => {
                 })
             ]);
 
+            // Si todo va bien, quitamos el estado de "Cargando"
+            const meResponse = await fetch(`${baseUrl}api/me`, {
+                headers: getHeaders()
+            });
+            if (meResponse.ok) {
+                const meData = await meResponse.json();
+                dispatch({ type: "auth_success", payload: { token, user: meData.user } });
+            }
             setIsSaving(false);
             
             // Redirección al panel de administración del padre
