@@ -1,0 +1,30 @@
+/* src/front/components/Footer.css */
+
+.footer-finquest {
+    background-color: #f8fafc; 
+    border-top: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+.footer-brand-name {
+    font-weight: 700;
+    color: #32a89b; /* El verde de vuestro logo */
+    font-size: 1.1rem;
+}
+
+.footer-team {
+    font-size: 0.9rem;
+}
+
+.footer-team strong {
+    color: #1e293b;
+}
+
+.footer-copy {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.text-muted {
+    font-size: 0.75rem;
+}

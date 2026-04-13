@@ -1,20 +1,21 @@
+import React from "react";
+import "./Footer.css";
+
 export const Footer = () => (
-    <footer className="footer-shell">
+    <footer className="footer-finquest mt-auto">
         <div className="container d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 py-4">
             <div>
-                <p className="footer-title mb-1">JWT example con React + Flask</p>
-                <p className="footer-copy mb-0">
-                    Catalogo publico, autenticacion JWT y vistas privadas para perfil y ordenes.
+                <p className="footer-brand-name mb-1">FinQuest — La aventura de ahorrar</p>
+                <p className="footer-team mb-0">
+                    Desarrollado con ❤️ por: <strong>Alexandra, Diego, Daniel y Mauri</strong>
                 </p>
             </div>
-            <a
-                className="footer-link"
-                href="https://4geeks.com/docs/start/react-flask-template"
-                target="_blank"
-                rel="noreferrer"
-            >
-                Ver documentacion base
-            </a>
+            <div className="text-md-end">
+                <p className="footer-copy mb-0">
+                    © {new Date().getFullYear()} Todos los derechos reservados
+                </p>
+                <small className="text-muted">Proyecto Final 4Geeks Academy</small>
+            </div>
         </div>
     </footer>
 );
