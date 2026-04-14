@@ -3,15 +3,15 @@ import { ChildRegistration } from "./ChildRegistration";
 import { ChildTaskSetting } from "./ChildTaskSetting";
 import { ChildSmallGoals } from "./ChildSmallGoals";
 import { ChildGrandPrizeSet } from "./ChildGrandPrizeSet";
-import { ChildSummary } from "./ChildSummary"; 
+import { ChildSummary } from "./ChildSummary";
 import "./ChildWizard.css";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 
 export const ChildWizard = ({ onClose }) => {
     const [step, setStep] = useState(1);
-    const [isSaving, setIsSaving] = useState(false); 
-    const [saveError, setSaveError] = useState(null); 
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState(null);
     const [formData, setFormData] = useState({
         child: null,
         tasks: [],
@@ -40,26 +40,29 @@ export const ChildWizard = ({ onClose }) => {
     const handleFinalSubmit = async (fullData) => {
         setIsSaving(true);
         setSaveError(null);
-        
+
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
         const token = session.token;
-        const userObject = session.user;
 
+        // CAMBIA ESTA LÍNEA:
+        const user = session.user; // Antes decía 'userObject'
+
+        // Ahora esto ya no fallará
         if (!user?.id) {
             setSaveError("No se encontró la sesión del usuario.");
             setIsSaving(false);
             return;
         }
 
-        const headers = { 
+        const headers = {
             "Content-Type": "application/json",
             ...(token && { "Authorization": `Bearer ${token}` })
         };
 
         try {
             // 👶 1. Crear el Perfil del Niño
-            const childInfo = fullData.child?.child || fullData.child; 
+            const childInfo = fullData.child?.child || fullData.child;
             const childPayload = {
                 name: childInfo.name,
                 age: parseInt(childInfo.age) || 0,
@@ -118,17 +121,17 @@ export const ChildWizard = ({ onClose }) => {
 
             // Si todo va bien, quitamos el estado de "Cargando"
             const meResponse = await fetch(`${baseUrl}api/me`, {
-                headers: getHeaders()
+                headers: headers // Usa la variable que definiste en la línea 55
             });
             if (meResponse.ok) {
                 const meData = await meResponse.json();
                 dispatch({ type: "auth_success", payload: { token, user: meData.user } });
             }
             setIsSaving(false);
-            
+
             // Redirección con éxito
             setTimeout(() => {
-                onClose(); 
+                onClose();
                 navigate("/parentadmin");
             }, 2000);
 
