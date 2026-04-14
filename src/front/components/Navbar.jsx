@@ -32,7 +32,7 @@ export const Navbar = () => {
                 <div className="collapse navbar-collapse" id="mainNavbar">
                     <div className="navbar-nav gap-lg-2 ms-auto align-items-lg-center">
                         <NavLink className="nav-link" to="/">Inicio</NavLink>
-                        <NavLink className="nav-link" to="/">Nosotros</NavLink>
+                        <a className="nav-link" href="#nosotros">Nosotros</a>
                         <NavLink className="nav-link" to="/">Contacto</NavLink>
 
                         {store.token ? (
