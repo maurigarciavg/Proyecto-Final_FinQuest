@@ -103,21 +103,15 @@ export const ParentAdmin = () => {
             const response = await fetch(`${baseUrl}${endpoint}`, { method: 'POST' });
 
             if (response.ok) {
-
-                // Solo después del OK del servidor, actualizamos la UI
-
                 if (type === 'coupon') {
-
-                    setCupones(prev => prev.map(c => c.id === id ? { ...c, redeemed: true } : c));
-
+                    // Esto es lo que hace que "salte" de pestaña:
+                    setCupones(prev => prev.map(c =>
+                        c.id === id ? { ...c, redeemed: true } : c
+                    ));
                 } else {
-
                     setGranPremio(prev => prev ? { ...prev, redeemed: true } : null);
-
                 }
-
             }
-
         } catch (error) {
 
             console.error("Error al canjear:", error);
