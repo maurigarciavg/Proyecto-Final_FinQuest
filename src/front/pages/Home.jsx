@@ -3,7 +3,11 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 import cashtor from "../assets/img/Castor-1.png";
 import fondo1 from "../assets/img/fondo-landing.png";
 import fondo2 from "../assets/img/fondo-landing2.png";
-
+import logroImg from "../assets/logros.png";
+import progresoImg from "../assets/progreso.png";
+import puntosImg from "../assets/puntos.png";
+import recompensaImg from "../assets/recompensas.png";
+import tareasImg from "../assets/tareas.png";
 
 
 export const Home = () => {
@@ -58,16 +62,16 @@ export const Home = () => {
                     <div className="row">
 
                         <div className="col-lg-8">
-                            <h2>Nosotros</h2>
-                            <p>
-                                En FinQuest creemos que la educación financiera no debería ser complicada ni aburrida.
-                                Nuestro objetivo es ayudarte a entender y mejorar tu relación con el dinero a través de experiencias interactivas,
-                                decisiones reales y pequeños retos que generan cambios de verdad.
+                            <h2 id="nosotros">Nosotros</h2>
+                            <p className="about-text">
+                                En FinQuest creemos que la educación financiera no debería ser complicada ni aburrida. 
+                                Nuestro objetivo es ayudarte a entender y mejorar tu relación con el dinero a través de experiencias 
+                                interactivas, decisiones reales y pequeños retos que generan cambios de verdad. Somos un equipo 
+                                enfocado en transformar conceptos complejos en aprendizajes prácticos, para que cualquier 
+                                persona —sin importar su nivel— pueda construir hábitos financieros más saludables y tomar 
+                                el control de su futuro paso a paso. 
                             </p>
-                            <p>
-                                Somos un equipo enfocado en transformar conceptos complejos en aprendizajes prácticos,
-                                para que cualquier persona —sin importar su nivel— pueda construir hábitos financieros más saludables.
-                            </p>
+                            
                         </div>
 
                         <div className="col-lg-4 about-img-wrapper">
@@ -89,41 +93,51 @@ export const Home = () => {
 
                         <div className="col-md-4 col-lg-2 d-flex">
                             <div className="feature-card">
-                                <div className="feature-icon">❤️</div>
+                                <div className="feature-icon">
+                                    <img src={tareasImg} alt="icono" style={{ width: "40px" }} />
+                                </div>
                                 <h5>Lista de tareas</h5>
-                                <p>Crea tareas personalizadas y asigna valor en monedas.</p>
+                                <p>Cree tareas personalizadas y asigne a cada una un valor en monedas según su importancia.</p>
                             </div>
                         </div>
 
                         <div className="col-md-4 col-lg-2 d-flex">
                             <div className="feature-card">
-                                <div className="feature-icon">❤️</div>
+                                <div className="feature-icon">
+                                    <img src={puntosImg} alt="icono" style={{ width: "40px" }} />
+                                </div>
                                 <h5>Sistema de puntos</h5>
-                                <p>Cada tarea completada suma monedas.</p>
+                                <p>Cada tarea completada se convierte en monedas, fomentando el esfuerzo y la constancia.</p>
                             </div>
                         </div>
 
                         <div className="col-md-4 col-lg-2 d-flex">
                             <div className="feature-card">
-                                <div className="feature-icon">❤️</div>
+                                <div className="feature-icon">
+                                    <img src={logroImg} alt="icono" style={{ width: "40px" }} />
+                                </div>
                                 <h5>Niveles</h5>
-                                <p>Motivación continua con logros.</p>
+                                <p>Motivación continua a través de niveles y logros que recompensan el progreso de su hijo.</p>
                             </div>
                         </div>
 
                         <div className="col-md-4 col-lg-2 d-flex">
                             <div className="feature-card">
-                                <div className="feature-icon">❤️</div>
+                                <div className="feature-icon">
+                                    <img src={recompensaImg} alt="icono" style={{ width: "40px" }} />
+                                </div>
                                 <h5>Recompensas</h5>
-                                <p>Canjea monedas por premios.</p>
+                                <p>Permita que su hijo canjee sus monedas por pequeños premios o aprenda a ahorrar para objetivos mayores.</p>
                             </div>
                         </div>
 
                         <div className="col-md-4 col-lg-2 d-flex">
                             <div className="feature-card">
-                                <div className="feature-icon">❤️</div>
+                                <div className="feature-icon">
+                                    <img src={progresoImg} alt="icono" style={{ width: "70px" }} />
+                                </div>
                                 <h5>Progreso</h5>
-                                <p>Visualiza hábitos financieros.</p>
+                                <p>Supervise el avance con gráficos y estadísticas que hacen visible el desarrollo de hábitos positivos.</p>
                             </div>
                         </div>
 
