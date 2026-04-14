@@ -11,8 +11,7 @@ export const SignIn = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        email: "lara@example.com",
-        password: "demo123"
+      
     });
 
     if (store.token) {
