@@ -414,16 +414,32 @@
   font-weight: 700;
 }
 
-.goal-card__button {
-  width: 100%;
-  padding: 18px 20px;
-  border: none;
-  border-radius: 18px;
-  background: #48c3b8;
-  color: #ffffff;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
+.goal-card__minigame {
+    width: 100%;
+    min-height: 160px;
+    border-radius: 18px;
+    background: #f0f4f6;
+    border: 2px dashed #b0cdd6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.goal-card__minigame-label {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1f8ca8;
+}
+
+.goal-card__minigame-hint {
+    margin: 0;
+    font-size: 1rem;
+    color: #7a9aaa;
+    font-weight: 500;
 }
 
 .goal-card__button:hover {
@@ -476,54 +492,64 @@
 }
 
 .task-modal__item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 18px;
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .task-modal__item-image {
-  font-size: 3rem;
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.task-modal__item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .task-modal__item-name {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
 }
 
 .task-modal__item-coins {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 800;
-  color: #20b8a7;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #20b8a7;
 }
 
 .task-modal__item-btn {
-  width: 48px;
-  height: 48px;
-  border: none;
-  border-radius: 50%;
-  background: #48c3b8;
-  color: #ffffff;
-  font-size: 1.4rem;
-  font-weight: 800;
-  cursor: pointer;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 25%;
+    background: #48c3b8;
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 800;
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
 .task-modal__item-btn--done {
-  background: #a3d9a5;
-  cursor: default;
+    background: #a3d9a5;
+    cursor: default;
 }
 
 .task-modal__item-btn--disabled {
-  background: #d9d9d9;
-  cursor: not-allowed;
+    background: #d9d9d9;
+    cursor: not-allowed;
 }
 
 @keyframes spin {
@@ -678,4 +704,21 @@
   .child-topbar__stats {
     align-items: stretch;
   }
+}
+
+.task-modal__item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.task-modal__title {
+    color: #20b8a7;
+}
+
+.task-modal__item-coins {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1f1f1f;
 }

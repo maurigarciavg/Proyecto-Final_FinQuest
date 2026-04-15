@@ -1,44 +1,44 @@
 import React from "react";
- 
+import tickets from "../assets/img/tickets.png";
+
 export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
     return (
         <div className="task-modal__overlay" onClick={onClose}>
             <div className="task-modal" onClick={e => e.stopPropagation()}>
                 <button className="task-modal__close" onClick={onClose}>✕</button>
- 
-                <h2 className="task-modal__title">Cupones 🎟️</h2>
- 
+
+                <h2 className="task-modal__title">Cupones</h2>
+
                 <div className="task-modal__grid">
                     {rewards && rewards.length > 0 ? (
                         rewards.map(reward => (
                             <div key={reward.id} className="task-modal__item">
-                                <div className="task-modal__item-image">🎁</div>
- 
+                                <img className="task-modal__item-image" src={tickets} alt="cupón" />
+
                                 <div className="task-modal__item-info">
-                                    {/* ✅ FIX: era reward.title, el modelo serializa "name" */}
                                     <p className="task-modal__item-name">{reward.name}</p>
-                                    <p className="task-modal__item-coins">🪙 -{reward.cost}</p>
+                                    <p className="task-modal__item-coins">🪙 -{reward.coins}</p>
                                 </div>
- 
+
                                 <button
                                     className={`task-modal__item-btn ${
-                                        coins < reward.cost
+                                        coins < reward.coins
                                             ? "task-modal__item-btn--disabled"
                                             : ""
                                     }`}
                                     onClick={() => {
-                                        if (coins >= reward.cost) {
+                                        if (coins >= reward.coins) {
                                             onRedeem(reward.id);
                                         }
                                     }}
-                                    disabled={coins < reward.cost}
+                                    disabled={coins < reward.coins}
                                     title={
-                                        coins < reward.cost
-                                            ? `Necesitas ${reward.cost - coins} monedas más`
+                                        coins < reward.coins
+                                            ? `Necesitas ${reward.coins - coins} monedas más`
                                             : "Canjear cupón"
                                     }
                                 >
-                                    {coins >= reward.cost ? "✓" : "✗"}
+                                    {coins >= reward.coins ? "✓" : "✗"}
                                 </button>
                             </div>
                         ))
