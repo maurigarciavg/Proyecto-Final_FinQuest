@@ -131,7 +131,9 @@ export const ChildWizard = ({ onClose }) => {
 
             // Redirección con éxito
             setTimeout(() => {
-                onClose();
+                if (onClose && typeof onClose === "function") {
+                    onClose();
+                }
                 navigate("/parentadmin");
             }, 2000);
 
