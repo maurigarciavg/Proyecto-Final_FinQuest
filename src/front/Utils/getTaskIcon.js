@@ -1,82 +1,86 @@
-// Importamos todas las imágenes de tareas que tenemos
-import iconoDientes from "../assets/img/tasks/icono-dientes.png";
-import iconoCama from "../assets/img/tasks/icono-cama.png";
-import iconoLeer from "../assets/img/tasks/icono-leer.png";
-import iconoDeberes from "../assets/img/tasks/icono-deberes.png";
-import iconoMesa from "../assets/img/tasks/icono-mesa.png";
-import iconoRecoger from "../assets/img/tasks/icono-recoger.png";
-import iconoRopa from "../assets/img/tasks/icono-ropa.png";
-import iconoMascota from "../assets/img/tasks/icono-mascota.png";
-// ... importa las 20-30 que quieras
-
-// Importamos la imagen genérica por defecto
-import iconoGenerico from "../assets/img/tasks/icono-generico.png";
-
 /**
- * Diccionario de Palabras Clave -> Imagen
- * Intenta usar palabras en singular y minúsculas para facilitar la búsqueda.
+ * Diccionario de Palabras Clave -> Emoji
+ * He mantenido las categorías para que te sea fácil ampliarlo.
  */
-const taskIconMap = {
-    // Higiene
-    "dientes": iconoDientes,
-    "boca": iconoDientes,
-    "ducha": iconoDientes, // Podrías tener uno de ducha específico
-    "baño": iconoDientes,
+const taskEmojiMap = {
+    // Higiene y Cuidado Personal
+    "dientes": "🪥",
+    "boca": "🦷",
+    "ducha": "🚿",
+    "baño": "🛁",
+    "pelo": "💇",
+    "cara": "🧼",
+    "manos": "🙌",
     
     // Hogar y Orden
-    "cama": iconoCama,
-    "dormitorio": iconoCama,
-    "habitacion": iconoCama,
-    "mesa": iconoMesa,
-    "platos": iconoMesa,
-    "recoger": iconoRecoger,
-    "ordenar": iconoRecoger,
-    "juguetes": iconoRecoger,
-    "ropa": iconoRopa,
-    "lavadora": iconoRopa,
+    "cama": "🛏️",
+    "dormitorio": "🏠",
+    "habitacion": "🏠",
+    "mesa": "🍽️",
+    "platos": "🥣",
+    "cocina": "🍳",
+    "recoger": "🧺",
+    "ordenar": "📦",
+    "juguetes": "🧸",
+    "ropa": "👕",
+    "lavadora": "🧼",
+    "basura": "🗑️",
+    "polvo": "🧹",
     
-    // Estudios y Mente
-    "leer": iconoLeer,
-    "libro": iconoLeer,
-    "lectura": iconoLeer,
-    "deberes": iconoDeberes,
-    "estudiar": iconoDeberes,
-    "cole": iconoDeberes,
-    "mochila": iconoDeberes,
+    // Estudios, Mente y Deporte
+    "leer": "📖",
+    "libro": "📚",
+    "lectura": "📚",
+    "deberes": "📝",
+    "estudiar": "🧠",
+    "cole": "🏫",
+    "mochila": "🎒",
+    "dibujar": "🎨",
+    "pintar": "🖌️",
+    "musica": "🎸",
+    "deporte": "⚽",
+    "bici": "🚲",
 
-    // Otros
-    "perro": iconoMascota,
-    "gato": iconoMascota,
-    "mascota": iconoMascota,
-    "plantas": iconoMascota, // Podrías usar un icono genérico de 'naturaleza'
+    // Otros (Mascotas, Plantas, etc.)
+    "perro": "🐶",
+    "gato": "🐱",
+    "mascota": "🐾",
+    "animal": "🐾",
+    "pasear": "🦮",
+    "plantas": "🪴",
+    "jardin": "🌻",
+    "agua": "💧",
+    "fruta": "🍎",
+    "verdura": "🥦",
+    "comer": "🍴"
 };
 
 /**
- * Función que recibe el título de la tarea y devuelve la imagen correspondiente.
- * @param {string} taskTitle - El título completo de la tarea (ej: "Cepillarse los dientes").
- * @returns {string} - La ruta de la imagen importada.
+ * Función que recibe el título de la tarea y devuelve un Emoji.
+ * @param {string} taskTitle - El título de la tarea (ej: "Cepillarse los dientes").
+ * @returns {string} - Un emoji representativo.
  */
 export const getTaskIcon = (taskTitle) => {
-    // 1. Validamos que haya título
+    // 1. Validamos que haya título, si no, emoji de estrella por defecto
     if (!taskTitle || typeof taskTitle !== 'string') {
-        return iconoGenerico;
+        return "✨";
     }
 
-    // 2. Convertimos el título a minúsculas y quitamos acentos (opcional pero recomendado)
-    // para que "Dientes" y "dientes" coincidan.
+    // 2. Normalización: minúsculas y quitar acentos
     const normalizedTitle = taskTitle
         .toLowerCase()
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, ""); // Quita acentos
+        .replace(/[\u0300-\u036f]/g, "");
 
-    // 3. Buscamos si alguna palabra clave del mapa está DENTRO del título
-    for (const key in taskIconMap) {
-        // Usamos .includes() para buscar la palabra clave
+    // 3. Buscamos la palabra clave en el título
+    // Usamos Object.keys para iterar de forma eficiente
+    const keys = Object.keys(taskEmojiMap);
+    for (const key of keys) {
         if (normalizedTitle.includes(key)) {
-            return taskIconMap[key]; // Si coincide, devolvemos la imagen
+            return taskEmojiMap[key];
         }
     }
 
-    // 4. Si no hemos encontrado ninguna coincidencia, devolvemos la genérica
-    return iconoGenerico;
+    // 4. Si no hay coincidencia, devolvemos un emoji genérico de "objetivo"
+    return "🎯";
 };
