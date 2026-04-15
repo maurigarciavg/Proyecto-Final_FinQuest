@@ -1,7 +1,7 @@
 import React from "react";
 import monedas from "../assets/img/monedas.png";
 
-export const GoalSection = ({ child }) => {
+export const GoalSection = ({ child, onMinigameClick }) => {
     const grandPrize = child.grand_prize;
     const totalCoins = child.total_coins ?? 0;
     const prizeCoins = grandPrize?.coins ?? 0;
@@ -10,10 +10,10 @@ export const GoalSection = ({ child }) => {
     return (
         <section className="goal-card">
             <h2 className="goal-card__title">Gran Premio</h2>
-
+            
+            {/* TARJETA DEL PREMIO */}
             <div className="goal-card__box">
                 <p className="goal-card__name">{grandPrize?.name || "Sin gran premio"}</p>
-
                 <div className="goal-card__hero">
                     <img
                         className="goal-card__image"
@@ -25,33 +25,32 @@ export const GoalSection = ({ child }) => {
                         <span className="goal-card__price-label">Monedas</span>
                     </div>
                 </div>
-
                 <div className="goal-card__progress-row">
                     <div className="progress-track progress-track--large">
-                        <div
-                            className="progress-fill progress-fill--goal"
-                            style={{ width: `${progress}%` }}
-                        ></div>
+                        <div className="progress-fill progress-fill--goal" style={{ width: `${progress}%` }}></div>
                     </div>
-                    <img
-                        className="goal-card__coins-image"
-                        src={monedas}
-                        alt="Monedas"
-                    />
+                    <img className="goal-card__coins-image" src={monedas} alt="Monedas" />
                 </div>
-
                 <p className="goal-card__progress-text">
                     <strong>{progress}%</strong> completado — {totalCoins.toLocaleString()} / {prizeCoins.toLocaleString()} monedas
                 </p>
+                <p className="goal-card__hint">Sigue completando tareas para acercarte a tu meta.</p>
+                
+            </div>
 
-                <p className="goal-card__hint">
-                    Sigue completando tareas para acercarte a tu meta.
+            {/* TARJETA DEL MINIJUEGO (Aprovechando tus clases CSS) */}
+            <div 
+                className="goal-card__box" 
+                onClick={onMinigameClick}
+                style={{ cursor: 'pointer', textAlign: 'center' }} 
+            >
+                <h2 className="dashboard-placeholder__title">¡Bonus! 🎮</h2>
+                <p className="task-summary-card__task-name" style={{ minHeight: 'auto', fontWeight: 'bold' }}>
+                    Minijuego de Memoria
                 </p>
-
-                <div className="goal-card__minigame">
-                    <p className="goal-card__minigame-label">🎮 Minijuego</p>
-                    <p className="goal-card__minigame-hint">Próximamente...</p>
-                </div>
+                <p className="goal-card__hint" style={{ margin: 0 }}>
+                    Gana +50 monedas
+                </p>
             </div>
         </section>
     );

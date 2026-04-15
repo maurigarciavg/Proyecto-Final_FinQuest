@@ -7,6 +7,7 @@ import { getChildDashboard } from "../services/childDashboard";
 import "../styles/child-dashboard.css";
 import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
+import { GameModal } from "../components/GameModal"; // <--- 1. Importamos el Modal del juego
 import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
 import useGlobalReducer from "../hooks/useGlobalReducer";
@@ -17,6 +18,7 @@ export const ChildDashboard = () => {
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
+    const [showGameModal, setShowGameModal] = useState(false); // <--- 2. Estado para el juego
     const { store } = useGlobalReducer();
 
     const loadData = async () => {
@@ -33,6 +35,28 @@ export const ChildDashboard = () => {
             loadData();
         }
     }, [childId]);
+
+    // <--- 3. Función para guardar los puntos ganados en el minijuego
+    const handleGameComplete = async (pointsEarned) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(`${baseUrl}api/child/${childId}/add-points`, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + (store.token || localStorage.getItem("token")) 
+                },
+                body: JSON.stringify({ points: pointsEarned })
+            });
+
+            if (response.ok) {
+                await loadData(); // Recargamos para ver las monedas nuevas
+                setShowGameModal(false); // Cerramos el juego
+            }
+        } catch (err) {
+            console.error("Error al guardar puntos del juego:", err);
+        }
+    };
 
     if (error) {
         return (
@@ -171,38 +195,50 @@ export const ChildDashboard = () => {
                                     </div>
                                 </div>
 
-                                {showRewardModal && (
-                                    <RewardModal
-                                        rewards={rewards}
-                                        coins={child.total_coins}
-                                        onClose={() => setShowRewardModal(false)}
-                                        onRedeem={handleRedeem}
-                                    />
-                                )}
-
                                 <div
                                     onClick={() => setShowTaskModal(true)}
                                     style={{ cursor: "pointer" }}
                                 >
                                     <TaskSection tasks={tasks} />
                                 </div>
-
-                                {showTaskModal && (
-                                    <TaskModal
-                                        tasks={tasks}
-                                        onClose={() => setShowTaskModal(false)}
-                                        onComplete={handleComplete}
-                                    />
-                                )}
                             </div>
                         </div>
                     </section>
 
                     <aside className="child-dashboard__right">
-                        <GoalSection child={child} />
+                        {/* 4. Le pasamos la función para abrir el juego a GoalSection */}
+                        <GoalSection 
+                            child={child} 
+                            onMinigameClick={() => setShowGameModal(true)} 
+                        />
                     </aside>
                 </main>
             </div>
+
+            {/* 5. Renderizado condicional de los Modales */}
+            {showGameModal && (
+                <GameModal
+                    onClose={() => setShowGameModal(false)}
+                    onGameComplete={handleGameComplete}
+                />
+            )}
+
+            {showRewardModal && (
+                <RewardModal
+                    rewards={rewards}
+                    coins={child.total_coins}
+                    onClose={() => setShowRewardModal(false)}
+                    onRedeem={handleRedeem}
+                />
+            )}
+
+            {showTaskModal && (
+                <TaskModal
+                    tasks={tasks}
+                    onClose={() => setShowTaskModal(false)}
+                    onComplete={handleComplete}
+                />
+            )}
         </div>
     );
 };

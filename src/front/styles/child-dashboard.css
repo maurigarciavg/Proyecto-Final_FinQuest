@@ -722,3 +722,31 @@
     font-weight: 500;
     color: #1f1f1f;
 }
+
+/* Contenedor de la derecha para separar los dos bloques */
+.goal-section-container {
+    display: flex;
+    flex-direction: column;
+    gap: 22px; /* Misma separación que el grid principal */
+}
+
+/* Estilos específicos para que el Bonus sea clicable y se vea bien */
+.bonus-trigger {
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bonus-trigger:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.bonus-card-wrapper {
+    padding-top: 0; /* Ajuste para que no tenga doble padding superior */
+}
+
+.bonus-trigger .dashboard-placeholder__title {
+    margin-bottom: 10px;
+    color: #1f8ca8; /* Tu color azul corporativo */
+}
