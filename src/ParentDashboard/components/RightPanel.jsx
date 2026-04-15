@@ -14,18 +14,18 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
         const isPast = itemDate < today;
 
         if (task.done || task.status === 'completed') {
-            return { label: "Aprobada", color: "#28a745", bg: "#eafaf1", icon: "fa-circle-check" };
+            return { label: "Aprobada", color: "#28a745", bg: "#eafaf1" };
         }
         if (task.wasRejected) {
-            return { label: "Desaprobada", color: "#dc3545", bg: "#fdf2f2", icon: "fa-circle-xmark" };
+            return { label: "Desaprobada", color: "#dc3545", bg: "#fdf2f2" };
         }
         if (task.status === 'pending_approval') {
-            return { label: "Pendiente", color: "#f08c00", bg: "#fff9db", icon: "fa-clock" };
+            return { label: "Pendiente", color: "#f08c00", bg: "#fff9db" };
         }
         if (isPast) {
-            return { label: "No realizada", color: "#6c757d", bg: "#f8f9fa", icon: "fa-circle-minus" };
+            return { label: "No realizada", color: "#6c757d", bg: "#f8f9fa" };
         }
-        return { label: "Por hacer", color: "#007bff", bg: "#e7f5ff", icon: "fa-circle-play" };
+        return { label: "Por hacer", color: "#007bff", bg: "#e7f5ff" };
     };
 
     const formatDateKey = (date) => {
@@ -160,29 +160,27 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                         <div className={viewMode === 'day' ? "tasks-list-full" : "tasks-list-compact"}>
                                             {dayTasks.length > 0 ? (
                                                 <>
-                                                    {dayTasks.map((t, i) => {
-                                                        if (viewMode === 'week' && i >= 3) return null;
+                                                    {/* En semana mostramos máximo 2, en día todas */}
+                                                    {dayTasks.slice(0, viewMode === 'week' ? 2 : 999).map((t, i) => {
                                                         const status = getTaskStatusInfo(t, date);
-
                                                         return (
                                                             <div 
                                                                 key={`${t.id}-${date.getTime()}`} 
                                                                 className="task-pill"
                                                                 style={{ 
-                                                                    borderLeft: `4px solid ${status.color}`,
+                                                                    borderLeft: `3px solid ${status.color}`,
                                                                     backgroundColor: status.bg,
-                                                                    marginBottom: '6px',
-                                                                    padding: '8px 12px',
+                                                                    marginBottom: viewMode === 'week' ? '4px' : '6px',
+                                                                    padding: viewMode === 'week' ? '4px 8px' : '8px 12px',
                                                                     display: 'flex',
                                                                     alignItems: 'center',
-                                                                    borderRadius: '8px',
-                                                                    gap: '8px'
+                                                                    borderRadius: '6px',
+                                                                    gap: '6px'
                                                                 }}
                                                             >
-                                                                {/* 1. NOMBRE TAREA (Consistente en ambas vistas) */}
                                                                 <span style={{ 
                                                                     fontWeight: '600', 
-                                                                    fontSize: '0.7rem',
+                                                                    fontSize: viewMode === 'week' ? '0.65rem' : '0.75rem',
                                                                     flex: viewMode === 'day' ? '0 1 auto' : '1',
                                                                     whiteSpace: 'nowrap',
                                                                     overflow: 'hidden',
@@ -192,28 +190,25 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                                                     {t.title}
                                                                 </span>
 
-                                                                {/* 2. LOGICA CONDICIONAL: ETIQUETA EN DÍA / NADA EN SEMANA */}
+                                                                {/* Estado pill solo en vista día */}
                                                                 {viewMode === 'day' && (
                                                                     <span style={{ 
-                                                                        backgroundColor: status.bg, 
+                                                                        background: "none", 
                                                                         color: status.color, 
                                                                         fontSize: '0.6rem',
                                                                         border: `1px solid ${status.color}`,
-                                                                        fontWeight: '400',
-                                                                        padding: '2px 8px',
-                                                                        borderRadius: '12px',
-                                                                        whiteSpace: 'nowrap'
+                                                                        padding: '1px 6px',
+                                                                        borderRadius: '10px',
+                                                                        fontWeight: '700'
                                                                     }}>
                                                                         {status.label}
                                                                     </span>
                                                                 )}
 
-                                                                {/* 3. VALOR MONEDAS (Empujado a la derecha en vista Día) */}
                                                                 <span style={{ 
                                                                     fontWeight: '700', 
-                                                                    fontSize: '0.85rem', 
+                                                                    fontSize: viewMode === 'week' ? '0.65rem' : '0.8rem', 
                                                                     marginLeft: viewMode === 'day' ? 'auto' : '0',
-                                                                    minWidth: 'fit-content', 
                                                                     color: '#444' 
                                                                 }}>
                                                                     🪙 {t.points}
@@ -221,23 +216,36 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                                             </div>
                                                         );
                                                     })}
-                                                    {viewMode === 'week' && dayTasks.length > 3 && (
-                                                        <div className="more-tasks-indicator" style={{ fontSize: '0.7rem', textAlign: 'center', color: '#888', fontWeight: 'bold' }}>
-                                                            + {dayTasks.length - 3} más
+                                                    {/* Indicador +X solo en semana */}
+                                                    {viewMode === 'week' && dayTasks.length > 2 && (
+                                                        <div style={{ fontSize: '0.65rem', textAlign: 'center', color: '#888', fontWeight: 'bold' }}>
+                                                            + {dayTasks.length - 2} tareas
                                                         </div>
                                                     )}
                                                 </>
                                             ) : (
-                                                <span className="no-tasks" style={{ fontSize: '0.8rem', opacity: 0.6 }}>Sin tareas</span>
+                                                <span className="no-tasks" style={{ fontSize: '0.7rem', opacity: 0.5 }}>Sin tareas</span>
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="dots-container">
+                                        /* VISTA MES: Restaurada a puntos (dots) */
+                                        <div className="dots-container" style={{ display: 'flex', gap: '2px', justifyContent: 'center', marginTop: '4px' }}>
                                             {dayTasks.slice(0, 3).map((t, i) => {
                                                 const status = getTaskStatusInfo(t, date);
-                                                return <span key={`${t.id}-${i}`} className="task-dot" style={{ backgroundColor: status.color }}></span>;
+                                                return (
+                                                    <span 
+                                                        key={i} 
+                                                        className="task-dot" 
+                                                        style={{ 
+                                                            width: '6px', 
+                                                            height: '6px', 
+                                                            borderRadius: '50%', 
+                                                            backgroundColor: status.color 
+                                                        }}
+                                                    />
+                                                );
                                             })}
-                                            {dayTasks.length > 3 && <span className="task-dot-plus">+</span>}
+                                            {dayTasks.length > 3 && <span style={{ fontSize: '0.6rem', color: '#999' }}>+</span>}
                                         </div>
                                     )}
                                 </div>
