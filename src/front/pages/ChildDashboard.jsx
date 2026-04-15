@@ -9,7 +9,7 @@ import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
 import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
-import useGlobalReducer from "../hooks/useGlobalReducer";  
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const ChildDashboard = () => {
     const { childId } = useParams();
@@ -17,7 +17,7 @@ export const ChildDashboard = () => {
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
-    const { store } = useGlobalReducer();    
+    const { store } = useGlobalReducer();
 
     const loadData = async () => {
         const result = await getChildDashboard(childId);
@@ -121,15 +121,24 @@ export const ChildDashboard = () => {
 
                                     <div className="dashboard-streak">
                                         <div className="dashboard-streak__days">
-                                            {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((dia, index) => (
-                                                <div
-                                                    key={dia}
-                                                    className={`dashboard-streak__day${index < child.streak ? " dashboard-streak__day--active" : ""}`}
-                                                >
-                                                    <span className="dashboard-streak__check">✓</span>
-                                                    <span className="dashboard-streak__label">{dia}</span>
-                                                </div>
-                                            ))}
+                                            {(() => {
+                                                const dias = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+                                                const hoy = new Date().getDay();
+                                                const hoyIndex = hoy === 0 ? 6 : hoy - 1;
+                                                return dias.map((dia, index) => {
+                                                    const diff = hoyIndex - index;
+                                                    const activo = diff >= 0 && diff < child.streak;
+                                                    return (
+                                                        <div
+                                                            key={dia}
+                                                            className={`dashboard-streak__day${activo ? " dashboard-streak__day--active" : ""}`}
+                                                        >
+                                                            <span className="dashboard-streak__check">✓</span>
+                                                            <span className="dashboard-streak__label">{dia}</span>
+                                                        </div>
+                                                    );
+                                                });
+                                            })()}
                                         </div>
 
                                         <img

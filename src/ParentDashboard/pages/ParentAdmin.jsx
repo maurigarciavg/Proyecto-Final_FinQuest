@@ -27,7 +27,7 @@ export const ParentAdmin = () => {
     const [cupones, setCupones] = useState([]);
 
     const [granPremio, setGranPremio] = useState(null);
-
+    
 
 
     const misHijos = store.user?.children || [];
@@ -233,7 +233,7 @@ export const ParentAdmin = () => {
 
 
                     setGranPremio(data.child.grand_prize || null);
-
+                        
                 }
 
             } catch (err) {
