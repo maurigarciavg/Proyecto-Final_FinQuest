@@ -11,7 +11,7 @@ export const SignIn = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-
+      
     });
 
     if (store.token) {
@@ -111,12 +111,6 @@ export const SignIn = () => {
                         {store.loading.auth ? "Entrando..." : "Entrar"}
                     </button>
                 </form>
-
-                <div className="forgot-password mt-3 text-center">
-                    <Link to="/forgot-password">
-                        ¿Olvidaste tu contraseña?
-                    </Link>
-                </div>
 
                 <div className="login-signup">
                     <p>
