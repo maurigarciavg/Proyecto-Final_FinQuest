@@ -282,3 +282,19 @@ def get_children(parent_id):
 def get_child_tasks(child_id):
     tasks = Task.query.filter_by(child_id=child_id).all()
     return jsonify([task.serialize() for task in tasks]), 200
+
+@api.route("/child/<int:child_id>/add-coins", methods=["POST"])
+def add_coins(child_id):
+    child = db.session.get(Child, child_id)
+    if not child:
+        raise APIException("Child not found", status_code=404)
+    
+    data = get_json_payload()
+    coins = data.get("coins", 0)
+    child.total_coins += coins
+    db.session.commit()
+
+    return jsonify({
+        "message": f"{coins} monedas añadidas",
+        "total_coins": child.total_coins
+    }), 200

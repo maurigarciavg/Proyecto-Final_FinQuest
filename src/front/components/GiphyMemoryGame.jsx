@@ -60,7 +60,7 @@ const GiphyMemoryGame = ({ onGameComplete }) => {
         if (matchedCards.length === 8) {
             // Un pequeño delay para que dé tiempo a ver la última carta
             setTimeout(() => {
-                if (onGameComplete) onGameComplete(50);
+                if (onGameComplete) onGameComplete(30);
             }, 500);
         }
     }, [matchedCards, onGameComplete]);

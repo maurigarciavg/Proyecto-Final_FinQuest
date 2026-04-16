@@ -15,7 +15,7 @@ export const GameModal = ({ onClose, onGameComplete }) => {
                 
                 <div className="game-modal-body">
                     <p style={{ marginBottom: "20px", color: "#666" }}>
-                        Encuentra las parejas de GIFs para ganar <strong>50 monedas</strong>. 
+                        Encuentra las parejas de GIFs para ganar <strong>30 monedas</strong>. 
                         ¡Solo puedes ganar el premio una vez al día!
                     </p>
                     <GiphyMemoryGame onGameComplete={onGameComplete} />

@@ -7,10 +7,11 @@ import { getChildDashboard } from "../services/childDashboard";
 import "../styles/child-dashboard.css";
 import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
-import { GameModal } from "../components/GameModal"; // <--- 1. Importamos el Modal del juego
+import { GameModal } from "../components/GameModal";
 import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import confetti from "canvas-confetti";
 
 export const ChildDashboard = () => {
     const { childId } = useParams();
@@ -18,7 +19,9 @@ export const ChildDashboard = () => {
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
-    const [showGameModal, setShowGameModal] = useState(false); // <--- 2. Estado para el juego
+    const [showGameModal, setShowGameModal] = useState(false);
+    const [rewardToast, setRewardToast] = useState(null);
+    const [coinPopup, setCoinPopup] = useState(null);
     const { store } = useGlobalReducer();
 
     const loadData = async () => {
@@ -36,25 +39,72 @@ export const ChildDashboard = () => {
         }
     }, [childId]);
 
-    // <--- 3. Función para guardar los puntos ganados en el minijuego
+    const showRewardAnimation = (amount = 30) => {
+        confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 }
+        });
+
+        setCoinPopup(`+${amount} monedas`);
+        setRewardToast(`🎉 ¡Has ganado ${amount} monedas!`);
+
+        setTimeout(() => setCoinPopup(null), 1800);
+        setTimeout(() => setRewardToast(null), 3200);
+    };
+
     const handleGameComplete = async (pointsEarned) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
-            const response = await fetch(`${baseUrl}api/child/${childId}/add-points`, {
+            const response = await fetch(`${baseUrl}api/child/${childId}/add-coins`, {
                 method: "POST",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + (store.token || localStorage.getItem("token")) 
+                    "Authorization": "Bearer " + (store.token || localStorage.getItem("token"))
                 },
-                body: JSON.stringify({ points: pointsEarned })
+                body: JSON.stringify({ coins: pointsEarned })
             });
 
             if (response.ok) {
-                await loadData(); // Recargamos para ver las monedas nuevas
-                setShowGameModal(false); // Cerramos el juego
+                await loadData();
+                setShowGameModal(false);
+                showRewardAnimation(pointsEarned);
             }
         } catch (err) {
             console.error("Error al guardar puntos del juego:", err);
+        }
+    };
+
+    const handleComplete = async (taskId) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(
+                `${baseUrl}api/tasks/${taskId}/complete`,
+                { method: "PATCH" }
+            );
+
+            if (response.ok) {
+                await loadData();
+            }
+        } catch (err) {
+            console.error("Error al completar tarea:", err);
+        }
+    };
+
+    const handleRedeem = async (rewardId) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(
+                `${baseUrl}api/rewards/${rewardId}/redeem`,
+                { method: "POST" }
+            );
+
+            if (response.ok) {
+                await loadData();
+                setShowRewardModal(false);
+            }
+        } catch (err) {
+            console.error("Error al canjear recompensa:", err);
         }
     };
 
@@ -89,40 +139,6 @@ export const ChildDashboard = () => {
 
     const { child, tasks, rewards } = data;
 
-    const handleComplete = async (taskId) => {
-        const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        try {
-            const response = await fetch(
-                `${baseUrl}api/tasks/${taskId}/complete`,
-                { method: "PATCH" }
-            );
-            if (response.ok) {
-                await loadData();
-            }
-        } catch (err) {
-            console.error("Error al completar tarea:", err);
-        }
-    };
-
-    const handleRedeem = async (rewardId) => {
-        const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        try {
-            const response = await fetch(
-                `${baseUrl}api/rewards/${rewardId}/redeem`,
-                { method: "POST" }
-            );
-            if (response.ok) {
-                await loadData();
-                setShowRewardModal(false);
-            } else {
-                const errorData = await response.json();
-                alert(errorData.message || "No tienes suficientes monedas");
-            }
-        } catch (err) {
-            console.error("Error al canjear premio:", err);
-        }
-    };
-
     return (
         <div className="child-dashboard">
             <div className="child-dashboard__container">
@@ -139,7 +155,7 @@ export const ChildDashboard = () => {
                                 <div className="dashboard-placeholder dashboard-placeholder--streak">
                                     <div className="dashboard-placeholder__streak-header">
                                         <h2 className="dashboard-placeholder__title">
-                                            Tu racha de {child.streak} {child.streak === 1 ? 'día' : 'días'} 🔥
+                                            Tu racha de {child.streak} {child.streak === 1 ? "día" : "días"} 🔥
                                         </h2>
                                     </div>
 
@@ -149,9 +165,11 @@ export const ChildDashboard = () => {
                                                 const dias = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
                                                 const hoy = new Date().getDay();
                                                 const hoyIndex = hoy === 0 ? 6 : hoy - 1;
+
                                                 return dias.map((dia, index) => {
                                                     const diff = hoyIndex - index;
                                                     const activo = diff >= 0 && diff < child.streak;
+
                                                     return (
                                                         <div
                                                             key={dia}
@@ -181,7 +199,9 @@ export const ChildDashboard = () => {
                                     style={{ cursor: "pointer" }}
                                 >
                                     <div className="dashboard-placeholder__header">
-                                        <span className="dashboard-placeholder__badge">{rewards?.length || 0}</span>
+                                        <span className="dashboard-placeholder__badge">
+                                            {rewards?.length || 0}
+                                        </span>
                                         <h2 className="dashboard-placeholder__title">Tienda</h2>
                                     </div>
 
@@ -206,16 +226,27 @@ export const ChildDashboard = () => {
                     </section>
 
                     <aside className="child-dashboard__right">
-                        {/* 4. Le pasamos la función para abrir el juego a GoalSection */}
-                        <GoalSection 
-                            child={child} 
-                            onMinigameClick={() => setShowGameModal(true)} 
+                        <GoalSection
+                            child={child}
+                            onMinigameClick={() => setShowGameModal(true)}
                         />
                     </aside>
                 </main>
             </div>
 
-            {/* 5. Renderizado condicional de los Modales */}
+            {coinPopup && (
+                <div className="coins-popup">
+                    <img src={monedas3} alt="Monedas" className="coins-popup__icon" />
+                    <span>{coinPopup}</span>
+                </div>
+            )}
+
+            {rewardToast && (
+                <div className="reward-toast">
+                    {rewardToast}
+                </div>
+            )}
+
             {showGameModal && (
                 <GameModal
                     onClose={() => setShowGameModal(false)}
