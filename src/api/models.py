@@ -47,6 +47,7 @@ class Child(db.Model):
     streak: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     last_login_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     parent_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    last_minigame_played_at = db.Column(db.DateTime, nullable=True)
 
     parent: Mapped["User"] = relationship(back_populates="children")
     
@@ -67,7 +68,8 @@ class Child(db.Model):
             "parent_id": self.parent_id,
             # Añadimos SmallGoals y GrandPrize al serialize para que el padre lo vea en el panel
             "small_goals": [goal.serialize() for goal in self.small_goals] if self.small_goals else [],
-            "grand_prize": self.grand_prize.serialize() if self.grand_prize else None
+            "grand_prize": self.grand_prize.serialize() if self.grand_prize else None,
+            "last_minigame_played_at": self.last_minigame_played_at.isoformat() if self.last_minigame_played_at else None,
         }
 
 class Task(db.Model):
