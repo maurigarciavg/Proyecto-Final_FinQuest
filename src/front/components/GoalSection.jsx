@@ -10,7 +10,7 @@ export const GoalSection = ({ child, onMinigameClick }) => {
     return (
         <section className="goal-card">
             <h2 className="goal-card__title">Gran Premio</h2>
-            
+
             {/* TARJETA DEL PREMIO */}
             <div className="goal-card__box">
                 <p className="goal-card__name">{grandPrize?.name || "Sin gran premio"}</p>
@@ -35,21 +35,21 @@ export const GoalSection = ({ child, onMinigameClick }) => {
                     <strong>{progress}%</strong> completado — {totalCoins.toLocaleString()} / {prizeCoins.toLocaleString()} monedas
                 </p>
                 <p className="goal-card__hint">Sigue completando tareas para acercarte a tu meta.</p>
-                
+
             </div>
 
             {/* TARJETA DEL MINIJUEGO (Aprovechando tus clases CSS) */}
-            <div 
-                className="goal-card__box" 
+            <div
+                className="goal-card__box"
                 onClick={onMinigameClick}
-                style={{ cursor: 'pointer', textAlign: 'center' }} 
+                style={{ cursor: 'pointer', textAlign: 'center' }}
             >
                 <h2 className="dashboard-placeholder__title">¡Bonus! 🎮</h2>
                 <p className="task-summary-card__task-name" style={{ minHeight: 'auto', fontWeight: 'bold' }}>
                     Minijuego de Memoria
                 </p>
                 <p className="goal-card__hint" style={{ margin: 0 }}>
-                    Gana +50 monedas
+                    Gana +30 monedas
                 </p>
             </div>
         </section>

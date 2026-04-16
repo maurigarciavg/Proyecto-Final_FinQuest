@@ -138,6 +138,14 @@ export const ChildDashboard = () => {
     }
 
     const { child, tasks, rewards } = data;
+    const hasPlayedToday = (() => {
+        if (!child.last_minigame_played_at) return false;
+
+        const lastPlayed = new Date(child.last_minigame_played_at);
+        const today = new Date();
+
+        return lastPlayed.toDateString() === today.toDateString();
+    })();
 
     return (
         <div className="child-dashboard">
@@ -228,7 +236,15 @@ export const ChildDashboard = () => {
                     <aside className="child-dashboard__right">
                         <GoalSection
                             child={child}
-                            onMinigameClick={() => setShowGameModal(true)}
+                            onMinigameClick={() => {
+                                if (hasPlayedToday) {
+                                    setRewardToast("⏳ Ya has jugado hoy. Vuelve mañana.");
+                                    setTimeout(() => setRewardToast(null), 3000);
+                                    return;
+                                }
+
+                                setShowGameModal(true);
+                            }}
                         />
                     </aside>
                 </main>
