@@ -19,7 +19,6 @@
     height: 200px;
     width: auto;
     object-fit: contain;
-
     margin-top: -65px; 
     margin-bottom: -65px;
     display: block;
@@ -51,9 +50,6 @@
     border-radius: 8px;
 }
 
-.navbar-brand:hover .navbar-logo {
-    transform: scale(1.1) rotate(-3deg);
-}
 
 @media (max-width: 991.98px) {
     .navbar-logo {
