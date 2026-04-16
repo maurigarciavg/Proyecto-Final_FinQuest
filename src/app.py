@@ -14,10 +14,15 @@ from api.routes import api
 from api.utils import APIException, generate_sitemap
 
 
+from extension import mail
+
+
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
 app = Flask(__name__)
+
+
 app.url_map.strict_slashes = False
 
 # database condiguration
@@ -35,10 +40,20 @@ app.config["JWT_SECRET_KEY"] = os.getenv(
 )
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=8)
 
+
+app.config["MAIL_SERVER"] = 'smtp.gmail.com'
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USE_SSL"] = False
+app.config["MAIL_USERNAME"] = os.getenv('MAIL_USERNAME')
+app.config["MAIL_PASSWORD"] = os.getenv('MAIL_PASSWORD')
+app.config["MAIL_DEFAULT_SENDER"] = os.getenv('MAIL_USERNAME')
+
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
+mail.init_app(app)
 
 # add the admin
 setup_admin(app)

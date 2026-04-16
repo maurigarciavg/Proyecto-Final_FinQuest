@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "../Login.css";
+const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const ResetPassword = () => {
     const { token } = useParams();
 
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [password, setPassword] = useState("123456789");
+    const [confirmPassword, setConfirmPassword] = useState("123456789");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // 👉 Validación básica
@@ -17,15 +18,27 @@ export const ResetPassword = () => {
             return;
         }
 
-        // 👉 aquí luego llamarás a tu API
-        console.log("Token:", token);
-        console.log("Nueva password:", password);
+        try {
+            let result = await fetch(`${baseUrl}api/reset_password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token: token, password: password })
+            });
+
+
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+
+        }
     };
 
     return (
         <div className="forgot-container d-flex justify-content-center align-items-center min-vh-100">
             <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%" }}>
-                
+
                 <h2 className="text-center mb-3 login-title">Nueva contraseña</h2>
 
                 <p className="text-muted text-center mb-4">

@@ -2,20 +2,37 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../Login.css";
 
+
+const baseUrl = import.meta.env.VITE_BACKEND_URL;
+
 export const ForgotPassword = () => {
     const [email, setEmail] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            let result = await fetch(`${baseUrl}api/forgot_password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: email })
+            });
 
-        // 👉 aquí luego llamarás a tu API
-        console.log("Email enviado:", email);
+
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+
+        }
+
+
     };
 
     return (
         <div className="forgot-container d-flex justify-content-center align-items-center min-vh-100">
             <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%" }}>
-                
+
                 <h2 className="text-center mb-3 login-title">Recuperar contraseña</h2>
 
                 <p className="text-muted text-center mb-4">
@@ -23,7 +40,7 @@ export const ForgotPassword = () => {
                 </p>
 
                 <form onSubmit={handleSubmit}>
-                    
+
                     <div className="mb-3">
                         <label className="form-label">Email</label>
                         <input
