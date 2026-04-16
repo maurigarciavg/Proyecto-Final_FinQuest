@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { getTaskIcon, getCouponIcon, getGrandPrizeIcon } from "../../front/Utils/getTaskIcon"; // 🟢 Importamos todo
+import { getTaskIcon, getCouponIcon, getGrandPrizeIcon } from "../../front/Utils/getTaskIcon"; 
 import "../style ParentDash/styleCePanel.css";
 
 const CenterPanel = ({
@@ -22,20 +22,28 @@ const CenterPanel = ({
     const [selectedItemId, setSelectedItemId] = useState(null);
     const panelRef = useRef(null);
 
-    // --- ESTILOS CORREGIDOS ---
-    const badgeStyle = { // ⬅️ Cambiado de badgeBaseStyle a badgeStyle para que coincida con el JSX
-        fontSize: '0.7rem', 
-        padding: '3px 10px', 
-        borderRadius: '12px', 
-        fontWeight: '600', 
-        marginLeft: '10px', 
-        display: 'inline-block', 
-        verticalAlign: 'middle', 
-        border: 'none' 
-    };
-
+    // --- ESTILOS Y CONSTANTES DEL PROFE ---
+    const badgeBaseStyle = { fontSize: '0.7rem', padding: '3px 10px', borderRadius: '12px', fontWeight: '600', marginLeft: '10px', display: 'inline-block', verticalAlign: 'middle', border: 'none' };
+    const dateLabelStyle = { fontSize: '0.72rem', color: '#888', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' };
     const undoButtonStyle = { background: 'none', border: 'none', color: '#ff0019', cursor: 'pointer', padding: '5px' };
     const redeemButtonStyle = { padding: '4px 12px', cursor: 'pointer', borderRadius: '4px', border: 'none', backgroundColor: '#3dc9b6', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold' };
+
+    const statusStyles = {
+        aprobada: { bg: "#eafaf1", color: "#28a745", label: "Aprobada" },
+        desaprobada: { bg: "#fdf2f2", color: "#dc3545", label: "Desaprobada" },
+        pendiente: { bg: "#fff9db", color: "#f08c00", label: "Pendiente" },
+        porHacer: { bg: "#e7f5ff", color: "#007bff", label: "Por hacer" }
+    };
+
+    const formatDate = (dateValue) => {
+        if (!dateValue) return "Sin fecha";
+        const d = new Date(dateValue);
+        return d.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -70,8 +78,8 @@ const CenterPanel = ({
         return (
             <div className="filter-container">
                 <div className="sub-filters-wrapper">
-                    <button className={`sub-filter-btn ${subFilter === 'principal' ? 'active' : ''}`} onClick={() => {setSubFilter('principal'); setSelectedItemId(null);}}>{labels.f}</button>
-                    <button className={`sub-filter-btn ${subFilter === 'secundario' ? 'active' : ''}`} onClick={() => {setSubFilter('secundario'); setSelectedItemId(null);}}>{labels.s}</button>
+                    <button className={`sub-filter-btn ${subFilter === 'principal' ? 'active' : ''}`} onClick={() => { setSubFilter('principal'); setSelectedItemId(null); }}>{labels.f}</button>
+                    <button className={`sub-filter-btn ${subFilter === 'secundario' ? 'active' : ''}`} onClick={() => { setSubFilter('secundario'); setSelectedItemId(null); }}>{labels.s}</button>
                 </div>
             </div>
         );
@@ -88,14 +96,23 @@ const CenterPanel = ({
                     <h4>Pendientes: <strong>{pendingTasksCount}</strong></h4>
                     <div className="quick-approve-list" style={{ marginTop: '10px', maxHeight: '150px', overflowY: 'auto' }}>
                         {tasksList.filter(t => !t.done).map(t => (
-                            <div key={t.id} className="task-row-item quick-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', borderBottom: '1px solid #f0f0f0', fontSize: '0.9rem' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <span style={{ fontSize: '1.2rem' }}>{getTaskIcon(t.title)}</span>
-                                    <span>{t.title}</span>
+                            <div key={t.id} className="task-row-item quick-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 8px', borderBottom: '1px solid #f0f0f0' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    {/* 🟢 Emoji Dinámico Mauri */}
+                                    <span style={{ fontSize: '1.4rem' }}>{getTaskIcon(t.title)}</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <span style={{ fontWeight: '600', fontSize: '0.9rem' }}>{t.title}</span>
+                                            <span style={{ ...badgeBaseStyle, backgroundColor: statusStyles.pendiente.bg, color: statusStyles.pendiente.color }}>
+                                                {statusStyles.pendiente.label}
+                                            </span>
+                                        </div>
+                                        <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
+                                    </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <span>🪙 {t.points}</span>
-                                    <button onClick={() => onApproveTask(t.id)} style={{ padding: '2px 8px', cursor: 'pointer', borderRadius: '4px', border: '1px solid #32a89b', backgroundColor: '#fff', color: '#32a89b' }}>
+                                    <button onClick={() => onApproveTask(t.id)} style={{ padding: '4px 10px', cursor: 'pointer', borderRadius: '4px', border: '1px solid #32a89b', backgroundColor: '#fff', color: '#32a89b', fontWeight: 'bold' }}>
                                         Aprobar
                                     </button>
                                 </div>
@@ -120,11 +137,7 @@ const CenterPanel = ({
                                     <button className="edit-btn" onClick={() => onEditItem(selectedItemId, activeTab)} style={{ backgroundColor: '#3dc9b6', color: "white", border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer' }}><i className="fa-solid fa-pen"></i></button>
                                 </div>
                             ) : (
-                                <button 
-                                    className="add-mission-btn" 
-                                    onClick={() => onCreateItem(activeTab)} 
-                                    style={{ backgroundColor: '#3dc9b6', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer' }}
-                                >
+                                <button className="add-mission-btn" onClick={() => onCreateItem(activeTab)} style={{ backgroundColor: '#3dc9b6', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer' }}>
                                     {getCreateButtonLabel()}
                                 </button>
                             )}
@@ -135,62 +148,54 @@ const CenterPanel = ({
 
                     <div className='Lista'>
                         {/* --- TAREAS --- */}
-                        {activeTab === 'Tareas' && tasksList.filter(t => subFilter === 'principal' ? !t.done : t.done).map(t => (
-                            <div
-                                key={t.id}
-                                onClick={(e) => handleSelectItem(e, t.id)}
-                                className={`task-row-item ${selectedItemId === t.id ? 'selected-item' : ''}`}
-                                style={{
-                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', borderBottom: '1px solid #eee', cursor: 'pointer',
-                                    backgroundColor: selectedItemId === t.id ? '#e9f7f6' : 'transparent'
-                                }}
-                            >
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <span style={{ fontSize: '1.5rem', minWidth: '30px' }}>{getTaskIcon(t.title)}</span>
-                                    <div>
-                                        <span>{t.title}</span>
-                                        <span style={{ ...badgeStyle, backgroundColor: t.done ? '#e7f5ff' : (t.wasRejected ? '#fff0f0' : '#f8f9fa'), color: t.done ? '#007bff' : (t.wasRejected ? '#ff0019' : '#6c757d') }}>
-                                            {t.done ? 'Aprobada' : (t.wasRejected ? 'Desaprobada' : 'Por hacer')}
-                                        </span>
+                        {activeTab === 'Tareas' && tasksList.filter(t => subFilter === 'principal' ? !t.done : t.done).map(t => {
+                            let currentStatus = statusStyles.porHacer;
+                            if (t.done) currentStatus = statusStyles.aprobada;
+                            else if (t.wasRejected) currentStatus = statusStyles.desaprobada;
+                            else if (t.status === 'pending_approval' || !t.done) currentStatus = statusStyles.pendiente;
+
+                            return (
+                                <div key={t.id} onClick={(e) => handleSelectItem(e, t.id)} className={`task-row-item ${selectedItemId === t.id ? 'selected-item' : ''}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === t.id ? '#e9f7f6' : 'transparent' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        {/* 🟢 Emoji Dinámico Mauri */}
+                                        <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getTaskIcon(t.title)}</span>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <div>
+                                                <span style={{ fontWeight: '500' }}>{t.title}</span>
+                                                <span style={{ ...badgeBaseStyle, backgroundColor: currentStatus.bg, color: currentStatus.color }}>
+                                                    {currentStatus.label}
+                                                </span>
+                                            </div>
+                                            <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <span>🪙 {t.points}</span>
+                                        {subFilter === 'secundario' && <button onClick={(e) => { e.stopPropagation(); onUndoTask(t.id); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>}
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <span>🪙 {t.points}</span>
-                                    {subFilter === 'secundario' && (
-                                        <button onClick={(e) => { e.stopPropagation(); onUndoTask(t.id); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
 
                         {/* --- CUPONES --- */}
                         {activeTab === 'Cupones' && couponsList.filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed).map(c => (
-                            <div
-                                key={c.id}
-                                onClick={(e) => handleSelectItem(e, c.id)}
-                                className="task-row-item"
-                                style={{
-                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', borderBottom: '1px solid #eee', cursor: 'pointer',
-                                    backgroundColor: selectedItemId === c.id ? '#e9f7f6' : 'transparent'
-                                }}
-                            >
+                            <div key={c.id} onClick={(e) => handleSelectItem(e, c.id)} className="task-row-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === c.id ? '#e9f7f6' : 'transparent' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    {/* 🟢 Icono dinámico para cupones */}
-                                    <span style={{ fontSize: '1.5rem', minWidth: '30px' }}>{getCouponIcon(c.name)}</span>
-                                    <div>
-                                        <span>{c.name}</span>
-                                        <span style={{ ...badgeStyle, backgroundColor: c.redeemed ? '#e6fffa' : '#fff9db', color: c.redeemed ? '#3dc9b6' : '#f08c00' }}>
-                                            {c.redeemed ? 'Canjeado' : 'Por canjear'}
-                                        </span>
+                                    {/* 🟢 Emoji Dinámico Mauri */}
+                                    <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getCouponIcon(c.name)}</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <div>
+                                            <span style={{ fontWeight: '500' }}>{c.name}</span>
+                                            <span style={{ ...badgeBaseStyle, backgroundColor: c.redeemed ? statusStyles.aprobada.bg : statusStyles.pendiente.bg, color: c.redeemed ? statusStyles.aprobada.color : statusStyles.pendiente.color }}>
+                                                {c.redeemed ? 'Canjeado' : 'Disponible'}
+                                            </span>
+                                        </div>
+                                        <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(c.date)}</span>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <span>🪙 {c.coins}</span>
-                                    {subFilter === 'principal' ? (
-                                        <button onClick={(e) => { e.stopPropagation(); onRedeem(c.id, 'coupon'); }} style={{ ...redeemButtonStyle, borderRadius: '100px' }}>Canjear</button>
-                                    ) : (
-                                        <button onClick={(e) => { e.stopPropagation(); onUndoRedeem(c.id, 'coupon'); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>
-                                    )}
+                                    {subFilter === 'principal' ? <button onClick={(e) => { e.stopPropagation(); onRedeem(c.id, 'coupon'); }} style={{ ...redeemButtonStyle, borderRadius: '100px' }}>Canjear</button> : <button onClick={(e) => { e.stopPropagation(); onUndoRedeem(c.id, 'coupon'); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>}
                                 </div>
                             </div>
                         ))}
@@ -198,32 +203,23 @@ const CenterPanel = ({
                         {/* --- GRAN PREMIO --- */}
                         {activeTab === 'Gran Premio' && grandPrize && (
                             ((subFilter === 'principal' && !grandPrize.redeemed) || (subFilter === 'secundario' && grandPrize.redeemed)) && (
-                                <div
-                                    key={grandPrize.id}
-                                    onClick={(e) => handleSelectItem(e, grandPrize.id)}
-                                    className="task-row-item"
-                                    style={{
-                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #eee', cursor: 'pointer',
-                                        backgroundColor: selectedItemId === grandPrize.id ? '#fff3cd' : 'transparent'
-                                    }}
-                                >
+                                <div key={grandPrize.id} onClick={(e) => handleSelectItem(e, grandPrize.id)} className="task-row-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === grandPrize.id ? '#fff3cd' : 'transparent' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        {/* 🟢 Icono dinámico para gran premio */}
-                                        <span style={{ fontSize: '1.5rem', minWidth: '30px' }}>{getGrandPrizeIcon(grandPrize.name)}</span>
-                                        <div>
-                                            <span>{grandPrize.name}</span>
-                                            <span style={{ ...badgeStyle, backgroundColor: grandPrize.redeemed ? '#e6fffa' : '#fff9db', color: grandPrize.redeemed ? '#32a89b' : '#f08c00' }}>
-                                                {grandPrize.redeemed ? 'Canjeado' : 'Por canjear'}
-                                            </span>
+                                        {/* 🟢 Emoji Dinámico Mauri */}
+                                        <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getGrandPrizeIcon(grandPrize.name)}</span>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <div>
+                                                <span style={{ fontWeight: '600' }}>{grandPrize.name}</span>
+                                                <span style={{ ...badgeBaseStyle, backgroundColor: grandPrize.redeemed ? statusStyles.aprobada.bg : statusStyles.pendiente.bg, color: grandPrize.redeemed ? statusStyles.aprobada.color : statusStyles.pendiente.color }}>
+                                                    {grandPrize.redeemed ? 'Canjeado' : 'En meta'}
+                                                </span>
+                                            </div>
+                                            <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(grandPrize.date)}</span>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <span>🪙 {grandPrize.coins}</span>
-                                        {subFilter === 'principal' ? (
-                                            <button onClick={(e) => { e.stopPropagation(); onRedeem(grandPrize.id, 'prize'); }} style={{ ...redeemButtonStyle, borderRadius: '100px', backgroundColor: '#4dbfb6', color: '#FFFFFF' }}>Canjear</button>
-                                        ) : (
-                                            <button onClick={(e) => { e.stopPropagation(); onUndoRedeem(grandPrize.id, 'prize'); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>
-                                        )}
+                                        {subFilter === 'principal' ? <button onClick={(e) => { e.stopPropagation(); onRedeem(grandPrize.id, 'prize'); }} style={{ ...redeemButtonStyle, borderRadius: '100px', backgroundColor: '#4dbfb6' }}>Canjear</button> : <button onClick={(e) => { e.stopPropagation(); onUndoRedeem(grandPrize.id, 'prize'); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>}
                                     </div>
                                 </div>
                             )

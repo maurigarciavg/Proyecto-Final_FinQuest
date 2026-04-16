@@ -61,7 +61,8 @@ export const Navbar = () => {
                                 </button>
                             </>
                         ) : (
-                            <>
+  
+  <>
                                 {/* Rutas de entrada cuando no hay sesión */}
                                 <NavLink className="nav-link nav-link-custom" to="/sign-in">
                                     Iniciar Sesión
