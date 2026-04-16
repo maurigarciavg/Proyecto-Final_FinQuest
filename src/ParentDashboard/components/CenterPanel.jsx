@@ -22,7 +22,6 @@ const CenterPanel = ({
     const [selectedItemId, setSelectedItemId] = useState(null);
     const panelRef = useRef(null);
 
-    // --- ESTILOS Y CONSTANTES DEL PROFE ---
     const badgeBaseStyle = { fontSize: '0.7rem', padding: '3px 10px', borderRadius: '12px', fontWeight: '600', marginLeft: '10px', display: 'inline-block', verticalAlign: 'middle', border: 'none' };
     const dateLabelStyle = { fontSize: '0.72rem', color: '#888', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' };
     const undoButtonStyle = { background: 'none', border: 'none', color: '#ff0019', cursor: 'pointer', padding: '5px' };
@@ -93,18 +92,17 @@ const CenterPanel = ({
 
             <section className="pending-status">
                 <div className="status-card">
-                    <h4>Pendientes: <strong>{pendingTasksCount}</strong></h4>
+                    <h4>Pendientes de validar: <strong>{pendingTasksCount}</strong></h4>
                     <div className="quick-approve-list" style={{ marginTop: '10px', maxHeight: '150px', overflowY: 'auto' }}>
-                        {tasksList.filter(t => !t.done).map(t => (
+                        {tasksList.filter(t => t.status === "pending_validation").map(t => (
                             <div key={t.id} className="task-row-item quick-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 8px', borderBottom: '1px solid #f0f0f0' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    {/* 🟢 Emoji Dinámico Mauri */}
                                     <span style={{ fontSize: '1.4rem' }}>{getTaskIcon(t.title)}</span>
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <span style={{ fontWeight: '600', fontSize: '0.9rem' }}>{t.title}</span>
                                             <span style={{ ...badgeBaseStyle, backgroundColor: statusStyles.pendiente.bg, color: statusStyles.pendiente.color }}>
-                                                {statusStyles.pendiente.label}
+                                                Validar
                                             </span>
                                         </div>
                                         <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
@@ -147,17 +145,15 @@ const CenterPanel = ({
                     {renderSubFilters()}
 
                     <div className='Lista'>
-                        {/* --- TAREAS --- */}
                         {activeTab === 'Tareas' && tasksList.filter(t => subFilter === 'principal' ? !t.done : t.done).map(t => {
                             let currentStatus = statusStyles.porHacer;
                             if (t.done) currentStatus = statusStyles.aprobada;
                             else if (t.wasRejected) currentStatus = statusStyles.desaprobada;
-                            else if (t.status === 'pending_approval' || !t.done) currentStatus = statusStyles.pendiente;
+                            else if (t.status === 'pending_validation') currentStatus = statusStyles.pendiente;
 
                             return (
                                 <div key={t.id} onClick={(e) => handleSelectItem(e, t.id)} className={`task-row-item ${selectedItemId === t.id ? 'selected-item' : ''}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === t.id ? '#e9f7f6' : 'transparent' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        {/* 🟢 Emoji Dinámico Mauri */}
                                         <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getTaskIcon(t.title)}</span>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <div>
@@ -177,11 +173,9 @@ const CenterPanel = ({
                             );
                         })}
 
-                        {/* --- CUPONES --- */}
                         {activeTab === 'Cupones' && couponsList.filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed).map(c => (
                             <div key={c.id} onClick={(e) => handleSelectItem(e, c.id)} className="task-row-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === c.id ? '#e9f7f6' : 'transparent' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    {/* 🟢 Emoji Dinámico Mauri */}
                                     <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getCouponIcon(c.name)}</span>
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <div>
@@ -200,12 +194,10 @@ const CenterPanel = ({
                             </div>
                         ))}
 
-                        {/* --- GRAN PREMIO --- */}
                         {activeTab === 'Gran Premio' && grandPrize && (
                             ((subFilter === 'principal' && !grandPrize.redeemed) || (subFilter === 'secundario' && grandPrize.redeemed)) && (
                                 <div key={grandPrize.id} onClick={(e) => handleSelectItem(e, grandPrize.id)} className="task-row-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === grandPrize.id ? '#fff3cd' : 'transparent' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        {/* 🟢 Emoji Dinámico Mauri */}
                                         <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getGrandPrizeIcon(grandPrize.name)}</span>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <div>
