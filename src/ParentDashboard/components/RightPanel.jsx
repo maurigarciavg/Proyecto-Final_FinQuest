@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { getGrandPrizeIcon } from "../../front/Utils/getTaskIcon";
 import "../style ParentDash/styleRightPanel.css";
 
 const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
@@ -104,7 +105,20 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
             <section className="grand-prize-section">
                 <h3>Gran Premio</h3>
                 <div className="prize-card">
-                    {grandPrizeImage && <img src={grandPrizeImage} alt="Premio" className="prize-img" />}
+                    {grandPrizeImage && (grandPrizeImage.includes("http") || grandPrizeImage.includes("/")) ? (
+                        <img src={grandPrizeImage} alt="Premio" className="prize-img" />
+                    ) : (
+                        <div className="prize-img" style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            fontSize: '2rem', 
+                            background: '#e2e8f0',
+                            margin: '0 auto'
+                        }}>
+                            {getGrandPrizeIcon(grandPrizeName)}
+                        </div>
+                    )}
                     <p className="prize-name">{grandPrizeName || "Sin premio asignado"}</p>
                 </div>
             </section>
@@ -160,7 +174,6 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                         <div className={viewMode === 'day' ? "tasks-list-full" : "tasks-list-compact"}>
                                             {dayTasks.length > 0 ? (
                                                 <>
-                                                    {/* En semana mostramos máximo 2, en día todas */}
                                                     {dayTasks.slice(0, viewMode === 'week' ? 2 : 999).map((t, i) => {
                                                         const status = getTaskStatusInfo(t, date);
                                                         return (
@@ -190,7 +203,6 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                                                     {t.title}
                                                                 </span>
 
-                                                                {/* Estado pill solo en vista día */}
                                                                 {viewMode === 'day' && (
                                                                     <span style={{ 
                                                                         background: "none", 
@@ -216,7 +228,6 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                                             </div>
                                                         );
                                                     })}
-                                                    {/* Indicador +X solo en semana */}
                                                     {viewMode === 'week' && dayTasks.length > 2 && (
                                                         <div style={{ fontSize: '0.65rem', textAlign: 'center', color: '#888', fontWeight: 'bold' }}>
                                                             + {dayTasks.length - 2} tareas
@@ -228,7 +239,6 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                             )}
                                         </div>
                                     ) : (
-                                        /* VISTA MES: Restaurada a puntos (dots) */
                                         <div className="dots-container" style={{ display: 'flex', gap: '2px', justifyContent: 'center', marginTop: '4px' }}>
                                             {dayTasks.slice(0, 3).map((t, i) => {
                                                 const status = getTaskStatusInfo(t, date);
