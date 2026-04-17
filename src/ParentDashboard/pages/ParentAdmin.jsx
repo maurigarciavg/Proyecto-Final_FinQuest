@@ -3,6 +3,7 @@ import useGlobalReducer from '../../front/hooks/useGlobalReducer.jsx';
 import LeftPanel from '../components/LeftPanel';
 import CenterPanel from '../components/CenterPanel';
 import RightPanel from '../components/RightPanel';
+import { EntityManager } from "../../front/components/EntityManager";
 import "../style ParentDash/stylePAdmin.css";
 
 export const ParentAdmin = () => {
@@ -14,7 +15,45 @@ export const ParentAdmin = () => {
     const [cupones, setCupones] = useState([]);
     const [granPremio, setGranPremio] = useState(null);
 
+    const [showManager, setShowManager] = useState(false);
+    const [managerType, setManagerType] = useState("");
+
     const misHijos = store.user?.children || [];
+
+    const fetchData = async () => {
+        if (!selectedChildId) return;
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(`${baseUrl}api/child-dashboard/${selectedChildId}`);
+            if (response.ok) {
+                const data = await response.json();
+                setTasks(data.tasks.map(t => ({
+                    id: t.id,
+                    title: t.name,
+                    points: t.coins,
+                    status: t.status,
+                    done: t.status === "completed",
+                    days: t.days || [],
+                    date: t.date || null
+                })));
+
+                setCupones(data.rewards.map(r => ({
+                    id: r.id,
+                    name: r.name,
+                    coins: r.coins || r.cost,
+                    redeemed: false
+                })));
+
+                setGranPremio(data.child.grand_prize || null);
+            }
+        } catch (err) {
+            console.error("Error cargando datos:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [selectedChildId]);
 
     const handleApproveTask = async (taskId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
@@ -26,9 +65,7 @@ export const ParentAdmin = () => {
             });
 
             if (response.ok) {
-                const result = await response.json();
-                setTasks(prev => prev.map(t => t.id === taskId ? { ...t, done: true, status: 'completed' } : t));
-                console.log(`¡Aprobada! Nuevo saldo: ${result.total_coins}`);
+                fetchData();
             }
         } catch (error) {
             console.error("Error al aprobar tarea:", error);
@@ -37,9 +74,7 @@ export const ParentAdmin = () => {
 
     const handleUndoTask = (taskId) => {
         setTasks(prev => prev.map(task =>
-            task.id === taskId
-                ? { ...task, done: false, status: 'pending', wasRejected: true }
-                : task
+            task.id === taskId ? { ...task, done: false, status: 'pending', wasRejected: true } : task
         ));
     };
 
@@ -50,13 +85,7 @@ export const ParentAdmin = () => {
         try {
             const response = await fetch(`${baseUrl}${endpoint}`, { method: 'POST' });
             if (response.ok) {
-                if (type === 'coupon') {
-                    setCupones(prev => prev.map(c =>
-                        c.id === id ? { ...c, redeemed: true } : c
-                    ));
-                } else {
-                    setGranPremio(prev => prev ? { ...prev, redeemed: true } : null);
-                }
+                fetchData();
             }
         } catch (error) {
             console.error("Error al canjear:", error);
@@ -72,11 +101,11 @@ export const ParentAdmin = () => {
     };
 
     const handleEditItem = (id, type) => {
-        console.log("Editando:", id, "en", type);
+        setManagerType(type);
+        setShowManager(true);
     };
 
     const handleDeleteItem = (id, type) => {
-        console.log("Eliminando:", id, "de", type);
         if (type === 'Tareas') {
             setTasks(prev => prev.filter(t => t.id !== id));
         } else if (type === 'Cupones') {
@@ -85,44 +114,9 @@ export const ParentAdmin = () => {
     };
 
     const handleCreateItem = (type) => {
-        console.log("Creando nuevo item para:", type);
+        setManagerType(type);
+        setShowManager(true);
     };
-
-    useEffect(() => {
-        if (!selectedChildId) return;
-
-        const fetchData = async () => {
-            const baseUrl = import.meta.env.VITE_BACKEND_URL;
-            try {
-                const response = await fetch(`${baseUrl}api/child-dashboard/${selectedChildId}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setTasks(data.tasks.map(t => ({
-                        id: t.id,
-                        title: t.name,
-                        points: t.coins,
-                        status: t.status,
-                        done: t.status === "completed",
-                        days: t.days || [],
-                        date: t.date || null
-                    })));
-
-                    setCupones(data.rewards.map(r => ({
-                        id: r.id,
-                        name: r.name,
-                        coins: r.coins || r.cost,
-                        redeemed: false
-                    })));
-
-                    setGranPremio(data.child.grand_prize || null);
-                }
-            } catch (err) {
-                console.error("Error cargando datos:", err);
-            }
-        };
-
-        fetchData();
-    }, [selectedChildId]);
 
     return (
         <div className="dashboard-wrapper">
@@ -163,6 +157,16 @@ export const ParentAdmin = () => {
                     />
                 </section>
             </div>
+
+            {showManager && (
+                <EntityManager 
+                    type={managerType}
+                    data={managerType === 'Tareas' ? tasks : managerType === 'Cupones' ? cupones : (granPremio ? [granPremio] : [])}
+                    childId={selectedChildId}
+                    onClose={() => setShowManager(false)}
+                    onSave={() => { fetchData(); setShowManager(false); }}
+                />
+            )}
         </div>
     );
 };

@@ -65,9 +65,9 @@ const CenterPanel = ({
 
     const getCreateButtonLabel = () => {
         switch (activeTab) {
-            case 'Tareas': return 'Nueva Tarea';
-            case 'Cupones': return 'Nuevo Cupón';
-            case 'Gran Premio': return 'Nuevo Gran Premio';
+            case 'Tareas': return 'Editar tareas';
+            case 'Cupones': return 'Editar Cupones';
+            case 'Gran Premio': return 'Editar Gran Premio';
             default: return `Nuevo ${activeTab}`;
         }
     };
