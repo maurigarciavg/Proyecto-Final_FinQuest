@@ -16,7 +16,6 @@ class User(db.Model):
     parentalPIN: Mapped[str] = mapped_column(String(4), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
 
-    # Relación con Child
     children: Mapped[list["Child"]] = relationship(back_populates="parent", cascade="all, delete-orphan")
 
     def set_password(self, password: str) -> None:
@@ -51,7 +50,6 @@ class Child(db.Model):
 
     parent: Mapped["User"] = relationship(back_populates="children")
     
-    # Cascade asegura que si borras un niño, se borren sus tareas y premios
     tasks: Mapped[list["Task"]] = relationship(back_populates="child", cascade="all, delete-orphan")
     small_goals: Mapped[list["SmallGoal"]] = relationship(back_populates="child", cascade="all, delete-orphan")
     grand_prize: Mapped["GrandPrize"] = relationship(back_populates="child", cascade="all, delete-orphan", uselist=False)
@@ -66,7 +64,6 @@ class Child(db.Model):
             "total_coins": self.total_coins,
             "streak": self.streak,
             "parent_id": self.parent_id,
-            # Añadimos SmallGoals y GrandPrize al serialize para que el padre lo vea en el panel
             "small_goals": [goal.serialize() for goal in self.small_goals] if self.small_goals else [],
             "grand_prize": self.grand_prize.serialize() if self.grand_prize else None,
             "last_minigame_played_at": self.last_minigame_played_at.isoformat() if self.last_minigame_played_at else None,
@@ -132,10 +129,6 @@ class GrandPrize(db.Model):
         }
 
 class Reward(db.Model):
-    """
-    Nota: Tienes SmallGoal y Reward. 
-    Si Reward son los cupones canjeables, esta tabla es correcta.
-    """
     __tablename__ = "reward"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
