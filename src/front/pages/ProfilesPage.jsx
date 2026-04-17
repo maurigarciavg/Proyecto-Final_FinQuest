@@ -39,8 +39,9 @@ export const ProfilesPage = () => {
   }, [navigate]);
 
   const handleProfileClick = (profile) => {
-    setSelectedProfile(profile);
-  };
+  localStorage.setItem("activeProfile", JSON.stringify(profile));
+  setSelectedProfile(profile);
+};
 
   const closeModal = () => {
     setSelectedProfile(null);
