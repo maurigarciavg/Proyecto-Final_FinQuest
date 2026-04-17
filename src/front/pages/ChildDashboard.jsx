@@ -23,6 +23,7 @@ export const ChildDashboard = () => {
     const [rewardToast, setRewardToast] = useState(null);
     const [coinPopup, setCoinPopup] = useState(null);
     const { store } = useGlobalReducer();
+    const [streakAnimationShown, setStreakAnimationShown] = useState(false);
 
     const loadData = async () => {
         const result = await getChildDashboard(childId);
@@ -30,7 +31,13 @@ export const ChildDashboard = () => {
             setError(true);
             return;
         }
+
         setData(result);
+
+        if (result.streak_reward_given && !streakAnimationShown) {
+            showRewardAnimation(result.streak_reward_amount || 10);
+            setStreakAnimationShown(true);
+        }
     };
 
     useEffect(() => {

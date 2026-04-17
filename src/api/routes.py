@@ -3,7 +3,8 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 
-from datetime import datetime
+
+from datetime import datetime, timezone
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import (
     create_access_token,
@@ -18,6 +19,7 @@ from extension import mail
 from werkzeug.security import generate_password_hash
 url_front = os.getenv('VITE_FRONT_URL')
 api = Blueprint("api", __name__)
+
 
 # --- FUNCIONES AUXILIARES ---
 
@@ -134,11 +136,15 @@ def get_child_dashboard(child_id):
     if child is None:
         raise APIException("Child not found", status_code=404)
 
-    today = datetime.utcnow().date()
+    today = datetime.now(timezone.utc).date()
+
+    streak_reward_given = False
 
     # 1. Gestión de Racha (Streak)
     if child.last_login_date is None:
         child.streak = 1
+        child.total_coins += 10
+        streak_reward_given = True
     else:
         last = child.last_login_date.date()
         if last < today:
@@ -147,12 +153,15 @@ def get_child_dashboard(child_id):
             else:
                 child.streak = 1
 
-    child.last_login_date = datetime.utcnow()
+            child.total_coins += 10
+            streak_reward_given = True
+
+    child.last_login_date = datetime.now(timezone.utc)
 
     # 2. Tareas: Reset diario y Filtrado por día actual
     tasks = Task.query.filter_by(child_id=child_id).all()
     dias_map = {0: "L", 1: "M", 2: "X", 3: "J", 4: "V", 5: "S", 6: "D"}
-    hoy_letra = dias_map[datetime.utcnow().weekday()]
+    hoy_letra = dias_map[datetime.now(timezone.utc).weekday()]
 
     tasks_hoy = []
     for task in tasks:
@@ -178,7 +187,9 @@ def get_child_dashboard(child_id):
     return jsonify({
         "child": child.serialize(),
         "tasks": tasks_hoy,
-        "rewards": all_rewards
+        "rewards": all_rewards,
+        "streak_reward_given": streak_reward_given,
+        "streak_reward_amount": 10
     }), 200
 
 # --- GESTIÓN DE TAREAS (FLUJO NIÑO -> PADRE) ---
@@ -192,7 +203,7 @@ def complete_task(task_id):
 
     # El niño la marca, pero pasa a "pendiente de validación"
     task.status = "pending_validation"
-    task.last_completed = datetime.utcnow()
+    task.last_completed = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({"message": "Tarea enviada a papá para aprobación", "task": task.serialize()}), 200
@@ -213,7 +224,7 @@ def validate_task(task_id):
         child.total_coins += task.coins
         task.status = "completed"
         # Actualizamos last_completed al momento de la aprobación para asegurar el reset mañana
-        task.last_completed = datetime.utcnow()
+        task.last_completed = datetime.now(timezone.utc)
         message = "Tarea aprobada, monedas sumadas"
     else:
         task.status = "pending"
@@ -327,7 +338,7 @@ def add_coins(child_id):
     if not child:
         raise APIException("Child not found", status_code=404)
 
-    today = datetime.utcnow().date()
+    today = datetime.now(timezone.utc).date()
 
     # 🔒 BLOQUEO: solo 1 vez al día
     if child.last_minigame_played_at and child.last_minigame_played_at.date() == today:
@@ -337,7 +348,7 @@ def add_coins(child_id):
     coins = data.get("coins", 0)
 
     child.total_coins += coins
-    child.last_minigame_played_at = datetime.utcnow()
+    child.last_minigame_played_at = datetime.now(timezone.utc).date()
 
     db.session.commit()
 
