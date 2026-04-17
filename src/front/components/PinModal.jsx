@@ -6,74 +6,84 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 export const PinModal = ({ profile, onClose }) => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
+  const [shake, setShake] = useState(false);
+
   const navigate = useNavigate();
   const { dispatch } = useGlobalReducer();
 
+  const correctPin =
+    profile.role === "parent" ? profile.parentalPIN : profile.pin;
+
+  const triggerError = (msg) => {
+    setError(msg);
+    setShake(true);
+    setTimeout(() => setShake(false), 400);
+  };
+
   const handleSubmit = () => {
     if (!pin || pin.length !== 4) {
-      setError("El PIN debe tener 4 dígitos");
+      triggerError("El PIN debe tener 4 dígitos");
       return;
     }
 
-    const correctPin = profile.role === "parent" ? profile.parentalPIN : profile.pin;
-
-    // Convertimos ambos a String para asegurar la comparación
     if (String(pin) === String(correctPin)) {
       setError("");
 
       if (profile.role === "parent") {
         navigate("/parentadmin");
       } else if (profile.role === "child") {
-
         dispatch({ type: "set_child", payload: profile });
         navigate(`/child-dashboard/${profile.id}`);
       }
 
       onClose();
     } else {
-      setError("PIN incorrecto, intenta de nuevo");
+      triggerError("PIN incorrecto, intenta de nuevo");
     }
   };
 
   return ReactDOM.createPortal(
     <div className="modal" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div
+        className={`modal-content ${shake ? "shake" : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2>Ingresa el PIN de {profile.name}</h2>
 
-        <input
-          type="password"
-          maxLength={4}
-          value={pin}
-          onChange={(e) => {
-            setPin(e.target.value);
-            setError("");
+        {/* 🔥 SOLO ESTE CAMBIO (FORM) */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
           }}
-          placeholder="••••"
-        />
+        >
+          <input
+            type="password"
+            maxLength={4}
+            value={pin}
+            onChange={(e) => {
+              setPin(e.target.value);
+              setError("");
+            }}
+            placeholder="••••"
+          />
 
-        {error && (
-          <p style={{ color: "red", marginTop: "0.5rem" }}>
-            {error}
-          </p>
-        )}
+          {error && (
+            <p style={{ color: "red", marginTop: "0.5rem" }}>
+              {error}
+            </p>
+          )}
 
-        <div style={{ marginTop: "1rem" }}>
-          <button onClick={handleSubmit}>Entrar</button>
-          <button onClick={onClose} style={{ marginLeft: "1rem" }}>
-            Cerrar
-          </button>
-        </div>
+          <div style={{ marginTop: "1rem" }}>
+            <button type="submit">Entrar</button>
+            <button type="button" onClick={onClose} style={{ marginLeft: "1rem" }}>
+              Cerrar
+            </button>
+          </div>
+        </form>
+
       </div>
     </div>,
     document.body
-  );
-};
-
-export const ProfileCard = ({ name, avatar, onClick }) => {
-  return (
-    <div className="profile-card" onClick={onClick}>
-      <img src={avatar} alt={name} />
-      <p>{name}</p>
-    </div>
   );
 };

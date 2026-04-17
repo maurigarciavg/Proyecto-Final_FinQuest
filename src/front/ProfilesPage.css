@@ -24,13 +24,17 @@
   cursor: pointer;
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
-  border-radius: 20px;
+  border-radius: 200px;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05); /* sutil */
 }
-.profile-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+.profile-card img {
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+}
+
+.profile-card img:hover {
+  transform: scale(1.07);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15),
+              0 0 0 3px #237a6d;
 }
 
 /* Avatar */
@@ -39,7 +43,7 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #3db7a4;
+  border: 2px solid #237a6d;
 }
 
 /* Nombre del perfil */
@@ -118,4 +122,40 @@
     width: 90%;
     padding: 1.5rem;
   }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
+.pin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pin-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.pin-inputs input {
+  width: 45px;
+  height: 55px;
+  text-align: center;
+  font-size: 1.5rem;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  transition: 0.2s;
 }

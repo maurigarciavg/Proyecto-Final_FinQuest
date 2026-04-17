@@ -15,10 +15,10 @@ export const SignIn = () => {
     });
 
     if (store.token) {
-        return <Navigate to="/profile" replace />;
+        return <Navigate to="/profiles" replace />;
     }
 
-    const redirectTarget = location.state?.from?.pathname || "/profile";
+    const redirectTarget = location.state?.from?.pathname || "/profiles";
 
     const handleChange = (event) => {
         const { name, value } = event.target;

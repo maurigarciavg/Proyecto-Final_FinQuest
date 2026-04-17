@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import logoImg from "../assets/img/logo.png";
 import "./Navbar.css";
@@ -7,30 +7,27 @@ import "./Navbar.css";
 export const Navbar = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // 🔥 Perfil activo (clave del fix)
-    const activeProfile = JSON.parse(localStorage.getItem("activeProfile"));
+    const activeProfile =
+  store.activeProfile ||
+  JSON.parse(localStorage.getItem("activeProfile"));
+
+    const isHome = location.pathname === "/";
 
     const handleLogout = () => {
         dispatch({ type: "clear_session", payload: "Sesión cerrada correctamente." });
-        
-        // limpiamos también el perfil activo
         localStorage.removeItem("activeProfile");
-
         navigate("/");
     };
 
     return (
         <nav className="navbar navbar-expand-lg navbar-finquest sticky-top">
             <div className="container">
-                
+
                 {/* LOGO */}
                 <NavLink className="navbar-brand d-flex align-items-center" to="/">
-                    <img
-                        src={logoImg}
-                        alt="FinQuest Logo"
-                        className="navbar-logo"
-                    />
+                    <img src={logoImg} alt="FinQuest Logo" className="navbar-logo" />
                 </NavLink>
 
                 <button
@@ -45,13 +42,21 @@ export const Navbar = () => {
                 <div className="collapse navbar-collapse" id="mainNavbar">
                     <div className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
 
-                        {/* Links comunes */}
-                        <NavLink className="nav-link nav-link-custom" to="/">Inicio</NavLink>
-                        <a className="nav-link nav-link-custom" href="#nosotros">Nosotros</a>
+                        {/* Inicio */}
+                        <NavLink className="nav-link nav-link-custom" to="/">
+                            Inicio
+                        </NavLink>
+
+
+                        {isHome && (
+                            <a className="nav-link nav-link-custom" href="#nosotros">
+                                Nosotros
+                            </a>
+                        )}
 
                         {store.token ? (
                             <>
-                                {/* 🔐 SOLO PADRE VE PANEL */}
+
                                 {activeProfile?.role === "parent" && (
                                     <NavLink className="nav-link nav-link-custom" to="/parentadmin">
                                         Panel de Control
@@ -75,6 +80,7 @@ export const Navbar = () => {
                                 <NavLink className="nav-link nav-link-custom" to="/sign-in">
                                     Iniciar Sesión
                                 </NavLink>
+
                                 <NavLink
                                     className="btn btn-primary-yellow rounded-pill px-4 ms-lg-2"
                                     to="/sign-up"

@@ -17,7 +17,10 @@ export const ProfilesPage = () => {
         const token = localStorage.getItem("token");
         const user = JSON.parse(localStorage.getItem("user"));
 
-        if (!token) { navigate("/sign-in"); return; }
+        if (!token || !user) {
+          navigate("/sign-in");
+          return;
+        }
 
         const childrenData = await apiRequest(`api/parent/${user.id}/children`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -27,7 +30,7 @@ export const ProfilesPage = () => {
           { ...user, role: "parent" }, 
           ...childrenData.map(child => ({ ...child, role: "child" }))
         ]);
-        
+
         setLoading(false);
       } catch (error) {
         console.error("Error cargando perfiles: ", error);
@@ -39,9 +42,8 @@ export const ProfilesPage = () => {
   }, [navigate]);
 
   const handleProfileClick = (profile) => {
-  localStorage.setItem("activeProfile", JSON.stringify(profile));
-  setSelectedProfile(profile);
-};
+    setSelectedProfile(profile); // abre modal
+  };
 
   const closeModal = () => {
     setSelectedProfile(null);
@@ -53,8 +55,8 @@ export const ProfilesPage = () => {
 
       {loading ? (
         <div className="profiles-loading">
-            <div className="spinner"></div>
-            <p>Cargando perfiles...</p>
+          <div className="spinner"></div>
+          <p>Cargando perfiles...</p>
         </div>
       ) : (
         <div className="profiles-grid">
@@ -74,13 +76,9 @@ export const ProfilesPage = () => {
               </div>
               
               <div className="profile-card__info">
-                <p className="profile-card__name">{profile.name.toUpperCase()}</p>
-                <p className="profile-card__role">
-                    {profile.role === "parent" ? "👨‍👩‍👧 PADRE/MADRE" : "👦 MODO NIÑO"}
+                <p className="profile-card__name">
+                  {profile.name.toUpperCase()}
                 </p>
-                <span className="profile-card__pin-hint">
-                    PIN: {profile.role === "parent" ? profile.parentalPIN : profile.pin}
-                </span>
               </div>
             </div>
           ))}
@@ -88,7 +86,10 @@ export const ProfilesPage = () => {
       )}
 
       {selectedProfile && (
-        <PinModal profile={selectedProfile} onClose={closeModal} />
+        <PinModal 
+          profile={selectedProfile} 
+          onClose={closeModal} 
+        />
       )}
     </div>
   );
