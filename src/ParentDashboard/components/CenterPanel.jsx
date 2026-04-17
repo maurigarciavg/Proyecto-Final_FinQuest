@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { getTaskIcon, getCouponIcon, getGrandPrizeIcon } from "../../front/Utils/getTaskIcon"; 
+import { getTaskIcon, getCouponIcon, getGrandPrizeIcon } from "../../front/Utils/getTaskIcon";
 import "../style ParentDash/styleCePanel.css";
 
 const CenterPanel = ({
@@ -101,8 +101,9 @@ const CenterPanel = ({
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <span style={{ fontWeight: '600', fontSize: '0.9rem' }}>{t.title}</span>
+                                            {/* Cambio: etiqueta "Pendiente" en lugar de "Validar" */}
                                             <span style={{ ...badgeBaseStyle, backgroundColor: statusStyles.pendiente.bg, color: statusStyles.pendiente.color }}>
-                                                Validar
+                                                {statusStyles.pendiente.label}
                                             </span>
                                         </div>
                                         <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
@@ -145,33 +146,38 @@ const CenterPanel = ({
                     {renderSubFilters()}
 
                     <div className='Lista'>
-                        {activeTab === 'Tareas' && tasksList.filter(t => subFilter === 'principal' ? !t.done : t.done).map(t => {
-                            let currentStatus = statusStyles.porHacer;
-                            if (t.done) currentStatus = statusStyles.aprobada;
-                            else if (t.wasRejected) currentStatus = statusStyles.desaprobada;
-                            else if (t.status === 'pending_validation') currentStatus = statusStyles.pendiente;
+                        {/* Cambio: el filtro ahora excluye t.done Y t.status === 'pending_validation' en la pestaña principal */}
+                        {activeTab === 'Tareas' && tasksList
+                            .filter(t => subFilter === 'principal' 
+                                ? (!t.done && t.status !== 'pending_validation') 
+                                : t.done
+                            )
+                            .map(t => {
+                                let currentStatus = statusStyles.porHacer;
+                                if (t.done) currentStatus = statusStyles.aprobada;
+                                else if (t.wasRejected) currentStatus = statusStyles.desaprobada;
 
-                            return (
-                                <div key={t.id} onClick={(e) => handleSelectItem(e, t.id)} className={`task-row-item ${selectedItemId === t.id ? 'selected-item' : ''}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === t.id ? '#e9f7f6' : 'transparent' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getTaskIcon(t.title)}</span>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <div>
-                                                <span style={{ fontWeight: '500' }}>{t.title}</span>
-                                                <span style={{ ...badgeBaseStyle, backgroundColor: currentStatus.bg, color: currentStatus.color }}>
-                                                    {currentStatus.label}
-                                                </span>
+                                return (
+                                    <div key={t.id} onClick={(e) => handleSelectItem(e, t.id)} className={`task-row-item ${selectedItemId === t.id ? 'selected-item' : ''}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === t.id ? '#e9f7f6' : 'transparent' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getTaskIcon(t.title)}</span>
+                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                <div>
+                                                    <span style={{ fontWeight: '500' }}>{t.title}</span>
+                                                    <span style={{ ...badgeBaseStyle, backgroundColor: currentStatus.bg, color: currentStatus.color }}>
+                                                        {currentStatus.label}
+                                                    </span>
+                                                </div>
+                                                <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
                                             </div>
-                                            <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <span>🪙 {t.points}</span>
+                                            {subFilter === 'secundario' && <button onClick={(e) => { e.stopPropagation(); onUndoTask(t.id); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>}
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <span>🪙 {t.points}</span>
-                                        {subFilter === 'secundario' && <button onClick={(e) => { e.stopPropagation(); onUndoTask(t.id); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
 
                         {activeTab === 'Cupones' && couponsList.filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed).map(c => (
                             <div key={c.id} onClick={(e) => handleSelectItem(e, c.id)} className="task-row-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === c.id ? '#e9f7f6' : 'transparent' }}>
@@ -189,7 +195,11 @@ const CenterPanel = ({
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <span>🪙 {c.coins}</span>
-                                    {subFilter === 'principal' ? <button onClick={(e) => { e.stopPropagation(); onRedeem(c.id, 'coupon'); }} style={{ ...redeemButtonStyle, borderRadius: '100px' }}>Canjear</button> : <button onClick={(e) => { e.stopPropagation(); onUndoRedeem(c.id, 'coupon'); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>}
+                                    {subFilter === 'secundario' && (
+                                        <button onClick={(e) => { e.stopPropagation(); onUndoRedeem(c.id, 'coupon'); }} style={undoButtonStyle}>
+                                            <i className="fa-solid fa-rotate-left"></i>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -211,7 +221,11 @@ const CenterPanel = ({
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <span>🪙 {grandPrize.coins}</span>
-                                        {subFilter === 'principal' ? <button onClick={(e) => { e.stopPropagation(); onRedeem(grandPrize.id, 'prize'); }} style={{ ...redeemButtonStyle, borderRadius: '100px', backgroundColor: '#4dbfb6' }}>Canjear</button> : <button onClick={(e) => { e.stopPropagation(); onUndoRedeem(grandPrize.id, 'prize'); }} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>}
+                                        {subFilter === 'secundario' && (
+                                            <button onClick={(e) => { e.stopPropagation(); onUndoRedeem(grandPrize.id, 'prize'); }} style={undoButtonStyle}>
+                                                <i className="fa-solid fa-rotate-left"></i>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             )
