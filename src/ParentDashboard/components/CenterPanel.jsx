@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { getTaskIcon, getCouponIcon, getGrandPrizeIcon } from "../../front/Utils/getTaskIcon"; 
 import "../style ParentDash/styleCePanel.css";
 
 const CenterPanel = ({
@@ -21,7 +22,11 @@ const CenterPanel = ({
     const [selectedItemId, setSelectedItemId] = useState(null);
     const panelRef = useRef(null);
 
-    // --- PALETA DE COLORES UNIFICADA ---
+    const badgeBaseStyle = { fontSize: '0.7rem', padding: '3px 10px', borderRadius: '12px', fontWeight: '600', marginLeft: '10px', display: 'inline-block', verticalAlign: 'middle', border: 'none' };
+    const dateLabelStyle = { fontSize: '0.72rem', color: '#888', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' };
+    const undoButtonStyle = { background: 'none', border: 'none', color: '#ff0019', cursor: 'pointer', padding: '5px' };
+    const redeemButtonStyle = { padding: '4px 12px', cursor: 'pointer', borderRadius: '4px', border: 'none', backgroundColor: '#3dc9b6', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold' };
+
     const statusStyles = {
         aprobada: { bg: "#eafaf1", color: "#28a745", label: "Aprobada" },
         desaprobada: { bg: "#fdf2f2", color: "#dc3545", label: "Desaprobada" },
@@ -29,10 +34,6 @@ const CenterPanel = ({
         porHacer: { bg: "#e7f5ff", color: "#007bff", label: "Por hacer" }
     };
 
-    /**
-     * CORRECCIÓN: Ahora solo formatea la fecha asignada a la tarea/instancia.
-     * Se eliminó el fallback a la fecha de creación o fecha actual.
-     */
     const formatDate = (dateValue) => {
         if (!dateValue) return "Sin fecha";
         const d = new Date(dateValue);
@@ -83,11 +84,6 @@ const CenterPanel = ({
         );
     };
 
-    const badgeBaseStyle = { fontSize: '0.7rem', padding: '3px 10px', borderRadius: '12px', fontWeight: '600', marginLeft: '10px', display: 'inline-block', verticalAlign: 'middle', border: 'none' };
-    const dateLabelStyle = { fontSize: '0.72rem', color: '#888', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' };
-    const undoButtonStyle = { background: 'none', border: 'none', color: '#ff0019', cursor: 'pointer', padding: '5px' };
-    const redeemButtonStyle = { padding: '4px 12px', cursor: 'pointer', borderRadius: '4px', border: 'none', backgroundColor: '#3dc9b6', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold' };
-
     return (
         <main className="center-panel" ref={panelRef}>
             <header className="center-header">
@@ -96,18 +92,21 @@ const CenterPanel = ({
 
             <section className="pending-status">
                 <div className="status-card">
-                    <h4>Pendientes: <strong>{pendingTasksCount}</strong></h4>
+                    <h4>Pendientes de validar: <strong>{pendingTasksCount}</strong></h4>
                     <div className="quick-approve-list" style={{ marginTop: '10px', maxHeight: '150px', overflowY: 'auto' }}>
-                        {tasksList.filter(t => !t.done).map(t => (
+                        {tasksList.filter(t => t.status === "pending_validation").map(t => (
                             <div key={t.id} className="task-row-item quick-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 8px', borderBottom: '1px solid #f0f0f0' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <span style={{ fontWeight: '600', fontSize: '0.9rem' }}>{t.title}</span>
-                                        <span style={{ ...badgeBaseStyle, backgroundColor: statusStyles.pendiente.bg, color: statusStyles.pendiente.color }}>
-                                            {statusStyles.pendiente.label}
-                                        </span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <span style={{ fontSize: '1.4rem' }}>{getTaskIcon(t.title)}</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <span style={{ fontWeight: '600', fontSize: '0.9rem' }}>{t.title}</span>
+                                            <span style={{ ...badgeBaseStyle, backgroundColor: statusStyles.pendiente.bg, color: statusStyles.pendiente.color }}>
+                                                Validar
+                                            </span>
+                                        </div>
+                                        <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
                                     </div>
-                                    <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <span>🪙 {t.points}</span>
@@ -136,11 +135,7 @@ const CenterPanel = ({
                                     <button className="edit-btn" onClick={() => onEditItem(selectedItemId, activeTab)} style={{ backgroundColor: '#3dc9b6', color: "white", border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer' }}><i className="fa-solid fa-pen"></i></button>
                                 </div>
                             ) : (
-                                <button
-                                    className="add-mission-btn"
-                                    onClick={() => onCreateItem(activeTab)}
-                                    style={{ backgroundColor: '#3dc9b6', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer' }}
-                                >
+                                <button className="add-mission-btn" onClick={() => onCreateItem(activeTab)} style={{ backgroundColor: '#3dc9b6', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer' }}>
                                     {getCreateButtonLabel()}
                                 </button>
                             )}
@@ -154,18 +149,21 @@ const CenterPanel = ({
                             let currentStatus = statusStyles.porHacer;
                             if (t.done) currentStatus = statusStyles.aprobada;
                             else if (t.wasRejected) currentStatus = statusStyles.desaprobada;
-                            else if (t.status === 'pending_approval' || !t.done) currentStatus = statusStyles.pendiente;
+                            else if (t.status === 'pending_validation') currentStatus = statusStyles.pendiente;
 
                             return (
                                 <div key={t.id} onClick={(e) => handleSelectItem(e, t.id)} className={`task-row-item ${selectedItemId === t.id ? 'selected-item' : ''}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === t.id ? '#e9f7f6' : 'transparent' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <div>
-                                            <span style={{ fontWeight: '500' }}>{t.title}</span>
-                                            <span style={{ ...badgeBaseStyle, backgroundColor: currentStatus.bg, color: currentStatus.color }}>
-                                                {currentStatus.label}
-                                            </span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getTaskIcon(t.title)}</span>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <div>
+                                                <span style={{ fontWeight: '500' }}>{t.title}</span>
+                                                <span style={{ ...badgeBaseStyle, backgroundColor: currentStatus.bg, color: currentStatus.color }}>
+                                                    {currentStatus.label}
+                                                </span>
+                                            </div>
+                                            <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
                                         </div>
-                                        <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <span>🪙 {t.points}</span>
@@ -177,14 +175,17 @@ const CenterPanel = ({
 
                         {activeTab === 'Cupones' && couponsList.filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed).map(c => (
                             <div key={c.id} onClick={(e) => handleSelectItem(e, c.id)} className="task-row-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === c.id ? '#e9f7f6' : 'transparent' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <div>
-                                        <span style={{ fontWeight: '500' }}>{c.name}</span>
-                                        <span style={{ ...badgeBaseStyle, backgroundColor: c.redeemed ? statusStyles.aprobada.bg : statusStyles.pendiente.bg, color: c.redeemed ? statusStyles.aprobada.color : statusStyles.pendiente.color }}>
-                                            {c.redeemed ? 'Canjeado' : 'Disponible'}
-                                        </span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getCouponIcon(c.name)}</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <div>
+                                            <span style={{ fontWeight: '500' }}>{c.name}</span>
+                                            <span style={{ ...badgeBaseStyle, backgroundColor: c.redeemed ? statusStyles.aprobada.bg : statusStyles.pendiente.bg, color: c.redeemed ? statusStyles.aprobada.color : statusStyles.pendiente.color }}>
+                                                {c.redeemed ? 'Canjeado' : 'Disponible'}
+                                            </span>
+                                        </div>
+                                        <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(c.date)}</span>
                                     </div>
-                                    <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(c.date)}</span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <span>🪙 {c.coins}</span>
@@ -196,14 +197,17 @@ const CenterPanel = ({
                         {activeTab === 'Gran Premio' && grandPrize && (
                             ((subFilter === 'principal' && !grandPrize.redeemed) || (subFilter === 'secundario' && grandPrize.redeemed)) && (
                                 <div key={grandPrize.id} onClick={(e) => handleSelectItem(e, grandPrize.id)} className="task-row-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 10px', borderBottom: '1px solid #eee', cursor: 'pointer', backgroundColor: selectedItemId === grandPrize.id ? '#fff3cd' : 'transparent' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <div>
-                                            <span style={{ fontWeight: '600' }}>🏆 {grandPrize.name}</span>
-                                            <span style={{ ...badgeBaseStyle, backgroundColor: grandPrize.redeemed ? statusStyles.aprobada.bg : statusStyles.pendiente.bg, color: grandPrize.redeemed ? statusStyles.aprobada.color : statusStyles.pendiente.color }}>
-                                                {grandPrize.redeemed ? 'Canjeado' : 'En meta'}
-                                            </span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <span style={{ fontSize: '1.6rem', minWidth: '35px' }}>{getGrandPrizeIcon(grandPrize.name)}</span>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <div>
+                                                <span style={{ fontWeight: '600' }}>{grandPrize.name}</span>
+                                                <span style={{ ...badgeBaseStyle, backgroundColor: grandPrize.redeemed ? statusStyles.aprobada.bg : statusStyles.pendiente.bg, color: grandPrize.redeemed ? statusStyles.aprobada.color : statusStyles.pendiente.color }}>
+                                                    {grandPrize.redeemed ? 'Canjeado' : 'En meta'}
+                                                </span>
+                                            </div>
+                                            <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(grandPrize.date)}</span>
                                         </div>
-                                        <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(grandPrize.date)}</span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <span>🪙 {grandPrize.coins}</span>
@@ -217,6 +221,21 @@ const CenterPanel = ({
             </section>
         </main>
     );
+};
+
+CenterPanel.propTypes = {
+    childName: PropTypes.string,
+    pendingTasksCount: PropTypes.number,
+    tasksList: PropTypes.array,
+    couponsList: PropTypes.array,
+    grandPrize: PropTypes.object,
+    onApproveTask: PropTypes.func,
+    onRedeem: PropTypes.func,
+    onUndoTask: PropTypes.func,
+    onUndoRedeem: PropTypes.func,
+    onEditItem: PropTypes.func,
+    onDeleteItem: PropTypes.func,
+    onCreateItem: PropTypes.func
 };
 
 export default CenterPanel;
