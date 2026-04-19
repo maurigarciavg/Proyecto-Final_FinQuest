@@ -18,7 +18,7 @@ export const ParentAdmin = () => {
 
     const [showManager, setShowManager] = useState(false);
     const [managerType, setManagerType] = useState("");
-    
+
     const [showEditModal, setShowEditModal] = useState(false);
     const [itemToEdit, setItemToEdit] = useState(null);
 
@@ -114,16 +114,16 @@ export const ParentAdmin = () => {
     const handleDeleteItem = async (id, type) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
-        
+
         let endpoint = "";
         if (type === 'Tareas') endpoint = `api/tasks/${id}`;
         else if (type === 'Cupones') endpoint = `api/small-goals/${id}`;
         else if (type === 'Gran Premio') endpoint = `api/grand-prize/${id}`;
 
         try {
-            const response = await fetch(`${baseUrl}${endpoint}`, { 
+            const response = await fetch(`${baseUrl}${endpoint}`, {
                 method: 'DELETE',
-                headers: { 
+                headers: {
                     "Authorization": `Bearer ${session.token}`,
                     "Content-Type": "application/json"
                 }
@@ -184,7 +184,7 @@ export const ParentAdmin = () => {
             </div>
 
             {showManager && (
-                <EntityManager 
+                <EntityManager
                     type={managerType}
                     childId={selectedChildId}
                     onClose={() => setShowManager(false)}
@@ -193,7 +193,7 @@ export const ParentAdmin = () => {
             )}
 
             {showEditModal && (
-                <EditItemModal 
+                <EditItemModal
                     item={itemToEdit}
                     type={itemToEdit.type}
                     onClose={() => setShowEditModal(false)}

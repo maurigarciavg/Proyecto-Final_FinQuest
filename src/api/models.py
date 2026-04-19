@@ -85,6 +85,20 @@ class Task(db.Model):
     child: Mapped["Child"] = relationship(back_populates="tasks")
 
     def serialize(self):
+        from datetime import datetime, timedelta
+        days_map = {"L": 0, "M": 1, "X": 2, "J": 3, "V": 4, "S": 5, "D": 6}
+        task_days = [days_map[d] for d in self.days.split(",") if d in days_map]
+        next_date = None
+        if task_days:
+            today = datetime.now().date()
+            current_weekday = today.weekday()  # 0=lunes
+            next_day = min((d for d in task_days if d >= current_weekday), default=None)
+            if next_day is None:
+                next_day = min(task_days)
+                days_ahead = (next_day - current_weekday) % 7 + 7
+            else:
+                days_ahead = next_day - current_weekday
+            next_date = today + timedelta(days=days_ahead)
         return {
             "id": self.id,
             "name": self.name,
@@ -92,7 +106,8 @@ class Task(db.Model):
             "days": self.days.split(",") if self.days else [],
             "status": self.status,
             "last_completed": self.last_completed.isoformat() if self.last_completed else None,
-            "child_id": self.child_id
+            "child_id": self.child_id,
+            "date": next_date.isoformat() if next_date else None
         }
 
 class SmallGoal(db.Model):

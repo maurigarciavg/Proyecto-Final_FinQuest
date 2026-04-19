@@ -34,6 +34,15 @@ const CenterPanel = ({
     const formatDate = (dateValue) => {
         if (!dateValue) return "Sin fecha";
         const d = new Date(dateValue);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const taskDate = new Date(d);
+        taskDate.setHours(0, 0, 0, 0);
+        const diffTime = taskDate - today;
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        if (diffDays === 0) return "Hoy";
+        if (diffDays === 1) return "Mañana";
+        if (diffDays === -1) return "Ayer";
         return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
     };
 
