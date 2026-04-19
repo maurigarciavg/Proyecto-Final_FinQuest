@@ -10,7 +10,7 @@ import "../style ParentDash/stylePAdmin.css";
 export const ParentAdmin = () => {
     const { store } = useGlobalReducer();
     const [selectedChildId, setSelectedChildId] = useState(null);
-    const [selectedChildName, setSelectedChildName] = useState(""); 
+    const [selectedChildName, setSelectedChildName] = useState("");
 
     const [tasks, setTasks] = useState([]);
     const [cupones, setCupones] = useState([]);
@@ -39,8 +39,8 @@ export const ParentAdmin = () => {
                     done: t.status === "completed",
                     days: t.days || [],
                     date: t.date || null,
-                    last_completed: t.last_completed || null
-                    is_today: t.is_today // 🟢 Importante para el filtro del CenterPanel
+                    last_completed: t.last_completed || null, // 👈 HE AÑADIDO ESTA COMA
+                    is_today: t.is_today // 🟢 Ahora el filtro funcionará bien
                 })));
 
                 setCupones(data.rewards.map(r => ({
@@ -112,7 +112,7 @@ export const ParentAdmin = () => {
         if (type === 'Tareas') technicalType = 'tasks';
         if (type === 'Cupones') technicalType = 'small-goals';
         if (type === 'Gran Premio') technicalType = 'grand-prize';
-        
+
         setItemToEdit({ ...item, type: technicalType });
         setShowEditModal(true);
     };
