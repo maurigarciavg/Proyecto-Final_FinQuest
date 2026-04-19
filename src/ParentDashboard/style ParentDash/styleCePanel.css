@@ -278,7 +278,7 @@ h4 {
     display: flex;
     justify-content: center;
     gap: 20px; /* Un poco más de aire entre el rojo y el verde */
-    margin-top: 15px;
+    margin-top: 5px;
     padding-bottom: 5px;
 }
 
