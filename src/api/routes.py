@@ -104,7 +104,7 @@ def create_child(parent_id):
         avatar=data.get("avatar", "default_avatar.png"),
         parent_id=parent_id,
         total_coins=0,
-        total_earned_coins=0  # XP inicializado
+        total_earned_coins=0
     )
 
     db.session.add(new_child)
@@ -227,9 +227,9 @@ def validate_task(task_id):
         task.status = "pending_validation"
 
     elif data.get("approved"):
-        child.total_coins += task.coins
-        child.total_earned_coins += task.coins  # XP para subir de nivel
-
+        child.total_coins += task.coins 
+        child.total_earned_coins += task.coins
+        
         task.status = "completed"
         task.last_completed = datetime.now(timezone.utc)
 
@@ -243,9 +243,6 @@ def validate_task(task_id):
         "task_status": task.status
     }), 200
 
-# 🟢 NUEVA RUTA: DESHACER APROBACIÓN (ROLLBACK)
-
-
 @api.route("/tasks/<int:task_id>/rollback", methods=["PATCH"])
 def rollback_task(task_id):
     task = db.session.get(Task, task_id)
@@ -255,6 +252,7 @@ def rollback_task(task_id):
     child = db.session.get(Child, task.child_id)
 
     # Solo restamos si estaba completada
+    
     if task.status == "completed":
         child.total_coins = max(0, child.total_coins - task.coins)
         child.total_earned_coins = max(
@@ -266,7 +264,19 @@ def rollback_task(task_id):
     db.session.commit()
     return jsonify({"msg": "Rollback successful", "total_coins": child.total_coins}), 200
 
-# --- RUTA PARA MONEDAS DE MINIJUEGOS ---
+@api.route("/rewards/<int:reward_id>/redeem", methods=["POST"])
+def redeem_small_goal(reward_id):
+    goal = db.session.get(SmallGoal, reward_id)
+    if not goal: return jsonify({"msg": "Cupón no encontrado"}), 404
+    
+    child = db.session.get(Child, goal.child_id)
+    
+    if child.total_coins < goal.coins:
+        return jsonify({"msg": "Monedas insuficientes"}), 400
+    
+    child.total_coins -= goal.coins
+    db.session.commit()
+    return jsonify({"msg": "Cupón canjeado", "new_coins": child.total_coins}), 200
 
 
 @api.route("/child/<int:child_id>/add-coins", methods=["POST"])
@@ -310,3 +320,19 @@ def reset_password():
     user.password = generate_password_hash(data["password"])
     db.session.commit()
     return jsonify({"msg": "Contraseña actualizada"}), 200
+
+@api.route("/grand-prize/<int:prize_id>/redeem", methods=["POST"])
+def redeem_grand_prize(prize_id):
+    prize = db.session.get(GrandPrize, prize_id)
+    if not prize: return jsonify({"msg": "Premio no encontrado"}), 404
+    
+    child = db.session.get(Child, prize.child_id)
+    
+    if child.total_coins < prize.coins:
+        return jsonify({"msg": "Monedas insuficientes"}), 400
+    
+    child.total_coins -= prize.coins
+    prize.redeemed = True
+    db.session.commit()
+    
+    return jsonify({"msg": "¡Gran Premio canjeado!", "new_coins": child.total_coins}), 200
