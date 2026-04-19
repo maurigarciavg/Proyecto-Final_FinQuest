@@ -1,11 +1,14 @@
 import React from "react";
 import monedas from "../assets/img/monedas.png";
 
-export const GoalSection = ({ child, onMinigameClick }) => {
+export const GoalSection = ({ child, onMinigameClick, onRedeemPrize }) => {
     const grandPrize = child.grand_prize;
     const totalCoins = child.total_coins ?? 0;
     const prizeCoins = grandPrize?.coins ?? 0;
     const progress = prizeCoins > 0 ? Math.min(Math.round((totalCoins / prizeCoins) * 100), 100) : 0;
+    
+    // Verificamos si ya puede canjearlo y si no está canjeado ya
+    const canRedeem = progress >= 100 && !grandPrize?.redeemed;
 
     return (
         <section className="goal-card">
@@ -34,11 +37,28 @@ export const GoalSection = ({ child, onMinigameClick }) => {
                 <p className="goal-card__progress-text">
                     <strong>{progress}%</strong> completado — {totalCoins.toLocaleString()} / {prizeCoins.toLocaleString()} monedas
                 </p>
-                <p className="goal-card__hint">Sigue completando tareas para acercarte a tu meta.</p>
-
+                
+                {/* 🟢 BOTÓN DE CANJEAR: Solo aparece al llegar al 100% */}
+                {canRedeem ? (
+                    <button 
+                        onClick={onRedeemPrize}
+                        className="goal-card__redeem-btn"
+                       
+                        onMouseOver={(e) => e.target.style.transform = "scale(1.02)"}
+                        onMouseOut={(e) => e.target.style.transform = "scale(1)"}
+                    >
+                        🎁 ¡CANJEAR PREMIO!
+                    </button>
+                ) : grandPrize?.redeemed ? (
+                    <p className="goal-card__hint" style={{ color: "#20b8a7", fontWeight: "bold", marginTop: "10px" }}>
+                        ✅ ¡Premio canjeado! ¡Enhorabuena!
+                    </p>
+                ) : (
+                    <p className="goal-card__hint">Sigue completando tareas para acercarte a tu meta.</p>
+                )}
             </div>
 
-            {/* TARJETA DEL MINIJUEGO (Aprovechando tus clases CSS) */}
+            {/* TARJETA DEL MINIJUEGO */}
             <div
                 className="goal-card__box"
                 onClick={onMinigameClick}

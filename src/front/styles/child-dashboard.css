@@ -851,3 +851,53 @@
     transform: translateY(0);
   }
 }
+/* Botón de canje del Gran Premio */
+.goal-card__redeem-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background-color: #20b8a7;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(32, 184, 167, 0.4);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.goal-card__redeem-btn:hover {
+    background-color: #1a9e8f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(32, 184, 167, 0.6);
+}
+
+.goal-card__redeem-btn:active {
+    transform: translateY(0);
+}
+.goal-card__redeemed-msg {
+    color: #20b8a7;
+    font-weight: 800;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(32, 184, 167, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Animación opcional para que el botón llame la atención */
+@keyframes pulse-green {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+.goal-card__redeem-btn {
+    animation: pulse-green 2s infinite ease-in-out;
+}

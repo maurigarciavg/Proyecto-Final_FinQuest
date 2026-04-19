@@ -34,20 +34,14 @@ export const ChildDashboard = () => {
             return;
         }
 
-        // 🟢 LÓGICA INFALIBLE DE SUBIDA DE NIVEL (Incluso tras cerrar la app)
         const xpNuevo = result.child.total_earned_coins || 0;
         const nivelNuevo = Math.floor(xpNuevo / 500) + 1;
-        
-        // Usamos una clave única por cada niño para no mezclar progresos
         const storageKey = `last_seen_level_child_${childId}`;
         const nivelVistoAnteriormente = parseInt(localStorage.getItem(storageKey));
 
-        // Detectamos si el nivel actual es mayor al que guardamos en el navegador
         if (nivelVistoAnteriormente && nivelNuevo > nivelVistoAnteriormente) {
             setShowLevelModal(true);
         }
-
-        // Guardamos el nuevo nivel como "visto"
         localStorage.setItem(storageKey, nivelNuevo);
 
         setData(result);
@@ -114,8 +108,6 @@ export const ChildDashboard = () => {
 
             if (response.ok) {
                 await loadData();
-            } else {
-                console.error("Error en la respuesta del servidor al validar tarea");
             }
         } catch (err) {
             console.error("Error de red al completar tarea:", err);
@@ -133,40 +125,34 @@ export const ChildDashboard = () => {
             if (response.ok) {
                 await loadData();
                 setShowRewardModal(false);
+                setRewardToast("🎁 ¡Cupón canjeado con éxito!");
+                setTimeout(() => setRewardToast(null), 3000);
             }
         } catch (err) {
             console.error("Error al canjear recompensa:", err);
         }
     };
 
-    if (error) {
-        return (
-            <div className="child-dashboard">
-                <div className="child-dashboard__container">
-                    <div className="child-dashboard__state">
-                        <div className="child-dashboard__message child-dashboard__message--error">
-                            No se pudo cargar el dashboard del hijo.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    // 🟢 NUEVA FUNCIÓN PARA EL GRAN PREMIO (Igual que la de cupones pero para Grand Prize)
+    const handleRedeemGrandPrize = async (prizeId) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(`${baseUrl}api/grand-prize/${prizeId}/redeem`, { 
+                method: "POST" 
+            });
+            if (response.ok) {
+                confetti({ particleCount: 300, spread: 150, origin: { y: 0.5 } });
+                await loadData();
+                setRewardToast("🏆 ¡ENHORABUENA! Has conseguido tu Gran Premio.");
+                setTimeout(() => setRewardToast(null), 5000);
+            }
+        } catch (err) {
+            console.error("Error al canjear gran premio:", err);
+        }
+    };
 
-    if (!data) {
-        return (
-            <div className="child-dashboard">
-                <div className="child-dashboard__container">
-                    <div className="child-dashboard__state">
-                        <div className="child-dashboard__message">
-                            <div className="child-dashboard__spinner"></div>
-                            <p>Cargando tu progreso...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    if (error) return <div className="child-dashboard">Error cargando dashboard</div>;
+    if (!data) return <div className="child-dashboard">Cargando...</div>;
 
     const { child, tasks, rewards } = data;
 
@@ -216,6 +202,7 @@ export const ChildDashboard = () => {
                                                 const hoy = new Date().getDay();
                                                 const hoyIndex = hoy === 0 ? 6 : hoy - 1;
                                                 return dias.map((dia, index) => {
+                                                    // Lógica para marcar los días activos de la racha
                                                     const diff = hoyIndex - index;
                                                     const activo = diff >= 0 && diff < child.streak;
                                                     return (
@@ -230,7 +217,7 @@ export const ChildDashboard = () => {
                                                 });
                                             })()}
                                         </div>
-                                        <img className="dashboard-streak__coins-image" src={monedas3} alt="Monedas de racha" />
+                                        <img className="dashboard-streak__coins-image" src={monedas3} alt="Monedas" />
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +233,7 @@ export const ChildDashboard = () => {
                                         <h2 className="dashboard-placeholder__title">Tienda</h2>
                                     </div>
                                     <div className="dashboard-shop">
-                                        <img className="dashboard-shop__image" src={tickets} alt="Tickets de tienda" />
+                                        <img className="dashboard-shop__image" src={tickets} alt="Tienda" />
                                         <p className="dashboard-shop__text">Canjea tus monedas</p>
                                     </div>
                                 </div>
@@ -270,6 +257,8 @@ export const ChildDashboard = () => {
                                 }
                                 setShowGameModal(true);
                             }}
+                            // 🟢 Pasamos la función al Gran Premio
+                            onRedeemPrize={() => handleRedeemGrandPrize(child.grand_prize?.id)}
                         />
                     </aside>
                 </main>
@@ -284,37 +273,10 @@ export const ChildDashboard = () => {
 
             {rewardToast && <div className="reward-toast">{rewardToast}</div>}
 
-            {showGameModal && (
-                <GameModal
-                    onClose={() => setShowGameModal(false)}
-                    onGameComplete={handleGameComplete}
-                />
-            )}
-
-            {showRewardModal && (
-                <RewardModal
-                    rewards={rewards}
-                    coins={child.total_coins}
-                    onClose={() => setShowRewardModal(false)}
-                    onRedeem={handleRedeem}
-                />
-            )}
-
-            {showTaskModal && (
-                <TaskModal
-                    tasks={tasks}
-                    onClose={() => setShowTaskModal(false)}
-                    onComplete={handleComplete}
-                />
-            )}
-
-            {/* 🟢 MODAL DE SUBIDA DE NIVEL */}
-            {showLevelModal && (
-                <LevelUpModal 
-                    level={currentLevel} 
-                    onClose={() => setShowLevelModal(false)} 
-                />
-            )}
+            {showGameModal && <GameModal onClose={() => setShowGameModal(false)} onGameComplete={handleGameComplete} />}
+            {showRewardModal && <RewardModal rewards={rewards} coins={child.total_coins} onClose={() => setShowRewardModal(false)} onRedeem={handleRedeem} />}
+            {showTaskModal && <TaskModal tasks={tasks} onClose={() => setShowTaskModal(false)} onComplete={handleComplete} />}
+            {showLevelModal && <LevelUpModal level={currentLevel} onClose={() => setShowLevelModal(false)} />}
         </div>
     );
 };
