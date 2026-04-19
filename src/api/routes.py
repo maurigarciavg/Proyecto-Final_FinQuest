@@ -107,17 +107,21 @@ def get_child_dashboard(child_id):
     dias_map = {0: "L", 1: "M", 2: "X", 3: "J", 4: "V", 5: "S", 6: "D"}
     hoy_letra = dias_map[datetime.now(timezone.utc).weekday()]
 
-    tasks_hoy = []
+    all_serialized_tasks = []
     for t in tasks:
         if t.last_completed and t.last_completed.date() < today:
             if t.status != "pending_validation": t.status = "pending"
-        if hoy_letra in (t.days or ""): tasks_hoy.append(t.serialize())
+        
+        task_data = t.serialize()
+        # Añadimos un flag para que el front sepa si toca hoy, pero enviamos todas
+        task_data["is_today"] = hoy_letra in (t.days or "")
+        all_serialized_tasks.append(task_data)
 
     s_goals = SmallGoal.query.filter_by(child_id=child_id).all()
     db.session.commit()
     return jsonify({
         "child": child.serialize(), 
-        "tasks": tasks_hoy, 
+        "tasks": all_serialized_tasks, 
         "rewards": [sg.serialize() for sg in s_goals]
     }), 200
 
