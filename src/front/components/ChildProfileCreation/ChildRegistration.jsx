@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Avatares
 import avatar1 from "../../assets/img/Profiles/Children/child_9.png";
 import avatar2 from "../../assets/img/Profiles/Children/child_7.png";
 import avatar3 from "../../assets/img/Profiles/Children/child_4.png";
@@ -11,7 +10,7 @@ import { ProgressBar } from "./ProgressBar";
 import "./ChildWizard.css";
 
 export const ChildRegistration = ({ onClose, onNextStep, step }) => {
-    const navigate = useNavigate(); // 👈 navegación
+    const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
@@ -57,7 +56,6 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
 
             {isSuccess ? (
                 <>
-                    {/* VISTA ÉXITO */}
                     <div className="wizard-header text-center pb-0">
                         <h2 className="wizard-title mb-2">¡Perfil Creado!</h2>
                     </div>
@@ -97,11 +95,10 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
                             Sí, asignar primeras tareas
                         </button>
 
-                        {/* 👇 BOTÓN CORREGIDO */}
                         <button
                             className="btn-back"
                             onClick={() => {
-                                onClose(); // opcional si usas modal
+                                onClose();
                                 navigate("/parentadmin");
                             }}
                         >
@@ -111,7 +108,6 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
                 </>
             ) : (
                 <>
-                    {/* FORMULARIO */}
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
 
                         <div className="wizard-header">
@@ -120,7 +116,6 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
 
                         <div className="wizard-body">
 
-                            {/* NOMBRE */}
                             <div style={{ marginBottom: "20px" }}>
                                 <label className="wizard-label">Nombre del perfil</label>
                                 <input
@@ -133,7 +128,6 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
                                 />
                             </div>
 
-                            {/* EDAD Y PIN */}
                             <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
                                 <div style={{ flex: "1" }}>
                                     <label className="wizard-label">Edad</label>
@@ -162,13 +156,12 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
                                 </div>
                             </div>
 
-                            {/* AVATARES */}
                             <div>
                                 <label className="wizard-label" style={{ textAlign: "center", marginLeft: 0 }}>
                                     Selecciona tu avatar
                                 </label>
 
-                                <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "15px" }}>
+                                <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "15px", flexWrap: "wrap" }}>
                                     {avatars.map((av) => (
                                         <img
                                             key={av.id}
@@ -194,7 +187,7 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
                         <div className="wizard-footer">
                             <ProgressBar step={step} />
 
-                            <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
+                            <div className="footer-buttons">
                                 <button type="button" className="btn-back" onClick={() => {
                                     navigate("/parentadmin");
                                 }}>

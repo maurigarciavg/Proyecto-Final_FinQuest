@@ -2,7 +2,8 @@ import React from "react";
 import defaultAvatar from "../assets/img/logo.png";
 import monedasIcon from "../assets/img/monedas.png";
 
-export const ChildHeader = ({ child }) => {
+// Añadimos prizeProgress a las props que recibe el componente
+export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress }) => {
     const avatarSource = child.avatar ? child.avatar : defaultAvatar;
 
     return (
@@ -15,27 +16,34 @@ export const ChildHeader = ({ child }) => {
                     onError={(e) => { e.target.src = defaultAvatar; }}
                 />
                 <div>
-                    <p className="child-topbar__label">Perfil</p>
+                    <p className="child-topbar__label">¡Sigue así!</p>
                     <h2 className="child-topbar__name">{child.name || "Perfil"}</h2>
                 </div>
             </div>
 
             <div className="child-topbar__stats">
-                {/* NIVEL */}
+                {/* BARRA DE NIVEL (Izquierda - XP Acumulado) */}
                 <div className="child-topbar__stat">
                     <div className="child-topbar__stat-head">
                         <span className="child-topbar__stat-title">
-                            Nivel {child.level ?? 1} 👑
+                            Nivel {level} 👑
                         </span>
                     </div>
                     <div className="progress-track">
                         <div
                             className="progress-fill progress-fill--level"
-                            style={{ width: "78%" }}
+                            style={{ 
+                                width: `${progress}%`, 
+                                transition: "width 0.8s ease-in-out" 
+                            }}
                         ></div>
                     </div>
+                    <small style={{ fontSize: "0.75rem", color: "#5a5a5a", marginTop: "4px", display: "block" }}>
+                        Faltan {xpRemaining} 🪙 para el nivel {level + 1}
+                    </small>
                 </div>
 
+                {/* BARRA DE GRAN PREMIO (Derecha - Monedas actuales) */}
                 <div className="child-topbar__stat">
                     <div className="child-topbar__stat-head child-topbar__stat-head--coins">
                         <img
@@ -48,9 +56,13 @@ export const ChildHeader = ({ child }) => {
                         </span>
                     </div>
                     <div className="progress-track">
+                        {/* 🟢 AHORA DINÁMICA: Refleja el progreso real hacia el Gran Premio */}
                         <div
                             className="progress-fill progress-fill--coins"
-                            style={{ width: `${Math.min(child.progress ?? 40, 100)}%` }}
+                            style={{ 
+                                width: `${prizeProgress}%`, 
+                                transition: "width 0.8s ease-in-out" 
+                            }}
                         ></div>
                     </div>
                 </div>
