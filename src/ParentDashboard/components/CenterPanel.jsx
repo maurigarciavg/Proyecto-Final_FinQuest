@@ -8,7 +8,7 @@ const CenterPanel = ({
     pendingTasksCount,
     tasksList = [],
     couponsList = [],
-    grandPrize = null,
+    grandPrize = null, // Viene definido como grandPrize
     onApproveTask,
     onUndoTask,
     onUndoRedeem,
@@ -46,7 +46,8 @@ const CenterPanel = ({
         switch (activeTab) {
             case 'Tareas': return '+ Añadir Tarea';
             case 'Cupones': return '+ Añadir Cupón';
-            case 'Gran Premio': return granPremio ? 'Editar Gran Premio' : '+ Añadir Gran Premio';
+            // CORRECCIÓN AQUÍ: Usamos grandPrize que es la prop real
+            case 'Gran Premio': return grandPrize ? 'Editar Gran Premio' : '+ Añadir Gran Premio';
             default: return `Nuevo ${activeTab}`;
         }
     };
@@ -57,7 +58,6 @@ const CenterPanel = ({
                 <h2>Misiones de {childName}</h2>
             </header>
 
-            {/* SECCIÓN DE PENDIENTES (VALIDACIÓN RÁPIDA) */}
             <section className="pending-status">
                 <div className="status-card">
                     <h4>Pendientes de validar: <strong>{pendingTasksCount}</strong></h4>
@@ -84,7 +84,6 @@ const CenterPanel = ({
                 </div>
             </section>
 
-            {/* GESTIÓN DE MISIONES */}
             <section className="mission-management">
                 <div className="management-grid">
                     <div className='missions-btn' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
@@ -98,7 +97,6 @@ const CenterPanel = ({
                         </button>
                     </div>
 
-                    {/* SUBFILTROS (POR HACER / HECHO) */}
                     <div className="filter-container">
                         <div className="sub-filters-wrapper">
                             <button className={`sub-filter-btn ${subFilter === 'principal' ? 'active' : ''}`} onClick={() => setSubFilter('principal')}>
@@ -111,7 +109,6 @@ const CenterPanel = ({
                     </div>
 
                     <div className='Lista'>
-                        {/* LISTADO DE TAREAS */}
                         {activeTab === 'Tareas' && tasksList
                             .filter(t => subFilter === 'principal' ? (!t.done && t.status !== 'pending_validation') : t.done)
                             .map(t => (
@@ -137,7 +134,6 @@ const CenterPanel = ({
                                 </div>
                             ))}
 
-                        {/* LISTADO DE CUPONES */}
                         {activeTab === 'Cupones' && couponsList
                             .filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed)
                             .map(c => (
@@ -163,7 +159,6 @@ const CenterPanel = ({
                                 </div>
                             ))}
 
-                        {/* GRAN PREMIO */}
                         {activeTab === 'Gran Premio' && grandPrize && (
                             ((subFilter === 'principal' && !grandPrize.redeemed) || (subFilter === 'secundario' && grandPrize.redeemed)) && (
                                 <div className="task-row-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 10px', borderBottom: '1px solid #eee' }}>

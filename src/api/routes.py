@@ -97,7 +97,7 @@ def get_child_dashboard(child_id):
     for t in tasks:
         if t.last_completed and t.last_completed.date() < today:
             if t.status != "pending_validation": t.status = "pending"
-        if hoy_letra in t.days: tasks_hoy.append(t.serialize())
+        if hoy_letra in (t.days or ""): tasks_hoy.append(t.serialize())
 
     s_goals = SmallGoal.query.filter_by(child_id=child_id).all()
     db.session.commit()
@@ -185,7 +185,7 @@ def create_grand_prize(child_id):
     db.session.commit()
     return jsonify({"msg": "Grand Prize created"}), 201
 
-# --- VALIDACIÓN ---
+# --- VALIDACIÓN (ARREGLADO PARA NIÑO Y PADRE) ---
 
 @api.route("/tasks/<int:task_id>/validate", methods=["PATCH"])
 def validate_task(task_id):
@@ -193,14 +193,23 @@ def validate_task(task_id):
     if not task: raise APIException("Task not found", status_code=404)
     data = get_json_payload()
     child = db.session.get(Child, task.child_id)
-    if data.get("approved"):
+
+    # 1. El niño marca la tarea como hecha
+    if data.get("child_done"):
+        task.status = "pending_validation"
+    
+    # 2. El padre aprueba (se suman monedas)
+    elif data.get("approved"):
         child.total_coins += task.coins
         task.status = "completed"
         task.last_completed = datetime.now(timezone.utc)
+    
+    # 3. Si no es ninguna de las anteriores, vuelve a pendiente
     else:
         task.status = "pending"
+
     db.session.commit()
-    return jsonify({"total_coins": child.total_coins}), 200
+    return jsonify({"total_coins": child.total_coins, "task_status": task.status}), 200
 
 # --- RESTO DE RUTAS ---
 

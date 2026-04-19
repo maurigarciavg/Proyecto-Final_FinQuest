@@ -82,16 +82,23 @@ export const ChildDashboard = () => {
         }
     };
 
+    // ✅ FUNCIÓN CORREGIDA: Apunta a /validate y envía child_done
     const handleComplete = async (taskId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
             const response = await fetch(
-                `${baseUrl}api/tasks/${taskId}/complete`,
-                { method: "PATCH" }
+                `${baseUrl}api/tasks/${taskId}/validate`,
+                { 
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ child_done: true })
+                }
             );
 
             if (response.ok) {
                 await loadData();
+            } else {
+                console.error("Error en la respuesta del servidor al marcar tarea");
             }
         } catch (err) {
             console.error("Error al completar tarea:", err);
@@ -147,10 +154,8 @@ export const ChildDashboard = () => {
     const { child, tasks, rewards } = data;
     const hasPlayedToday = (() => {
         if (!child.last_minigame_played_at) return false;
-
         const lastPlayed = new Date(child.last_minigame_played_at);
         const today = new Date();
-
         return lastPlayed.toDateString() === today.toDateString();
     })();
 
