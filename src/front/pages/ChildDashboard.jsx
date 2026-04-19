@@ -64,10 +64,8 @@ export const ChildDashboard = () => {
             spread: 80,
             origin: { y: 0.6 }
         });
-
         setCoinPopup(`+${amount} monedas`);
         setRewardToast(`🎉 ¡Has ganado ${amount} monedas!`);
-
         setTimeout(() => setCoinPopup(null), 1800);
         setTimeout(() => setRewardToast(null), 3200);
     };
@@ -83,7 +81,6 @@ export const ChildDashboard = () => {
                 },
                 body: JSON.stringify({ coins: pointsEarned })
             });
-
             if (response.ok) {
                 await loadData();
                 setShowGameModal(false);
@@ -97,31 +94,21 @@ export const ChildDashboard = () => {
     const handleComplete = async (taskId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
-            const response = await fetch(
-                `${baseUrl}api/tasks/${taskId}/validate`,
-                { 
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ child_done: true })
-                }
-            );
-
-            if (response.ok) {
-                await loadData();
-            }
+            const response = await fetch(`${baseUrl}api/tasks/${taskId}/validate`, { 
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ child_done: true })
+            });
+            if (response.ok) await loadData();
         } catch (err) {
-            console.error("Error de red al completar tarea:", err);
+            console.error("Error al completar tarea:", err);
         }
     };
 
     const handleRedeem = async (rewardId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
-            const response = await fetch(
-                `${baseUrl}api/rewards/${rewardId}/redeem`,
-                { method: "POST" }
-            );
-
+            const response = await fetch(`${baseUrl}api/rewards/${rewardId}/redeem`, { method: "POST" });
             if (response.ok) {
                 await loadData();
                 setShowRewardModal(false);
@@ -133,13 +120,10 @@ export const ChildDashboard = () => {
         }
     };
 
-    // 🟢 NUEVA FUNCIÓN PARA EL GRAN PREMIO (Igual que la de cupones pero para Grand Prize)
     const handleRedeemGrandPrize = async (prizeId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
-            const response = await fetch(`${baseUrl}api/grand-prize/${prizeId}/redeem`, { 
-                method: "POST" 
-            });
+            const response = await fetch(`${baseUrl}api/grand-prize/${prizeId}/redeem`, { method: "POST" });
             if (response.ok) {
                 confetti({ particleCount: 300, spread: 150, origin: { y: 0.5 } });
                 await loadData();
@@ -155,13 +139,11 @@ export const ChildDashboard = () => {
     if (!data) return <div className="child-dashboard">Cargando...</div>;
 
     const { child, tasks, rewards } = data;
-
     const totalXP = child.total_earned_coins || 0;
     const currentLevel = Math.floor(totalXP / 500) + 1;
     const xpInCurrentLevel = totalXP % 500;
     const levelProgress = (xpInCurrentLevel / 500) * 100;
     const xpRemaining = 500 - xpInCurrentLevel;
-
     const goalCoins = child.grand_prize?.coins || 1; 
     const prizeProgress = Math.min((child.total_coins / goalCoins) * 100, 100);
 
@@ -197,25 +179,18 @@ export const ChildDashboard = () => {
                                     </div>
                                     <div className="dashboard-streak">
                                         <div className="dashboard-streak__days">
-                                            {(() => {
-                                                const dias = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+                                            {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((dia, index) => {
                                                 const hoy = new Date().getDay();
                                                 const hoyIndex = hoy === 0 ? 6 : hoy - 1;
-                                                return dias.map((dia, index) => {
-                                                    // Lógica para marcar los días activos de la racha
-                                                    const diff = hoyIndex - index;
-                                                    const activo = diff >= 0 && diff < child.streak;
-                                                    return (
-                                                        <div
-                                                            key={dia}
-                                                            className={`dashboard-streak__day${activo ? " dashboard-streak__day--active" : ""}`}
-                                                        >
-                                                            <span className="dashboard-streak__check">✓</span>
-                                                            <span className="dashboard-streak__label">{dia}</span>
-                                                        </div>
-                                                    );
-                                                });
-                                            })()}
+                                                const diff = hoyIndex - index;
+                                                const activo = diff >= 0 && diff < child.streak;
+                                                return (
+                                                    <div key={dia} className={`dashboard-streak__day${activo ? " dashboard-streak__day--active" : ""}`}>
+                                                        <span className="dashboard-streak__check">✓</span>
+                                                        <span className="dashboard-streak__label">{dia}</span>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                         <img className="dashboard-streak__coins-image" src={monedas3} alt="Monedas" />
                                     </div>
@@ -224,9 +199,8 @@ export const ChildDashboard = () => {
 
                             <div className="dashboard-panel__bottom">
                                 <div
-                                    className="dashboard-placeholder dashboard-placeholder--shop"
+                                    className="dashboard-placeholder dashboard-placeholder--shop card-hover-effect"
                                     onClick={() => setShowRewardModal(true)}
-                                    style={{ cursor: "pointer" }}
                                 >
                                     <div className="dashboard-placeholder__header">
                                         <span className="dashboard-placeholder__badge">{rewards?.length || 0}</span>
@@ -238,7 +212,10 @@ export const ChildDashboard = () => {
                                     </div>
                                 </div>
 
-                                <div onClick={() => setShowTaskModal(true)} style={{ cursor: "pointer" }}>
+                                <div 
+                                    className="task-summary-card card-hover-effect"
+                                    onClick={() => setShowTaskModal(true)} 
+                                >
                                     <TaskSection tasks={tasks} />
                                 </div>
                             </div>
@@ -257,7 +234,6 @@ export const ChildDashboard = () => {
                                 }
                                 setShowGameModal(true);
                             }}
-                            // 🟢 Pasamos la función al Gran Premio
                             onRedeemPrize={() => handleRedeemGrandPrize(child.grand_prize?.id)}
                         />
                     </aside>
