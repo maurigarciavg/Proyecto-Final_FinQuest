@@ -649,6 +649,12 @@
   animation: rewardToastIn 0.35s ease;
 }
 
+.task-summary-card__image {
+    width: 150px;
+    height: auto;
+    object-fit: contain;
+}
+
 @keyframes barShine {
   from { transform: translateX(-100%); }
   to { transform: translateX(100%); }

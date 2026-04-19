@@ -15,9 +15,7 @@ export const TaskSection = ({ tasks }) => {
             </div>
 
             <div className="task-summary-card__content">
-                <div style={{ fontSize: "3.5rem", marginBottom: "10px" }}>
-                    {taskEmoji}
-                </div>
+                <img className="task-summary-card__image" src={tareasImg} alt="Tareas de casa" />
 
                 <p className="task-summary-card__task-name">
                     {firstTask?.title || firstTask?.name || "Pasear al perro"}
