@@ -6,17 +6,22 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = "user"
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
-    role: Mapped[str] = mapped_column(String(20), nullable=False, default="parent")
+    role: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="parent")
     parentalPIN: Mapped[str] = mapped_column(String(4), nullable=True)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), nullable=False, default=True)
 
-    children: Mapped[list["Child"]] = relationship(back_populates="parent", cascade="all, delete-orphan")
+    children: Mapped[list["Child"]] = relationship(
+        back_populates="parent", cascade="all, delete-orphan")
 
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)
@@ -35,6 +40,7 @@ class User(db.Model):
             "children": [child.serialize() for child in self.children] if self.children else []
         }
 
+
 class Child(db.Model):
     __tablename__ = "child"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -47,14 +53,19 @@ class Child(db.Model):
     total_earned_coins: Mapped[int] = mapped_column(Integer, default=0)
     streak: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     last_login_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    parent_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    last_minigame_played_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    parent_id: Mapped[int] = mapped_column(
+        ForeignKey("user.id"), nullable=False)
+    last_minigame_played_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=True)
 
     parent: Mapped["User"] = relationship(back_populates="children")
-    
-    tasks: Mapped[list["Task"]] = relationship(back_populates="child", cascade="all, delete-orphan")
-    small_goals: Mapped[list["SmallGoal"]] = relationship(back_populates="child", cascade="all, delete-orphan")
-    grand_prize: Mapped["GrandPrize"] = relationship(back_populates="child", cascade="all, delete-orphan", uselist=False)
+
+    tasks: Mapped[list["Task"]] = relationship(
+        back_populates="child", cascade="all, delete-orphan")
+    small_goals: Mapped[list["SmallGoal"]] = relationship(
+        back_populates="child", cascade="all, delete-orphan")
+    grand_prize: Mapped["GrandPrize"] = relationship(
+        back_populates="child", cascade="all, delete-orphan", uselist=False)
 
     def serialize(self):
         return {
@@ -64,7 +75,7 @@ class Child(db.Model):
             "pin": self.pin,
             "avatar": self.avatar,
             "total_coins": self.total_coins,
-            "total_earned_coins": self.total_earned_coins, # 🟢 Enviado al frontend
+            "total_earned_coins": self.total_earned_coins,  # 🟢 Enviado al frontend
             "streak": self.streak,
             "parent_id": self.parent_id,
             "small_goals": [goal.serialize() for goal in self.small_goals] if self.small_goals else [],
@@ -72,27 +83,31 @@ class Child(db.Model):
             "last_minigame_played_at": self.last_minigame_played_at.isoformat() if self.last_minigame_played_at else None,
         }
 
+
 class Task(db.Model):
     __tablename__ = "task"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     coins: Mapped[int] = mapped_column(Integer, nullable=False)
-    days: Mapped[str] = mapped_column(String(100), nullable=False) 
-    status: Mapped[str] = mapped_column(String(50), default="pending") 
+    days: Mapped[str] = mapped_column(String(100), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default="pending")
     last_completed: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    child_id: Mapped[int] = mapped_column(ForeignKey("child.id"), nullable=False)
-    
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("child.id"), nullable=False)
+
     child: Mapped["Child"] = relationship(back_populates="tasks")
 
     def serialize(self):
         from datetime import datetime, timedelta
         days_map = {"L": 0, "M": 1, "X": 2, "J": 3, "V": 4, "S": 5, "D": 6}
-        task_days = [days_map[d] for d in self.days.split(",") if d in days_map]
+        task_days = [days_map[d]
+                     for d in self.days.split(",") if d in days_map]
         next_date = None
         if task_days:
             today = datetime.now().date()
             current_weekday = today.weekday()  # 0=lunes
-            next_day = min((d for d in task_days if d >= current_weekday), default=None)
+            next_day = min((d for d in task_days if d >=
+                           current_weekday), default=None)
             if next_day is None:
                 next_day = min(task_days)
                 days_ahead = (next_day - current_weekday) % 7 + 7
@@ -110,13 +125,15 @@ class Task(db.Model):
             "date": next_date.isoformat() if next_date else None
         }
 
+
 class SmallGoal(db.Model):
     __tablename__ = "small_goal"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     coins: Mapped[int] = mapped_column(Integer, nullable=False)
-    child_id: Mapped[int] = mapped_column(ForeignKey("child.id"), nullable=False)
-    
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("child.id"), nullable=False)
+
     child: Mapped["Child"] = relationship(back_populates="small_goals")
 
     def serialize(self):
@@ -127,14 +144,16 @@ class SmallGoal(db.Model):
             "child_id": self.child_id
         }
 
+
 class GrandPrize(db.Model):
     __tablename__ = "grand_prize"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     coins: Mapped[int] = mapped_column(Integer, nullable=False)
     image_url: Mapped[str] = mapped_column(String(255), nullable=True)
-    child_id: Mapped[int] = mapped_column(ForeignKey("child.id"), nullable=False)
-    
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("child.id"), nullable=False)
+
     child: Mapped["Child"] = relationship(back_populates="grand_prize")
 
     def serialize(self):
@@ -146,12 +165,14 @@ class GrandPrize(db.Model):
             "child_id": self.child_id
         }
 
+
 class Reward(db.Model):
     __tablename__ = "reward"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     cost: Mapped[int] = mapped_column(Integer, nullable=False)
-    child_id: Mapped[int] = mapped_column(ForeignKey("child.id"), nullable=False)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("child.id"), nullable=False)
 
     def serialize(self):
         return {

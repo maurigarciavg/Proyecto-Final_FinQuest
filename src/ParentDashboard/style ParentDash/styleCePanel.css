@@ -75,3 +75,117 @@ h4 {
   transition: all 0.3s ease;
   color: white;
 }
+
+
+
+/* CARDS DE TAREAS */
+
+/* Contenedor de la lista en 3 columnas */
+.Lista {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* Tarjeta ajustada a la nueva estructura vertical */
+.task-card-item {
+    display: flex;
+    flex-direction: column; /* Apilamos los bloques hacia abajo */
+    padding: 14px;
+    background-color: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f1f1;
+    transition: all 0.2s ease;
+}
+
+/* FILA 1: Icono y Texto al lado */
+.task-card-left {
+    display: flex;
+    flex-direction: row;
+    /* Esto asegura que tanto icono como bloque de texto compartan el mismo centro */
+    align-items: center; 
+    gap: 12px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.task-icon-container {
+    font-size: 3rem; 
+    display: flex;
+    /* Alineación vertical: 'center' lo centra respecto al texto de al lado */
+    align-items: center; 
+    /* Alineación horizontal: 'flex-start' lo pega a la izquierda (arriba en el flujo) */
+    
+    justify-content: flex-start; 
+    /* Evita que el icono se encoja si el texto es muy largo */
+    flex-shrink: 0; 
+}
+
+.task-info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-title {
+    font-weight: 700;
+    font-size: 15px; /* Tamaño solicitado */
+    color: #2d3748;
+    line-height: 1.2;
+}
+
+.task-date {
+    color: #a0aec0;
+    font-size: 10px; /* Tamaño solicitado */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* FILA 2 Y 3: Debajo del bloque anterior */
+.task-card-right {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start; /* Alineado a la izquierda para seguir el flujo del texto */
+    gap: 12px;
+    width: 100%;
+}
+
+/* Monedas debajo del texto */
+.task-coins {
+    display: flex;  
+    gap: 6px;
+    font-weight: 800;
+    font-size: 16px !important; /* Tamaño solicitado */
+    color: #f39c12 !important;
+}
+
+/* Botones debajo de las monedas */
+.task-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* Botones circulares */
+.btn-action {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-edit { background-color: #14b8a6; }
+.btn-delete { background-color: #ff5c5c; }
+.btn-undo { background-color: #6366f1; }

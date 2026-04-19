@@ -130,73 +130,122 @@ const CenterPanel = ({
                     </div>
 
                     <div className='Lista'>
+                        {/* SECCIÓN TAREAS */}
                         {activeTab === 'Tareas' && tasksList
                             .filter(t => subFilter === 'principal' ? (!t.done && t.status !== 'pending_validation') : t.done)
                             .map(t => (
-                                <div key={t.id} className="task-row-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 10px', borderBottom: '1px solid #eee' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <span style={{ fontSize: '1.6rem' }}>{getTaskIcon(t.title)}</span>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span style={{ fontWeight: '600' }}>{t.title}</span>
-                                            <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
+                                <div key={t.id} className="task-card-item">
+                                    {/* FILA 1: Icono y Texto en horizontal */}
+                                    <div className="task-card-left">
+                                        <div className="task-icon-container">
+                                            {getTaskIcon(t.title)}
+                                        </div>
+                                        <div className="task-info-text">
+                                            <span className="task-title">{t.title}</span>
+                                            <span className="task-date">
+                                                <i className="fa-regular fa-calendar"></i> {formatDate(t.date)}
+                                            </span>
+                                            <div className="task-coins">
+                                                <span>🪙</span> {t.points}
+                                            </div>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <span>🪙 {t.points}</span>
-                                        {subFilter === 'principal' ? (
-                                            <div style={{ display: 'flex', gap: '8px' }}>
-                                                <button onClick={() => onEditItem(t, 'Tareas')} style={{ background: '#f0fdfa', border: 'none', color: '#32a89b', padding: '8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-pen"></i></button>
-                                                <button onClick={() => onDeleteItem(t.id, 'Tareas')} style={{ background: '#fef2f2', border: 'none', color: '#ef4444', padding: '8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-trash"></i></button>
-                                            </div>
-                                        ) : (
-                                            <button onClick={() => onUndoTask(t.id)} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>
-                                        )}
+
+                                    {/* BLOQUE INFERIOR: Monedas y luego Acciones */}
+                                    <div className="task-card-right">
+                                       
+                                        <div className="task-actions">
+                                            {subFilter === 'principal' ? (
+                                                <>
+                                                    <button className="btn-action btn-edit" onClick={() => onEditItem(t, 'Tareas')}>
+                                                        <i className="fa-solid fa-pen"></i>
+                                                    </button>
+                                                    <button className="btn-action btn-delete" onClick={() => onDeleteItem(t.id, 'Tareas')}>
+                                                        <i className="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button className="btn-action btn-undo" onClick={() => onUndoTask(t.id)}>
+                                                    <i className="fa-solid fa-rotate-left"></i>
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             ))}
 
+                        {/* SECCIÓN CUPONES */}
                         {activeTab === 'Cupones' && couponsList
                             .filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed)
                             .map(c => (
-                                <div key={c.id} className="task-row-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 10px', borderBottom: '1px solid #eee' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <span style={{ fontSize: '1.6rem' }}>{getCouponIcon(c.name)}</span>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span style={{ fontWeight: '600' }}>{c.name}</span>
-                                            <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(c.date)}</span>
+                                <div key={c.id} className="task-card-item">
+                                    <div className="task-card-left">
+                                        <div className="task-icon-container">
+                                            {getCouponIcon(c.name)}
+                                        </div>
+                                        <div className="task-info-text">
+                                            <span className="task-title">{c.name}</span>
+                                            <span className="task-date">Disponible</span>
+                                             <div className="task-coins">
+                                            <span>🪙</span> {c.coins}
+                                        </div>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <span>🪙 {c.coins}</span>
-                                        {subFilter === 'principal' ? (
-                                            <div style={{ display: 'flex', gap: '8px' }}>
-                                                <button onClick={() => onEditItem(c, 'Cupones')} style={{ background: '#f0fdfa', border: 'none', color: '#32a89b', padding: '8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-pen"></i></button>
-                                                <button onClick={() => onDeleteItem(c.id, 'Cupones')} style={{ background: '#fef2f2', border: 'none', color: '#ef4444', padding: '8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-trash"></i></button>
-                                            </div>
-                                        ) : (
-                                            <button onClick={() => onUndoRedeem(c.id, 'coupon')} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>
-                                        )}
+                                    <div className="task-card-right">
+                                       
+                                        <div className="task-actions">
+                                            {subFilter === 'principal' ? (
+                                                <>
+                                                    <button className="btn-action btn-edit" onClick={() => onEditItem(c, 'Cupones')}>
+                                                        <i className="fa-solid fa-pen"></i>
+                                                    </button>
+                                                    <button className="btn-action btn-delete" onClick={() => onDeleteItem(c.id, 'Cupones')}>
+                                                        <i className="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button className="btn-action btn-undo" onClick={() => onUndoRedeem(c.id, 'coupon')}>
+                                                    <i className="fa-solid fa-rotate-left"></i>
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             ))}
 
+                        {/* SECCIÓN GRAN PREMIO */}
                         {activeTab === 'Gran Premio' && grandPrize && (
                             ((subFilter === 'principal' && !grandPrize.redeemed) || (subFilter === 'secundario' && grandPrize.redeemed)) && (
-                                <div className="task-row-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 10px', borderBottom: '1px solid #eee' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <span style={{ fontSize: '1.6rem' }}>{getGrandPrizeIcon(grandPrize.name)}</span>
-                                        <span style={{ fontWeight: '600' }}>{grandPrize.name}</span>
+                                <div className="task-card-item">
+                                    <div className="task-card-left">
+                                        <div className="task-icon-container">
+                                            {getGrandPrizeIcon(grandPrize.name)}
+                                        </div>
+                                        <div className="task-info-text">
+                                            <span className="task-title">{grandPrize.name}</span>
+                                            <span className="task-date">¡Objetivo Final!</span>
+                                        </div>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <span>🪙 {grandPrize.coins}</span>
-                                        {subFilter === 'principal' ? (
-                                            <div style={{ display: 'flex', gap: '8px' }}>
-                                                <button onClick={() => onEditItem(grandPrize, 'Gran Premio')} style={{ background: '#f0fdfa', border: 'none', color: '#32a89b', padding: '8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-pen"></i></button>
-                                                <button onClick={() => onDeleteItem(grandPrize.id, 'Gran Premio')} style={{ background: '#fef2f2', border: 'none', color: '#ef4444', padding: '8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-trash"></i></button>
-                                            </div>
-                                        ) : (
-                                            <button onClick={() => onUndoRedeem(grandPrize.id, 'prize')} style={undoButtonStyle}><i className="fa-solid fa-rotate-left"></i></button>
-                                        )}
+                                    <div className="task-card-right">
+                                        <div className="task-coins">
+                                            <span>🪙</span> {grandPrize.coins}
+                                        </div>
+                                        <div className="task-actions">
+                                            {subFilter === 'principal' ? (
+                                                <>
+                                                    <button className="btn-action btn-edit" onClick={() => onEditItem(grandPrize, 'Gran Premio')}>
+                                                        <i className="fa-solid fa-pen"></i>
+                                                    </button>
+                                                    <button className="btn-action btn-delete" onClick={() => onDeleteItem(grandPrize.id, 'Gran Premio')}>
+                                                        <i className="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button className="btn-action btn-undo" onClick={() => onUndoRedeem(grandPrize.id, 'prize')}>
+                                                    <i className="fa-solid fa-rotate-left"></i>
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             )
