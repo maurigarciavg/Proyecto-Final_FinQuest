@@ -1,5 +1,5 @@
 import React from "react";
-import tickets from "../assets/img/tickets.png";
+import { getCouponIcon } from "../Utils/getTaskIcon";
 
 export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
     return (
@@ -13,7 +13,7 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
                     {rewards && rewards.length > 0 ? (
                         rewards.map(reward => (
                             <div key={reward.id} className="task-modal__item">
-                                <img className="task-modal__item-image" src={tickets} alt="cupón" />
+                                <span className="task-modal__item-image">{getCouponIcon(reward.name)}</span>
 
                                 <div className="task-modal__item-info">
                                     <p className="task-modal__item-name">{reward.name}</p>
@@ -21,11 +21,10 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
                                 </div>
 
                                 <button
-                                    className={`task-modal__item-btn ${
-                                        coins < reward.coins
+                                    className={`task-modal__item-btn ${coins < reward.coins
                                             ? "task-modal__item-btn--disabled"
                                             : ""
-                                    }`}
+                                        }`}
                                     onClick={() => {
                                         if (coins >= reward.coins) {
                                             onRedeem(reward.id);

@@ -1,6 +1,7 @@
 import React from "react";
 import { getTaskIcon } from "../Utils/getTaskIcon"; // Importa tu función
 import coin from "../assets/img/coin.png";
+import tareasImg from "../assets/img/Tareas de casa.png";
 
 export const TaskSection = ({ tasks }) => {
     const firstTask = tasks?.[0];
@@ -16,9 +17,7 @@ export const TaskSection = ({ tasks }) => {
 
             <div className="task-summary-card__content">
                 {/* 🟢 Cambio: Usamos un span con el emoji en lugar del <img> del perro */}
-                <div className="task-summary-card__emoji-container" style={{ fontSize: "3.5rem", marginBottom: "10px" }}>
-                    {taskEmoji}
-                </div>
+                <img className="task-summary-card__image" src={tareasImg} alt="Tareas de casa" />
 
                 <p className="task-summary-card__task-name">
                     {firstTask?.title || firstTask?.name || "Pasear al perro"}
