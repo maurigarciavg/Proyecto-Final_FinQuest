@@ -45,6 +45,7 @@ def get_current_user():
 # --- RUTAS DE AUTENTICACIÓN ---
 
 @api.route("/signup", methods=["POST"])
+@api.route("/sign-up", methods=["POST"])
 def sign_up():
     data = get_json_payload()
     email = data.get("email", "").strip().lower()
@@ -62,7 +63,6 @@ def sign_up():
     db.session.commit()
     return build_auth_response(new_user, 201, "User created")
 
-# Unificamos las rutas de signin para evitar errores 405
 @api.route("/sign-in", methods=["POST"])
 @api.route("/signin", methods=["POST"])
 def sign_in():
@@ -80,6 +80,28 @@ def sign_in():
 def me():
     user = get_current_user()
     return jsonify({"user": user.serialize()}), 200
+
+# --- GESTIÓN DE HIJOS (WIZARD) ---
+
+@api.route("/parent/<int:parent_id>/child", methods=["POST"])
+@jwt_required()
+def create_child(parent_id):
+    data = get_json_payload()
+    
+    new_child = Child(
+        name=data.get("name"),
+        age=data.get("age"),
+        pin=data.get("pin"),
+        avatar=data.get("avatar", "default_avatar.png"),
+        parent_id=parent_id,
+        total_coins=0,
+        total_earned_coins=0 # XP inicializado
+    )
+    
+    db.session.add(new_child)
+    db.session.commit()
+    
+    return jsonify(new_child.serialize()), 201
 
 # --- DASHBOARD DEL NIÑO ---
 
@@ -129,34 +151,10 @@ def handle_single_task(task_id):
         db.session.commit()
         return jsonify(task.serialize()), 200
 
-@api.route("/small-goals/<int:goal_id>", methods=["DELETE", "PATCH"])
-def handle_single_goal(goal_id):
-    goal = db.session.get(SmallGoal, goal_id)
-    if not goal: return jsonify({"msg": "Not found"}), 404
-
-    if request.method == "DELETE":
-        db.session.delete(goal)
-        db.session.commit()
-        return jsonify({"msg": "Deleted"}), 200
-    
-    if request.method == "PATCH":
-        data = get_json_payload()
-        goal.name = data.get("name", goal.name)
-        goal.coins = data.get("coins", goal.coins)
-        db.session.commit()
-        return jsonify(goal.serialize()), 200
-
-@api.route("/grand-prize/<int:prize_id>", methods=["DELETE"])
-def delete_grand_prize(prize_id):
-    prize = db.session.get(GrandPrize, prize_id)
-    if not prize: return jsonify({"msg": "Not found"}), 404
-    db.session.delete(prize)
-    db.session.commit()
-    return jsonify({"msg": "Deleted"}), 200
-
 # --- CREACIÓN MASIVA ---
 
 @api.route("/child/<int:child_id>/tasks", methods=["POST"])
+@jwt_required()
 def create_tasks(child_id):
     data = get_json_payload()
     for item in data:
@@ -168,6 +166,7 @@ def create_tasks(child_id):
     return jsonify({"msg": "Tasks created"}), 201
 
 @api.route("/child/<int:child_id>/small-goals", methods=["POST"])
+@jwt_required()
 def create_small_goals(child_id):
     data = get_json_payload()
     for goal_data in data:
@@ -177,15 +176,21 @@ def create_small_goals(child_id):
     return jsonify({"msg": "Goals created"}), 201
 
 @api.route("/child/<int:child_id>/grand-prize", methods=["POST"])
+@jwt_required()
 def create_grand_prize(child_id):
     data = get_json_payload()
     GrandPrize.query.filter_by(child_id=child_id).delete()
-    new_prize = GrandPrize(name=data.get("name"), coins=data.get("coins"), image_url=data.get("image_url", ""), child_id=child_id)
+    new_prize = GrandPrize(
+        name=data.get("name"), 
+        coins=data.get("coins"), 
+        image_url=data.get("image_url", ""), 
+        child_id=child_id
+    )
     db.session.add(new_prize)
     db.session.commit()
     return jsonify({"msg": "Grand Prize created"}), 201
 
-# --- VALIDACIÓN (ARREGLADO PARA NIÑO Y PADRE) ---
+# --- VALIDACIÓN (NIVELES INTEGRADOS) ---
 
 @api.route("/tasks/<int:task_id>/validate", methods=["PATCH"])
 def validate_task(task_id):
@@ -194,26 +199,52 @@ def validate_task(task_id):
     data = get_json_payload()
     child = db.session.get(Child, task.child_id)
 
-    # 1. El niño marca la tarea como hecha
     if data.get("child_done"):
         task.status = "pending_validation"
     
-    # 2. El padre aprueba (se suman monedas)
     elif data.get("approved"):
-        child.total_coins += task.coins
+        child.total_coins += task.coins 
+        child.total_earned_coins += task.coins # XP para subir de nivel
+        
         task.status = "completed"
         task.last_completed = datetime.now(timezone.utc)
     
-    # 3. Si no es ninguna de las anteriores, vuelve a pendiente
     else:
         task.status = "pending"
 
     db.session.commit()
-    return jsonify({"total_coins": child.total_coins, "task_status": task.status}), 200
+    return jsonify({
+        "total_coins": child.total_coins, 
+        "total_earned_coins": child.total_earned_coins,
+        "task_status": task.status
+    }), 200
+
+# --- RUTA PARA MONEDAS DE MINIJUEGOS ---
+
+@api.route("/child/<int:child_id>/add-coins", methods=["POST"])
+@jwt_required()
+def add_minigame_coins(child_id):
+    child = db.session.get(Child, child_id)
+    if not child: raise APIException("Child not found", status_code=404)
+    
+    data = get_json_payload()
+    points = int(data.get("coins", 0))
+    
+    if points > 0:
+        child.total_coins += points
+        child.total_earned_coins += points
+        child.last_minigame_played_at = datetime.now(timezone.utc)
+        db.session.commit()
+        
+    return jsonify({
+        "total_coins": child.total_coins,
+        "total_earned_coins": child.total_earned_coins
+    }), 200
 
 # --- RESTO DE RUTAS ---
 
 @api.route("/parent/<int:parent_id>/children", methods=["GET"])
+@jwt_required()
 def get_children(parent_id):
     children = Child.query.filter_by(parent_id=parent_id).all()
     return jsonify([child.serialize() for child in children]), 200

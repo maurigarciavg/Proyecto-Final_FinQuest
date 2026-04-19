@@ -82,7 +82,6 @@ export const ChildDashboard = () => {
         }
     };
 
-    // ✅ FUNCIÓN CORREGIDA: Apunta a /validate y envía child_done
     const handleComplete = async (taskId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
@@ -98,10 +97,10 @@ export const ChildDashboard = () => {
             if (response.ok) {
                 await loadData();
             } else {
-                console.error("Error en la respuesta del servidor al marcar tarea");
+                console.error("Error en la respuesta del servidor al validar tarea");
             }
         } catch (err) {
-            console.error("Error al completar tarea:", err);
+            console.error("Error de red al completar tarea:", err);
         }
     };
 
@@ -152,6 +151,18 @@ export const ChildDashboard = () => {
     }
 
     const { child, tasks, rewards } = data;
+
+    // --- LÓGICA DE CÁLCULOS (NIVEL Y MONEDAS) ---
+    const totalXP = child.total_earned_coins || 0;
+    const currentLevel = Math.floor(totalXP / 500) + 1;
+    const xpInCurrentLevel = totalXP % 500;
+    const levelProgress = (xpInCurrentLevel / 500) * 100;
+    const xpRemaining = 500 - xpInCurrentLevel;
+
+    // 🟢 Cálculo para el progreso del Gran Premio (usado en Header y GoalSection)
+    const goalCoins = child.grand_prize?.coins || 1; 
+    const prizeProgress = Math.min((child.total_coins / goalCoins) * 100, 100);
+
     const hasPlayedToday = (() => {
         if (!child.last_minigame_played_at) return false;
         const lastPlayed = new Date(child.last_minigame_played_at);
@@ -162,14 +173,18 @@ export const ChildDashboard = () => {
     return (
         <div className="child-dashboard">
             <div className="child-dashboard__container">
-                <ChildHeader child={child} />
+                <ChildHeader 
+                    child={child} 
+                    level={currentLevel} 
+                    progress={levelProgress} 
+                    xpRemaining={xpRemaining}
+                    prizeProgress={prizeProgress} 
+                />
 
                 <main className="child-dashboard__content">
                     <section className="child-dashboard__left">
                         <div className="dashboard-panel">
-                            <h1 className="dashboard-panel__title">
-                                ¡Hola, {child.name}!
-                            </h1>
+                            <h1 className="dashboard-panel__title">¡Hola, {child.name}!</h1>
 
                             <div className="dashboard-panel__top">
                                 <div className="dashboard-placeholder dashboard-placeholder--streak">
@@ -178,18 +193,15 @@ export const ChildDashboard = () => {
                                             Tu racha de {child.streak} {child.streak === 1 ? "día" : "días"} 🔥
                                         </h2>
                                     </div>
-
                                     <div className="dashboard-streak">
                                         <div className="dashboard-streak__days">
                                             {(() => {
                                                 const dias = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
                                                 const hoy = new Date().getDay();
                                                 const hoyIndex = hoy === 0 ? 6 : hoy - 1;
-
                                                 return dias.map((dia, index) => {
                                                     const diff = hoyIndex - index;
                                                     const activo = diff >= 0 && diff < child.streak;
-
                                                     return (
                                                         <div
                                                             key={dia}
@@ -202,12 +214,7 @@ export const ChildDashboard = () => {
                                                 });
                                             })()}
                                         </div>
-
-                                        <img
-                                            className="dashboard-streak__coins-image"
-                                            src={monedas3}
-                                            alt="Monedas de racha"
-                                        />
+                                        <img className="dashboard-streak__coins-image" src={monedas3} alt="Monedas de racha" />
                                     </div>
                                 </div>
                             </div>
@@ -219,26 +226,16 @@ export const ChildDashboard = () => {
                                     style={{ cursor: "pointer" }}
                                 >
                                     <div className="dashboard-placeholder__header">
-                                        <span className="dashboard-placeholder__badge">
-                                            {rewards?.length || 0}
-                                        </span>
+                                        <span className="dashboard-placeholder__badge">{rewards?.length || 0}</span>
                                         <h2 className="dashboard-placeholder__title">Tienda</h2>
                                     </div>
-
                                     <div className="dashboard-shop">
-                                        <img
-                                            className="dashboard-shop__image"
-                                            src={tickets}
-                                            alt="Tickets de tienda"
-                                        />
+                                        <img className="dashboard-shop__image" src={tickets} alt="Tickets de tienda" />
                                         <p className="dashboard-shop__text">Canjea tus monedas</p>
                                     </div>
                                 </div>
 
-                                <div
-                                    onClick={() => setShowTaskModal(true)}
-                                    style={{ cursor: "pointer" }}
-                                >
+                                <div onClick={() => setShowTaskModal(true)} style={{ cursor: "pointer" }}>
                                     <TaskSection tasks={tasks} />
                                 </div>
                             </div>
@@ -248,13 +245,13 @@ export const ChildDashboard = () => {
                     <aside className="child-dashboard__right">
                         <GoalSection
                             child={child}
+                            prizeProgress={prizeProgress}
                             onMinigameClick={() => {
                                 if (hasPlayedToday) {
                                     setRewardToast("⏳ Ya has jugado hoy. Vuelve mañana.");
                                     setTimeout(() => setRewardToast(null), 3000);
                                     return;
                                 }
-
                                 setShowGameModal(true);
                             }}
                         />
@@ -269,11 +266,7 @@ export const ChildDashboard = () => {
                 </div>
             )}
 
-            {rewardToast && (
-                <div className="reward-toast">
-                    {rewardToast}
-                </div>
-            )}
+            {rewardToast && <div className="reward-toast">{rewardToast}</div>}
 
             {showGameModal && (
                 <GameModal

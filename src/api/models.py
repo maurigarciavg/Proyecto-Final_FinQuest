@@ -43,10 +43,12 @@ class Child(db.Model):
     pin: Mapped[str] = mapped_column(String(4), nullable=False)
     avatar: Mapped[str] = mapped_column(String(255), nullable=True)
     total_coins: Mapped[int] = mapped_column(Integer, default=0)
+    # 🟢 NUEVA COLUMNA: XP acumulado para niveles
+    total_earned_coins: Mapped[int] = mapped_column(Integer, default=0)
     streak: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     last_login_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     parent_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    last_minigame_played_at = db.Column(db.DateTime, nullable=True)
+    last_minigame_played_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
     parent: Mapped["User"] = relationship(back_populates="children")
     
@@ -62,6 +64,7 @@ class Child(db.Model):
             "pin": self.pin,
             "avatar": self.avatar,
             "total_coins": self.total_coins,
+            "total_earned_coins": self.total_earned_coins, # 🟢 Enviado al frontend
             "streak": self.streak,
             "parent_id": self.parent_id,
             "small_goals": [goal.serialize() for goal in self.small_goals] if self.small_goals else [],

@@ -29,11 +29,9 @@ export const ChildWizard = ({ onClose }) => {
     const handleBack = () => setStep(prev => prev - 1);
 
     const handleTransitionToSummary = (finalGrandPrizeData) => {
-        // Creamos la versión final de los datos localmente
         const finalData = { ...formData, grandPrize: finalGrandPrizeData };
         setFormData(finalData);
         setStep(5);
-        // Enviamos la variable local 'finalData' para asegurar que el backend reciba todo
         handleFinalSubmit(finalData);
     };
 
@@ -42,49 +40,49 @@ export const ChildWizard = ({ onClose }) => {
         setSaveError(null);
 
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        // Importante: Asegúrate de que esta clave coincide con la que usas en el resto de la App
         const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
         const token = session.token;
+        const user = session.user;
 
-        // CAMBIA ESTA LÍNEA:
-        const user = session.user; // Antes decía 'userObject'
-
-        // Ahora esto ya no fallará
         if (!user?.id) {
-            setSaveError("No se encontró la sesión del usuario.");
+            setSaveError("No se encontró la sesión del usuario. Por favor, vuelve a iniciar sesión.");
             setIsSaving(false);
             return;
         }
 
         const headers = {
             "Content-Type": "application/json",
-            ...(token && { "Authorization": `Bearer ${token}` })
+            "Authorization": `Bearer ${token}`
         };
 
         try {
             // 👶 1. Crear el Perfil del Niño
+            // USAMOS LA RUTA CORRECTA: /api/parent/ID/child
             const childInfo = fullData.child?.child || fullData.child;
             const childPayload = {
                 name: childInfo.name,
                 age: parseInt(childInfo.age) || 0,
-                pin: childInfo.pin?.toString(), // Aseguramos que sea string
+                pin: childInfo.pin?.toString(),
                 avatar: childInfo.avatar || "default_avatar.png"
             };
 
-            const childResponse = await fetch(`${baseUrl}api/child/${user.id}`, {
+            const childResponse = await fetch(`${baseUrl}api/parent/${user.id}/child`, {
                 method: "POST",
                 headers: headers,
                 body: JSON.stringify(childPayload)
             });
 
             if (!childResponse.ok) {
-                const errorData = await childResponse.json();
-                throw new Error(errorData.message || "Error al crear el perfil del niño.");
+                // Si falla, intentamos leer el error del JSON, si no, capturamos el texto
+                const errorData = await childResponse.json().catch(() => null);
+                throw new Error(errorData?.message || "Error 405/500: La ruta de creación no existe o está mal configurada.");
             }
 
             const childResult = await childResponse.json();
-            const childId = childResult.child.id;
+            const childId = childResult.id;
 
-            // 🛠️ 2. Guardado masivo paralelo (Tasks, Goals, Prize)
+            // 🛠️ 2. Guardado masivo (Tasks, Goals, Prize)
             const requests = [
                 fetch(`${baseUrl}api/child/${childId}/tasks`, {
                     method: "POST",
@@ -98,7 +96,6 @@ export const ChildWizard = ({ onClose }) => {
                 })
             ];
 
-            // Solo agregamos el Gran Premio si existe
             if (fullData.grandPrize) {
                 requests.push(
                     fetch(`${baseUrl}api/child/${childId}/grand-prize`, {
@@ -116,29 +113,26 @@ export const ChildWizard = ({ onClose }) => {
             const responses = await Promise.all(requests);
 
             if (responses.some(r => !r.ok)) {
-                throw new Error("El perfil se creó, pero hubo un error guardando las tareas o premios.");
+                throw new Error("El niño se creó, pero falló el guardado de misiones o premios.");
             }
 
-            // Si todo va bien, quitamos el estado de "Cargando"
-            const meResponse = await fetch(`${baseUrl}api/me`, {
-                headers: headers // Usa la variable que definiste en la línea 55
-            });
+            // 🔄 Actualizamos el estado global para que el padre vea al nuevo niño inmediatamente
+            const meResponse = await fetch(`${baseUrl}api/me`, { headers });
             if (meResponse.ok) {
                 const meData = await meResponse.json();
                 dispatch({ type: "auth_success", payload: { token, user: meData.user } });
             }
+
             setIsSaving(false);
 
-            // Redirección con éxito
+            // Éxito: cerramos y navegamos
             setTimeout(() => {
-                if (onClose && typeof onClose === "function") {
-                    onClose();
-                }
+                if (onClose) onClose();
                 navigate("/parentadmin");
-            }, 2000);
+            }, 1500);
 
         } catch (error) {
-            console.error("❌ ERROR CRÍTICO:", error.message);
+            console.error("❌ ERROR EN EL WIZARD:", error.message);
             setSaveError(error.message);
             setIsSaving(false);
         }
