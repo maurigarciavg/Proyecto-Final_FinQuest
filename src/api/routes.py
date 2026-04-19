@@ -62,13 +62,24 @@ def sign_up():
     db.session.commit()
     return build_auth_response(new_user, 201, "User created")
 
+# Unificamos las rutas de signin para evitar errores 405
+@api.route("/sign-in", methods=["POST"])
 @api.route("/signin", methods=["POST"])
 def sign_in():
     data = get_json_payload()
-    user = User.query.filter_by(email=data.get("email")).one_or_none()
-    if user is None or not user.check_password(data.get("password")):
+    email = data.get("email", "").strip().lower()
+    password = data.get("password", "")
+    
+    user = User.query.filter_by(email=email).one_or_none()
+    if user is None or not user.check_password(password):
         raise APIException("Wrong email or password", status_code=401)
     return build_auth_response(user, 200, "Sign in successful")
+
+@api.route("/me", methods=["GET"])
+@jwt_required()
+def me():
+    user = get_current_user()
+    return jsonify({"user": user.serialize()}), 200
 
 # --- DASHBOARD DEL NIÑO ---
 
@@ -90,7 +101,11 @@ def get_child_dashboard(child_id):
 
     s_goals = SmallGoal.query.filter_by(child_id=child_id).all()
     db.session.commit()
-    return jsonify({"child": child.serialize(), "tasks": tasks_hoy, "rewards": [sg.serialize() for sg in s_goals]}), 200
+    return jsonify({
+        "child": child.serialize(), 
+        "tasks": tasks_hoy, 
+        "rewards": [sg.serialize() for sg in s_goals]
+    }), 200
 
 # --- GESTIÓN INDIVIDUAL (BORRAR Y EDITAR) ---
 
