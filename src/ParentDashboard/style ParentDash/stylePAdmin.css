@@ -17,11 +17,11 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: stretch; 
+  align-items: stretch;
   gap: 24px;
   max-width: 1400px;
   margin: 0 auto;
-  min-height: calc(100vh - 4rem); 
+  min-height: calc(100vh - 4rem);
   /* background-color: #eef9f7;  <- Opcional, si quieres ver el fondo del contenedor */
 }
 
@@ -39,10 +39,16 @@
 }
 
 .panel-center {
-  flex: 1; /* Toma el espacio restante (aprox 50%) */
+  flex: 1; /* Toma el espacio restante (aprox 55%) */
+  min-width: 0; /* Permite que el contenido se encoja dentro del layout flex */
   display: flex;
   flex-direction: column;
   /* Eliminamos padding lateral aquí para que la card controle el espaciado interno */
+}
+
+.panel-left,
+.panel-right {
+  min-width: 0; /* Evita que los paneles secundarios se desplacen por contenido demasiado ancho */
 }
 
 /* Las cajas blancas redondeadas (Cards) */
@@ -50,8 +56,10 @@
   background-color: #ffffff;
   padding: 1.5rem;
   border-radius: 24px; /* Mantengo tus 24px que se ven más modernos */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  flex-grow: 1; 
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  flex-grow: 1;
   height: 100%;
 }
 
@@ -91,4 +99,3 @@
     border-radius: 16px;
   }
 }
-

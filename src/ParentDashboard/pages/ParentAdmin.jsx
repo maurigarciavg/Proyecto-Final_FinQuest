@@ -39,6 +39,7 @@ export const ParentAdmin = () => {
                     done: t.status === "completed",
                     days: t.days || [],
                     date: t.date || null,
+                    last_completed: t.last_completed || null
                     is_today: t.is_today // 🟢 Importante para el filtro del CenterPanel
                 })));
 

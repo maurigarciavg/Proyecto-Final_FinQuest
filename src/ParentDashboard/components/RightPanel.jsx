@@ -14,7 +14,12 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
         itemDate.setHours(0, 0, 0, 0);
         const isPast = itemDate < today;
 
-        if (task.done || task.status === 'completed') {
+        const completedDate = task.last_completed ? new Date(task.last_completed) : null;
+        const isCompletedOnDate = completedDate
+            && completedDate.toDateString() === itemDate.toDateString()
+            && (task.status === 'completed' || task.done);
+
+        if (isCompletedOnDate) {
             return { label: "Aprobada", color: "#28a745", bg: "#eafaf1" };
         }
         if (task.wasRejected) {
@@ -92,12 +97,20 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
         const dateStr = formatDateKey(date);
         const dayMap = { 1: "L", 2: "M", 3: "X", 4: "J", 5: "V", 6: "S", 0: "D" };
         const dayLetter = dayMap[date.getDay()];
-        return tasks.filter(t => {
-            if (!t) return false;
-            if (t.date && t.date.substring(0, 10) === dateStr) return true;
-            if (t.days && Array.isArray(t.days)) return t.days.includes(dayLetter);
-            return false;
+        const seen = new Set();
+        const uniqueTasks = [];
+
+        tasks.forEach(t => {
+            if (!t || seen.has(t.id)) return;
+            const matchesDate = t.date && t.date.substring(0, 10) === dateStr;
+            const matchesDay = t.days && Array.isArray(t.days) && t.days.includes(dayLetter);
+            if (matchesDate || matchesDay) {
+                seen.add(t.id);
+                uniqueTasks.push(t);
+            }
         });
+
+        return uniqueTasks;
     };
 
     return (
@@ -108,11 +121,11 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                     {grandPrizeImage && (grandPrizeImage.includes("http") || grandPrizeImage.includes("/")) ? (
                         <img src={grandPrizeImage} alt="Premio" className="prize-img" />
                     ) : (
-                        <div className="prize-img" style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            fontSize: '2rem', 
+                        <div className="prize-img" style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '2rem',
                             background: '#e2e8f0',
                             margin: '0 auto'
                         }}>
@@ -177,10 +190,10 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                                     {dayTasks.slice(0, viewMode === 'week' ? 2 : 999).map((t, i) => {
                                                         const status = getTaskStatusInfo(t, date);
                                                         return (
-                                                            <div 
-                                                                key={`${t.id}-${date.getTime()}`} 
+                                                            <div
+                                                                key={`${t.id}-${date.getTime()}`}
                                                                 className="task-pill"
-                                                                style={{ 
+                                                                style={{
                                                                     borderLeft: `3px solid ${status.color}`,
                                                                     backgroundColor: status.bg,
                                                                     marginBottom: viewMode === 'week' ? '4px' : '6px',
@@ -191,8 +204,8 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                                                     gap: '6px'
                                                                 }}
                                                             >
-                                                                <span style={{ 
-                                                                    fontWeight: '600', 
+                                                                <span style={{
+                                                                    fontWeight: '600',
                                                                     fontSize: viewMode === 'week' ? '0.65rem' : '0.75rem',
                                                                     flex: viewMode === 'day' ? '0 1 auto' : '1',
                                                                     whiteSpace: 'nowrap',
@@ -204,9 +217,9 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                                                 </span>
 
                                                                 {viewMode === 'day' && (
-                                                                    <span style={{ 
-                                                                        background: "none", 
-                                                                        color: status.color, 
+                                                                    <span style={{
+                                                                        background: "none",
+                                                                        color: status.color,
                                                                         fontSize: '0.6rem',
                                                                         border: `1px solid ${status.color}`,
                                                                         padding: '1px 6px',
@@ -217,11 +230,11 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                                                     </span>
                                                                 )}
 
-                                                                <span style={{ 
-                                                                    fontWeight: '700', 
-                                                                    fontSize: viewMode === 'week' ? '0.65rem' : '0.8rem', 
+                                                                <span style={{
+                                                                    fontWeight: '700',
+                                                                    fontSize: viewMode === 'week' ? '0.65rem' : '0.8rem',
                                                                     marginLeft: viewMode === 'day' ? 'auto' : '0',
-                                                                    color: '#444' 
+                                                                    color: '#444'
                                                                 }}>
                                                                     🪙 {t.points}
                                                                 </span>
@@ -243,14 +256,14 @@ const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
                                             {dayTasks.slice(0, 3).map((t, i) => {
                                                 const status = getTaskStatusInfo(t, date);
                                                 return (
-                                                    <span 
-                                                        key={i} 
-                                                        className="task-dot" 
-                                                        style={{ 
-                                                            width: '6px', 
-                                                            height: '6px', 
-                                                            borderRadius: '50%', 
-                                                            backgroundColor: status.color 
+                                                    <span
+                                                        key={i}
+                                                        className="task-dot"
+                                                        style={{
+                                                            width: '6px',
+                                                            height: '6px',
+                                                            borderRadius: '50%',
+                                                            backgroundColor: status.color
                                                         }}
                                                     />
                                                 );

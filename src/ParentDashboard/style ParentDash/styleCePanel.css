@@ -1,8 +1,7 @@
-
-.mission-management{
+.mission-management {
   background-color: #eef9f7;
   padding: 20px 30px;
-
+  border-radius: 20px;
 }
 
 .missions-btn {
@@ -30,9 +29,8 @@ h4 {
 }
 
 .left_btn button.active {
-  color:#3dc9b6;
+  color: #3dc9b6;
   cursor: pointer;
-  
 }
 
 .filter-container {
@@ -83,207 +81,216 @@ h4 {
   color: white;
 }
 
-
-
 /* CARDS DE TAREAS */
 
 /* Contenedor de la lista en 3 columnas */
 .Lista {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 10px 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.task-card-item {
+  overflow: hidden;
+  word-break: break-word;
 }
 
 /* Tarjeta ajustada a la nueva estructura vertical */
 .task-card-item {
-    display: flex;
-    flex-direction: column; /* Apilamos los bloques hacia abajo */
-    padding: 14px;
-    background-color: #ffffff;
-    border-radius: 24px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f1f1f1;
-    transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column; /* Apilamos los bloques hacia abajo */
+  padding: 14px;
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f1f1;
+  transition: all 0.2s ease;
 }
 
 /* FILA 1: Icono y Texto al lado */
 .task-card-left {
-    display: flex;
-    flex-direction: row;
-    /* Esto asegura que tanto icono como bloque de texto compartan el mismo centro */
-    align-items: center; 
-    gap: 12px;
-    margin-bottom: 8px;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  /* Esto asegura que tanto icono como bloque de texto compartan el mismo centro */
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  width: 100%;
 }
 
 .task-icon-container {
-    font-size: 3rem; 
-    display: flex;
-    /* Alineación vertical: 'center' lo centra respecto al texto de al lado */
-    align-items: center; 
-    /* Alineación horizontal: 'flex-start' lo pega a la izquierda (arriba en el flujo) */
-    
-    justify-content: flex-start; 
-    /* Evita que el icono se encoja si el texto es muy largo */
-    flex-shrink: 0; 
+  font-size: 3rem;
+  display: flex;
+  /* Alineación vertical: 'center' lo centra respecto al texto de al lado */
+  align-items: center;
+  /* Alineación horizontal: 'flex-start' lo pega a la izquierda (arriba en el flujo) */
+
+  justify-content: flex-start;
+  /* Evita que el icono se encoja si el texto es muy largo */
+  flex-shrink: 0;
 }
 
 .task-info-text {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .task-title {
-    font-weight: 700;
-    font-size: 15px; /* Tamaño solicitado */
-    color: #2d3748;
-    line-height: 1.2;
+  font-weight: 700;
+  font-size: 15px; /* Tamaño solicitado */
+  color: #2d3748;
+  line-height: 1.2;
 }
 
 .task-date {
-    color: #a0aec0;
-    font-size: 10px; /* Tamaño solicitado */
-    display: flex;
-    align-items: center;
-    gap: 4px;
+  color: #a0aec0;
+  font-size: 10px; /* Tamaño solicitado */
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* FILA 2 Y 3: Debajo del bloque anterior */
 .task-card-right {
-    display: flex;
-    flex-direction: column; 
-    align-items: flex-start; /* Alineado a la izquierda para seguir el flujo del texto */
-    gap: 12px;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alineado a la izquierda para seguir el flujo del texto */
+  gap: 12px;
+  width: 100%;
 }
 
 /* Monedas debajo del texto */
 .task-coins {
-    display: flex;  
-    gap: 6px;
-    font-weight: 800;
-    font-size: 16px !important; /* Tamaño solicitado */
-    color: #f39c12 !important;
+  display: flex;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 16px !important; /* Tamaño solicitado */
+  color: #f39c12 !important;
 }
 
 /* Botones debajo de las monedas */
 .task-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 5px;
 }
 
 /* Botones circulares */
 .btn-action {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    border: none;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.btn-edit { background-color: #14b8a6; }
-.btn-delete { background-color: #ff5c5c; }
-.btn-undo { background-color: #ff5c5c; }
-
-
+.btn-edit {
+  background-color: #14b8a6;
+}
+.btn-delete {
+  background-color: #ff5c5c;
+}
+.btn-undo {
+  background-color: #ff5c5c;
+}
 
 /* CARRUSEL PENDIENTES DE REVISION */
 
 /* Contenedor que limita la vista */
 .quick-approve-container {
-    width: 100%;
-    overflow-x: auto; /* Habilita el scroll horizontal si hay más de 3 */
-    padding: 10px 0 20px 0;
-    scrollbar-width: thin; /* Para Firefox */
-    scrollbar-color: #3dc9b6 #f0f0f0;
-    margin-bottom: 20px;
+  width: 100%;
+  overflow-x: auto; /* Habilita el scroll horizontal si hay más de 3 */
+  padding: 10px 0 20px 0;
+  scrollbar-width: thin; /* Para Firefox */
+  scrollbar-color: #3dc9b6 #f0f0f0;
+  margin-bottom: 20px;
 }
 
 /* El carrusel real */
 .quick-approve-list {
-    display: flex; /* Alinea las cards en una fila infinita */
-    gap: 20px;
-    padding-bottom: 10px;
+  display: flex; /* Alinea las cards en una fila infinita */
+  gap: 20px;
+  padding-bottom: 10px;
 }
 
 /* Forzar que cada card ocupe un tercio del contenedor menos el gap */
 .pending-card {
-    min-width: calc(33.33% - 14px); /* Esto hace que se vean exactamente 3 */
-    flex-shrink: 0; /* Evita que las cards se aplasten */
-    box-sizing: border-box;
+  min-width: calc(33.33% - 14px); /* Esto hace que se vean exactamente 3 */
+  flex-shrink: 0; /* Evita que las cards se aplasten */
+  box-sizing: border-box;
 }
 
 /* Botón de aprobación especial para la card superior */
 .approve-btn-large {
-    width: 100%;
-    padding: 10px;
-    background-color: #3dc9b6;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease;
+  width: 100%;
+  padding: 10px;
+  background-color: #3dc9b6;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .approve-btn-large:hover {
-    background-color: #14b8a6;
+  background-color: #14b8a6;
 }
 
 /* Personalización de la barra de scroll para Chrome/Safari */
 .quick-approve-container::-webkit-scrollbar {
-    height: 6px;
+  height: 6px;
 }
 
 .quick-approve-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
+  background: #f1f1f1;
+  border-radius: 10px;
 }
 
 .quick-approve-container::-webkit-scrollbar-thumb {
-    background: #3dc9b6;
-    border-radius: 10px;
+  background: #3dc9b6;
+  border-radius: 10px;
 }
 
 /* Colores específicos para los botones de la sección de aprobación */
 .btn-pending-reject {
-    background-color: #ff5c5c !important; /* Rojo */
-    color: white !important;
+  background-color: #ff5c5c !important; /* Rojo */
+  color: white !important;
 }
 
 .btn-pending-approve {
-    background-color: #14b8a6 !important; /* El verde/turquesa de tu CSS */
-    color: white !important;
+  background-color: #14b8a6 !important; /* El verde/turquesa de tu CSS */
+  color: white !important;
 }
 
 /* Ajuste de tamaño de los iconos para que se vean imponentes en el centro */
 .pending-card .btn-action i {
-    font-size: 1.4rem;
+  font-size: 1.4rem;
 }
 
 /* Espaciado horizontal para los dos botones en la tarjeta de pendientes */
 .pending-card .task-actions {
-    display: flex;
-    justify-content: center;
-    gap: 20px; /* Un poco más de aire entre el rojo y el verde */
-    margin-top: 5px;
-    padding-bottom: 5px;
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Un poco más de aire entre el rojo y el verde */
+  margin-top: 5px;
+  padding-bottom: 5px;
 }
 
 /* Hover suave solo para estos botones */
-.btn-pending-reject:hover, .btn-pending-approve:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
+.btn-pending-reject:hover,
+.btn-pending-approve:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
 }
