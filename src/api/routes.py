@@ -111,6 +111,28 @@ def get_child_dashboard(child_id):
     if not child: raise APIException("Child not found", status_code=404)
 
     today = datetime.now(timezone.utc).date()
+    streak_reward_given = False
+
+    # 1. Gestión de Racha y recompensa diaria
+    if child.last_login_date is None:
+        child.streak = 1
+        child.total_coins += 10
+        child.total_earned_coins += 10
+        streak_reward_given = True
+    else:
+        last = child.last_login_date.date()
+        if last < today:
+            if (today - last).days == 1:
+                child.streak += 1
+            else:
+                child.streak = 1
+            child.total_coins += 10
+            child.total_earned_coins += 10
+            streak_reward_given = True
+
+    child.last_login_date = datetime.now(timezone.utc)
+
+    # 2. Tareas: Reset diario y Filtrado por día actual
     tasks = Task.query.filter_by(child_id=child_id).all()
     dias_map = {0: "L", 1: "M", 2: "X", 3: "J", 4: "V", 5: "S", 6: "D"}
     hoy_letra = dias_map[datetime.now(timezone.utc).weekday()]
@@ -123,10 +145,13 @@ def get_child_dashboard(child_id):
 
     s_goals = SmallGoal.query.filter_by(child_id=child_id).all()
     db.session.commit()
+
     return jsonify({
-        "child": child.serialize(), 
-        "tasks": tasks_hoy, 
-        "rewards": [sg.serialize() for sg in s_goals]
+        "child": child.serialize(),
+        "tasks": tasks_hoy,
+        "rewards": [sg.serialize() for sg in s_goals],
+        "streak_reward_given": streak_reward_given,
+        "streak_reward_amount": 10
     }), 200
 
 # --- GESTIÓN INDIVIDUAL (BORRAR Y EDITAR) ---
