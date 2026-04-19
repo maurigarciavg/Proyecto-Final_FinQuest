@@ -1,9 +1,9 @@
 
-/* .mission-management{
+.mission-management{
   background-color: #eef9f7;
-  padding: 20px;
+  padding: 20px 30px;
 
-} */
+}
 
 .missions-btn {
   display: flex;
@@ -195,7 +195,7 @@ h4 {
 
 .btn-edit { background-color: #14b8a6; }
 .btn-delete { background-color: #ff5c5c; }
-.btn-undo { background-color: #6366f1; }
+.btn-undo { background-color: #ff5c5c; }
 
 
 
