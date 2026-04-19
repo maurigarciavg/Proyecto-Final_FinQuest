@@ -82,25 +82,51 @@ const CenterPanel = ({
             <section className="pending-status">
                 <div className="status-card">
                     <h4>Pendientes de validar: <strong>{pendingTasksCount}</strong></h4>
-                    <div className="quick-approve-list" style={{ marginTop: '10px', maxHeight: '150px', overflowY: 'auto' }}>
-                        {tasksList.filter(t => t.status === "pending_validation").map(t => (
-                            <div key={t.id} className="task-row-item quick-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 8px', borderBottom: '1px solid #f0f0f0' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <span style={{ fontSize: '1.4rem' }}>{getTaskIcon(t.title)}</span>
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                                            <span style={{ fontWeight: '600', fontSize: '0.9rem' }}>{t.title}</span>
-                                            <span style={{ ...badgeBaseStyle, backgroundColor: statusStyles.pendiente.bg, color: statusStyles.pendiente.color }}>Pendiente</span>
+
+                    {/* Contenedor del Carrusel */}
+                    <div className="quick-approve-container">
+                        <div className="quick-approve-list">
+                            {tasksList
+                                .filter(t => t.status === "pending_validation")
+                                .map(t => (
+                                    <div key={t.id} className="task-card-item pending-card">
+                                        <div className="task-card-left">
+                                            <div className="task-icon-container">
+                                                {getTaskIcon(t.title)}
+                                            </div>
+                                            <div className="task-info-text">
+                                                <span className="task-title">{t.title}</span>
+                                                <span className="task-date">
+                                                    <i className="fa-regular fa-calendar"></i> {formatDate(t.date)}
+                                                </span>
+                                                <div className="task-coins">
+                                                    <span>🪙</span> {t.points}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <span style={dateLabelStyle}><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
+
+                                        <div className="task-card-right">
+                                            <div className="task-actions">
+                                                {/* Botón RECHAZAR: Fondo rojo, Equis blanca */}
+                                                <button
+                                                    className="btn-action btn-pending-reject"
+                                                    onClick={() => onDeleteItem(t.id, 'Tareas')}
+                                                >
+                                                    <i className="fa-solid fa-xmark"></i>
+                                                </button>
+
+                                                {/* Botón APROBAR: Fondo verde (tu turquesa), Check blanco */}
+                                                <button
+                                                    className="btn-action btn-pending-approve"
+                                                    onClick={() => onApproveTask(t.id)}
+                                                >
+                                                    <i className="fa-solid fa-check"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <span>🪙 {t.points}</span>
-                                    <button onClick={() => onApproveTask(t.id)} style={{ padding: '4px 10px', cursor: 'pointer', borderRadius: '4px', border: '1px solid #32a89b', backgroundColor: '#fff', color: '#32a89b', fontWeight: 'bold' }}>Aprobar</button>
-                                </div>
-                            </div>
-                        ))}
+                                ))}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -153,7 +179,7 @@ const CenterPanel = ({
 
                                     {/* BLOQUE INFERIOR: Monedas y luego Acciones */}
                                     <div className="task-card-right">
-                                       
+
                                         <div className="task-actions">
                                             {subFilter === 'principal' ? (
                                                 <>
@@ -186,13 +212,13 @@ const CenterPanel = ({
                                         <div className="task-info-text">
                                             <span className="task-title">{c.name}</span>
                                             <span className="task-date">Disponible</span>
-                                             <div className="task-coins">
-                                            <span>🪙</span> {c.coins}
-                                        </div>
+                                            <div className="task-coins">
+                                                <span>🪙</span> {c.coins}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="task-card-right">
-                                       
+
                                         <div className="task-actions">
                                             {subFilter === 'principal' ? (
                                                 <>
@@ -224,12 +250,13 @@ const CenterPanel = ({
                                         <div className="task-info-text">
                                             <span className="task-title">{grandPrize.name}</span>
                                             <span className="task-date">¡Objetivo Final!</span>
+                                            <div className="task-coins">
+                                                <span>🪙</span> {grandPrize.coins}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="task-card-right">
-                                        <div className="task-coins">
-                                            <span>🪙</span> {grandPrize.coins}
-                                        </div>
+
                                         <div className="task-actions">
                                             {subFilter === 'principal' ? (
                                                 <>

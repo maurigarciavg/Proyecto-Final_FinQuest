@@ -265,3 +265,62 @@ button.nav-btn {
     text-align: center;
     margin-top: 5px;
 }
+
+/* --- RESPONSIVE ADAPTATION (Sin destruir tus estilos base) --- */
+
+@media (max-width: 768px) {
+    /* Ajustamos el contenedor de navegación para que no se amontone */
+    .calendar-nav {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    h4.calendar-title {
+        min-width: auto;
+        font-size: 1rem;
+    }
+
+    /* Modificamos tu .grid-week de 3 columnas a 1 sola columna para lectura vertical */
+    .grid-week {
+        grid-template-columns: 1fr !important; /* Forzamos el cambio de columna */
+        gap: 15px;
+    }
+
+    /* Quitamos el ajuste específico del 7mo hijo para que fluya normal en la lista */
+    .grid-week .calendar-day:nth-child(7) {
+        grid-column: auto !important; 
+    }
+
+    /* En la vista de mes (7 columnas), reducimos el tamaño para que quepa en pantalla */
+    .grid-month {
+        gap: 2px; /* Espacio mínimo */
+    }
+
+    .grid-month .day-name-label {
+        font-size: 10px; /* Textos más pequeños */
+    }
+
+    .grid-month .day-number {
+        font-size: 11px;
+    }
+
+    /* Ocultamos las "píldoras" de texto en el mes si la pantalla es muy pequeña */
+    /* para que no se desborde el card, dejando solo los puntos (dots) */
+    .grid-month .task-pill {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Vista de día: le damos más aire */
+    .calendar-day.view-day {
+        min-height: 150px;
+        padding: 10px;
+    }
+
+    /* Ajuste de botones de selección de vista */
+    .view-selector button {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+}
