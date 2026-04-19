@@ -153,7 +153,7 @@ const CenterPanel = ({
 
                                     {/* BLOQUE INFERIOR: Monedas y luego Acciones */}
                                     <div className="task-card-right">
-                                       
+
                                         <div className="task-actions">
                                             {subFilter === 'principal' ? (
                                                 <>
@@ -186,13 +186,13 @@ const CenterPanel = ({
                                         <div className="task-info-text">
                                             <span className="task-title">{c.name}</span>
                                             <span className="task-date">Disponible</span>
-                                             <div className="task-coins">
-                                            <span>🪙</span> {c.coins}
-                                        </div>
+                                            <div className="task-coins">
+                                                <span>🪙</span> {c.coins}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="task-card-right">
-                                       
+
                                         <div className="task-actions">
                                             {subFilter === 'principal' ? (
                                                 <>
@@ -224,12 +224,13 @@ const CenterPanel = ({
                                         <div className="task-info-text">
                                             <span className="task-title">{grandPrize.name}</span>
                                             <span className="task-date">¡Objetivo Final!</span>
+                                            <div className="task-coins">
+                                                <span>🪙</span> {grandPrize.coins}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="task-card-right">
-                                        <div className="task-coins">
-                                            <span>🪙</span> {grandPrize.coins}
-                                        </div>
+                                       
                                         <div className="task-actions">
                                             {subFilter === 'principal' ? (
                                                 <>
