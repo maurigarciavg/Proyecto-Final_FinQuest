@@ -1,23 +1,24 @@
 import React from "react";
-import { getTaskIcon } from "../Utils/getTaskIcon"; // Importa tu función
+import { getTaskIcon } from "../Utils/getTaskIcon";
 
 export const TaskModal = ({ tasks, onClose, onComplete }) => {
+    // 🟢 FILTRO: Solo mostramos en el modal las tareas marcadas como 'is_today'
+    const tasksToday = tasks?.filter(t => t.is_today) || [];
+
     return (
         <div className="task-modal__overlay" onClick={onClose}>
             <div className="task-modal" onClick={e => e.stopPropagation()}>
                 <button className="task-modal__close" onClick={onClose}>✕</button>
 
-                <h2 className="task-modal__title">Tareas de casa</h2>
+                <h2 className="task-modal__title">Tareas de hoy</h2>
 
                 <div className="task-modal__grid">
-                    {tasks && tasks.length > 0 ? (
-                        tasks.map(task => {
-                            // 🟢 Calculamos el emoji para cada tarea individual
+                    {tasksToday.length > 0 ? (
+                        tasksToday.map(task => {
                             const taskEmoji = getTaskIcon(task.name || task.title);
                             
                             return (
                                 <div key={task.id} className="task-modal__item">
-                                    {/* 🟢 Cambio: Sustituimos 🏠 por el emoji dinámico */}
                                     <div className="task-modal__item-image" style={{ fontSize: "2rem" }}>
                                         {taskEmoji}
                                     </div>
@@ -28,12 +29,13 @@ export const TaskModal = ({ tasks, onClose, onComplete }) => {
                                     </div>
 
                                     <button
-                                        className={`task-modal__item-btn ${task.status === "completed"
+                                        className={`task-modal__item-btn ${
+                                            task.status === "completed"
                                                 ? "task-modal__item-btn--done"
                                                 : task.status === "pending_validation"
                                                     ? "task-modal__item-btn--pending"
                                                     : ""
-                                            }`}
+                                        }`}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             if (task.status === "pending") {
@@ -48,7 +50,9 @@ export const TaskModal = ({ tasks, onClose, onComplete }) => {
                             );
                         })
                     ) : (
-                        <p>Sin tareas disponibles</p>
+                        <p style={{ textAlign: 'center', gridColumn: '1/-1', padding: '20px' }}>
+                            No tienes tareas programadas para hoy. ¡A descansar! ✌️
+                        </p>
                     )}
                 </div>
             </div>

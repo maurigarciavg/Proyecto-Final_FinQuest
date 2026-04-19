@@ -10,7 +10,7 @@ import "../style ParentDash/stylePAdmin.css";
 export const ParentAdmin = () => {
     const { store } = useGlobalReducer();
     const [selectedChildId, setSelectedChildId] = useState(null);
-    const [selectedChildName, setSelectedChildName] = useState(""); // 🟢 Reseteado
+    const [selectedChildName, setSelectedChildName] = useState(""); 
 
     const [tasks, setTasks] = useState([]);
     const [cupones, setCupones] = useState([]);
@@ -38,7 +38,8 @@ export const ParentAdmin = () => {
                     status: t.status,
                     done: t.status === "completed",
                     days: t.days || [],
-                    date: t.date || null
+                    date: t.date || null,
+                    is_today: t.is_today // 🟢 Importante para el filtro del CenterPanel
                 })));
 
                 setCupones(data.rewards.map(r => ({
@@ -73,7 +74,6 @@ export const ParentAdmin = () => {
         }
     };
 
-    // 🟢 ACTUALIZADO: Ahora llama al backend para quitar puntos
     const handleUndoTask = async (taskId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
@@ -107,7 +107,12 @@ export const ParentAdmin = () => {
     };
 
     const handleEditItem = (item, type) => {
-        setItemToEdit({ ...item, type });
+        let technicalType = type;
+        if (type === 'Tareas') technicalType = 'tasks';
+        if (type === 'Cupones') technicalType = 'small-goals';
+        if (type === 'Gran Premio') technicalType = 'grand-prize';
+        
+        setItemToEdit({ ...item, type: technicalType });
         setShowEditModal(true);
     };
 
@@ -116,9 +121,9 @@ export const ParentAdmin = () => {
         const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
 
         let endpoint = "";
-        if (type === 'Tareas') endpoint = `api/tasks/${id}`;
-        else if (type === 'Cupones') endpoint = `api/small-goals/${id}`;
-        else if (type === 'Gran Premio') endpoint = `api/grand-prize/${id}`;
+        if (type === 'Tareas' || type === 'tasks') endpoint = `api/tasks/${id}`;
+        else if (type === 'Cupones' || type === 'small-goals') endpoint = `api/small-goals/${id}`;
+        else if (type === 'Gran Premio' || type === 'grand-prize') endpoint = `api/grand-prize/${id}`;
 
         try {
             const response = await fetch(`${baseUrl}${endpoint}`, {
@@ -138,8 +143,13 @@ export const ParentAdmin = () => {
     };
 
     const handleCreateItem = (type) => {
-        if (!selectedChildId) return; // 🟢 Seguridad
-        setManagerType(type);
+        if (!selectedChildId) return;
+        let technicalType = type;
+        if (type === 'Tareas') technicalType = 'tasks';
+        if (type === 'Cupones') technicalType = 'small-goals';
+        if (type === 'Gran Premio') technicalType = 'grand-prize';
+
+        setManagerType(technicalType);
         setShowManager(true);
     };
 
