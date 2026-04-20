@@ -10,6 +10,7 @@ const CenterPanel = ({
     couponsList = [],
     grandPrize = null,
     onApproveTask,
+    onRejectTask,
     onUndoTask,
     onUndoRedeem,
     onEditItem,
@@ -20,27 +21,20 @@ const CenterPanel = ({
     const [subFilter, setSubFilter] = useState('principal');
     const panelRef = useRef(null);
 
-    const badgeBaseStyle = { fontSize: '0.7rem', padding: '3px 10px', borderRadius: '12px', fontWeight: '600', marginLeft: '10px', display: 'inline-block', verticalAlign: 'middle', border: 'none' };
-    const dateLabelStyle = { fontSize: '0.72rem', color: '#888', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' };
-
-    const statusStyles = {
-        pendiente: { bg: "#fff9db", color: "#f08c00" }
+    const getTaskStatusBadge = (task) => {
+        if (task.done) {
+            return { label: "Aprobada", className: "badge-approved" };
+        }
+        if (task.status === 'rejected') {
+            return { label: "Desaprobada", className: "badge-rejected" };
+        }
+        if (task.status === 'pending_validation') {
+            return { label: "Pendiente", className: "badge-pending" };
+        }
+        return { label: "Por hacer", className: "badge-todo" };
     };
 
-    const formatDate = (dateValue) => {
-        if (!dateValue) return "Sin fecha";
-        const d = new Date(dateValue);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const taskDate = new Date(d);
-        taskDate.setHours(0, 0, 0, 0);
-        const diffTime = taskDate - today;
-        const diffDays = diffTime / (1000 * 60 * 60 * 24);
-        if (diffDays === 0) return "Hoy";
-        if (diffDays === 1) return "Mañana";
-        if (diffDays === -1) return "Ayer";
-        return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
-    };
+
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -88,13 +82,16 @@ const CenterPanel = ({
                                             <div className="task-icon-container">{getTaskIcon(t.title)}</div>
                                             <div className="task-info-text">
                                                 <span className="task-title">{t.title}</span>
-                                                <span className="task-date"><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
+                                                {(() => {
+                                                    const badge = getTaskStatusBadge(t);
+                                                    return <span className={`task-badge ${badge.className}`}>{badge.label}</span>;
+                                                })()}
                                                 <div className="task-coins"><span>🪙</span> {t.points}</div>
                                             </div>
                                         </div>
                                         <div className="task-card-right">
                                             <div className="task-actions">
-                                                <button className="btn-action btn-pending-reject" onClick={() => onDeleteItem(t.id, 'tasks')}>
+                                                <button className="btn-action btn-pending-reject" onClick={() => onRejectTask(t.id)}>
                                                     <i className="fa-solid fa-xmark"></i>
                                                 </button>
                                                 <button className="btn-action btn-pending-approve" onClick={() => onApproveTask(t.id)}>
@@ -147,7 +144,10 @@ const CenterPanel = ({
                                         <div className="task-icon-container">{getTaskIcon(t.title)}</div>
                                         <div className="task-info-text">
                                             <span className="task-title">{t.title}</span>
-                                            <span className="task-date"><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
+                                            {(() => {
+                                                const badge = getTaskStatusBadge(t);
+                                                return <span className={`task-badge ${badge.className}`}>{badge.label}</span>;
+                                            })()}
                                             <div className="task-coins"><span>🪙</span> {t.points}</div>
                                         </div>
                                     </div>
@@ -235,6 +235,7 @@ CenterPanel.propTypes = {
     couponsList: PropTypes.array,
     grandPrize: PropTypes.object,
     onApproveTask: PropTypes.func,
+    onRejectTask: PropTypes.func,
     onUndoTask: PropTypes.func,
     onUndoRedeem: PropTypes.func,
     onEditItem: PropTypes.func,

@@ -114,10 +114,11 @@ h4 {
   display: flex;
   flex-direction: row;
   /* Esto asegura que tanto icono como bloque de texto compartan el mismo centro */
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   margin-bottom: 8px;
   width: 100%;
+  min-width: 0;
 }
 
 .task-icon-container {
@@ -135,6 +136,9 @@ h4 {
 .task-info-text {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-width: 0;
 }
 
 .task-title {
@@ -142,6 +146,8 @@ h4 {
   font-size: 15px; /* Tamaño solicitado */
   color: #2d3748;
   line-height: 1.2;
+  word-break: break-word;
+  margin: 0;
 }
 
 .task-date {
@@ -231,6 +237,14 @@ h4 {
   box-sizing: border-box;
 }
 
+/* Asegurar que los badges en pending-card tengan el mismo tamaño */
+.pending-card .task-badge {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  min-height: 22px;
+  min-width: 65px;
+}
+
 /* Botón de aprobación especial para la card superior */
 .approve-btn-large {
   width: 100%;
@@ -295,40 +309,105 @@ h4 {
   transform: scale(1.05);
 }
 
-
 .add-mission-btn {
-    background-color: #3dc9b6; /* Tu verde turquesa */
-    color: #ffffff !important;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 50px; /* Borde redondeado tipo cápsula */
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(61, 201, 182, 0.25); /* Sombra para dar profundidad */
+  background-color: #3dc9b6; /* Tu verde turquesa */
+  color: #ffffff !important;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 50px; /* Borde redondeado tipo cápsula */
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(61, 201, 182, 0.25); /* Sombra para dar profundidad */
 }
 
 /* Efecto al pasar el mouse */
 .add-mission-btn:hover {
-    background-color: #32a89b; /* Un verde un poco más oscuro al hacer hover */
-    transform: translateY(-2px); /* Pequeño salto hacia arriba */
-    box-shadow: 0 6px 15px rgba(61, 201, 182, 0.35);
+  background-color: #32a89b; /* Un verde un poco más oscuro al hacer hover */
+  transform: translateY(-2px); /* Pequeño salto hacia arriba */
+  box-shadow: 0 6px 15px rgba(61, 201, 182, 0.35);
 }
 
 /* Efecto al hacer clic */
 .add-mission-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(61, 201, 182, 0.2);
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(61, 201, 182, 0.2);
 }
 
 /* Por si el botón queda deshabilitado */
 .add-mission-btn:disabled {
-    background-color: #cbd5e1;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* STATUS style */
+/* Estilos base para todos los badges */
+.task-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 6px;
+  margin: 4px 0;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.4;
+  min-height: 18px;
+  min-width: 50px;
+  
+}
+
+/* Estado: Aprobada */
+.badge-approved {
+  color: #28a745;
+  background-color: #eafaf1;
+  border-color: #28a745;
+}
+
+/* Estado: Desaprobada */
+.badge-rejected {
+  color: #dc3545;
+  background-color: #fdf2f2;
+  border-color: #dc3545;
+}
+
+/* Estado: Pendiente */
+.badge-pending {
+  color: #f08c00;
+  background-color: #fff9db;
+  border-color: #f08c00;
+}
+
+/* Estado: Por hacer (Default) */
+.badge-todo {
+  color: #007bff;
+  background-color: #e7f5ff;
+  border-color: #007bff;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 1200px) {
+  .task-badge {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+    min-height: 20px;
+    min-width: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .task-badge {
+    padding: 2px 4px;
+    font-size: 0.65rem;
+    min-height: 18px;
+    min-width: 50px;
+  }
 }

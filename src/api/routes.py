@@ -18,6 +18,7 @@ api = Blueprint("api", __name__)
 
 # --- FUNCIONES AUXILIARES ---
 
+
 def get_json_payload():
     return request.get_json(silent=True) or {}
 
@@ -46,6 +47,7 @@ def get_current_user():
     return user
 
 # --- RUTAS DE AUTENTICACIÓN ---
+
 
 @api.route("/signup", methods=["POST"])
 @api.route("/sign-up", methods=["POST"])
@@ -89,6 +91,7 @@ def me():
 
 # --- GESTIÓN DE HIJOS ---
 
+
 @api.route("/parent/<int:parent_id>/child", methods=["POST"])
 @jwt_required()
 def create_child(parent_id):
@@ -110,6 +113,7 @@ def create_child(parent_id):
     return jsonify(new_child.serialize()), 201
 
 # --- DASHBOARD DEL NIÑO ---
+
 
 @api.route("/child-dashboard/<int:child_id>", methods=["GET"])
 def get_child_dashboard(child_id):
@@ -147,7 +151,7 @@ def get_child_dashboard(child_id):
         if t.last_completed and t.last_completed.date() < today:
             if t.status != "pending_validation":
                 t.status = "pending"
-        
+
         task_data = t.serialize()
         task_data["is_today"] = hoy_letra in (t.days or "")
         all_serialized_tasks.append(task_data)
@@ -164,6 +168,7 @@ def get_child_dashboard(child_id):
     }), 200
 
 # --- GESTIÓN TAREAS ---
+
 
 @api.route("/tasks/<int:task_id>", methods=["DELETE", "PATCH"])
 def handle_single_task(task_id):
@@ -187,6 +192,7 @@ def handle_single_task(task_id):
         db.session.commit()
         return jsonify(task.serialize()), 200
 
+
 @api.route("/child/<int:child_id>/tasks", methods=["POST"])
 @jwt_required()
 def create_tasks(child_id):
@@ -201,6 +207,7 @@ def create_tasks(child_id):
     db.session.commit()
     return jsonify({"msg": "Tasks created"}), 201
 
+
 @api.route("/tasks/<int:task_id>/validate", methods=["PATCH"])
 def validate_task(task_id):
     task = db.session.get(Task, task_id)
@@ -212,12 +219,12 @@ def validate_task(task_id):
     if data.get("child_done"):
         task.status = "pending_validation"
     elif data.get("approved"):
-        child.total_coins += task.coins 
+        child.total_coins += task.coins
         child.total_earned_coins += task.coins
         task.status = "completed"
         task.last_completed = datetime.now(timezone.utc)
     else:
-        task.status = "pending"
+        task.status = "rejected"
 
     db.session.commit()
     return jsonify({
@@ -226,16 +233,18 @@ def validate_task(task_id):
         "task_status": task.status
     }), 200
 
+
 @api.route("/tasks/<int:task_id>/rollback", methods=["PATCH"])
 def rollback_task(task_id):
     task = db.session.get(Task, task_id)
     if not task:
         raise APIException("Task not found", status_code=404)
     child = db.session.get(Child, task.child_id)
-    
+
     if task.status == "completed":
         child.total_coins = max(0, child.total_coins - task.coins)
-        child.total_earned_coins = max(0, child.total_earned_coins - task.coins)
+        child.total_earned_coins = max(
+            0, child.total_earned_coins - task.coins)
 
     task.status = "pending"
     task.last_completed = None
@@ -244,26 +253,30 @@ def rollback_task(task_id):
 
 # --- GESTIÓN CUPONES (SmallGoal) ---
 
+
 @api.route("/child/<int:child_id>/small-goals", methods=["POST"])
 @jwt_required()
 def create_small_goals(child_id):
     data = get_json_payload()
     for goal_data in data:
-        new_goal = SmallGoal(name=goal_data.get("name"), coins=goal_data.get("coins"), child_id=child_id)
+        new_goal = SmallGoal(name=goal_data.get(
+            "name"), coins=goal_data.get("coins"), child_id=child_id)
         db.session.add(new_goal)
     db.session.commit()
     return jsonify({"msg": "Goals created"}), 201
 
+
 @api.route("/small-goals/<int:goal_id>", methods=["DELETE", "PATCH"])
 def handle_single_coupon(goal_id):
     goal = db.session.get(SmallGoal, goal_id)
-    if not goal: return jsonify({"msg": "Cupón no encontrado"}), 404
-    
+    if not goal:
+        return jsonify({"msg": "Cupón no encontrado"}), 404
+
     if request.method == "DELETE":
         db.session.delete(goal)
         db.session.commit()
         return jsonify({"msg": "Cupón eliminado"}), 200
-    
+
     if request.method == "PATCH":
         data = get_json_payload()
         goal.name = data.get("name", goal.name)
@@ -271,10 +284,12 @@ def handle_single_coupon(goal_id):
         db.session.commit()
         return jsonify(goal.serialize()), 200
 
+
 @api.route("/rewards/<int:reward_id>/redeem", methods=["POST"])
 def redeem_small_goal(reward_id):
     goal = db.session.get(SmallGoal, reward_id)
-    if not goal: return jsonify({"msg": "Cupón no encontrado"}), 404
+    if not goal:
+        return jsonify({"msg": "Cupón no encontrado"}), 404
     child = db.session.get(Child, goal.child_id)
     if child.total_coins < goal.coins:
         return jsonify({"msg": "Monedas insuficientes"}), 400
@@ -283,6 +298,7 @@ def redeem_small_goal(reward_id):
     return jsonify({"msg": "Cupón canjeado", "new_coins": child.total_coins}), 200
 
 # --- GESTIÓN GRAN PREMIO (GrandPrize) ---
+
 
 @api.route("/child/<int:child_id>/grand-prize", methods=["POST"])
 @jwt_required()
@@ -299,16 +315,18 @@ def create_grand_prize(child_id):
     db.session.commit()
     return jsonify({"msg": "Grand Prize created"}), 201
 
+
 @api.route("/grand-prize/<int:prize_id>", methods=["DELETE", "PATCH"])
 def handle_single_grand_prize(prize_id):
     prize = db.session.get(GrandPrize, prize_id)
-    if not prize: return jsonify({"msg": "Premio no encontrado"}), 404
-    
+    if not prize:
+        return jsonify({"msg": "Premio no encontrado"}), 404
+
     if request.method == "DELETE":
         db.session.delete(prize)
         db.session.commit()
         return jsonify({"msg": "Gran Premio eliminado"}), 200
-    
+
     if request.method == "PATCH":
         data = get_json_payload()
         prize.name = data.get("name", prize.name)
@@ -317,10 +335,12 @@ def handle_single_grand_prize(prize_id):
         db.session.commit()
         return jsonify(prize.serialize()), 200
 
+
 @api.route("/grand-prize/<int:prize_id>/redeem", methods=["POST"])
 def redeem_grand_prize(prize_id):
     prize = db.session.get(GrandPrize, prize_id)
-    if not prize: return jsonify({"msg": "Premio no encontrado"}), 404
+    if not prize:
+        return jsonify({"msg": "Premio no encontrado"}), 404
     child = db.session.get(Child, prize.child_id)
     if child.total_coins < prize.coins:
         return jsonify({"msg": "Monedas insuficientes"}), 400
@@ -330,6 +350,7 @@ def redeem_grand_prize(prize_id):
     return jsonify({"msg": "¡Gran Premio canjeado!", "new_coins": child.total_coins}), 200
 
 # --- MINIJUEGOS Y OTROS ---
+
 
 @api.route("/child/<int:child_id>/add-coins", methods=["POST"])
 @jwt_required()
@@ -346,17 +367,20 @@ def add_minigame_coins(child_id):
         db.session.commit()
     return jsonify({"total_coins": child.total_coins, "total_earned_coins": child.total_earned_coins}), 200
 
+
 @api.route("/parent/<int:parent_id>/children", methods=["GET"])
 @jwt_required()
 def get_children(parent_id):
     children = Child.query.filter_by(parent_id=parent_id).all()
     return jsonify([child.serialize() for child in children]), 200
 
+
 @api.route("/reset_password", methods=["POST"])
 def reset_password():
     data = get_json_payload()
     serializer = URLSafeTimedSerializer(os.getenv('GENERATE_TOKEN'))
-    email = serializer.loads(data["token"], salt="password-reset", max_age=3600)
+    email = serializer.loads(
+        data["token"], salt="password-reset", max_age=3600)
     user = User.query.filter_by(email=email).first()
     user.password = generate_password_hash(data["password"])
     db.session.commit()
