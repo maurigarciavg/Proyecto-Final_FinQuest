@@ -151,9 +151,9 @@ class GrandPrize(db.Model):
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     coins: Mapped[int] = mapped_column(Integer, nullable=False)
     image_url: Mapped[str] = mapped_column(String(255), nullable=True)
-    child_id: Mapped[int] = mapped_column(
-        ForeignKey("child.id"), nullable=False)
-
+    redeemed: Mapped[bool] = mapped_column(Boolean(), default=False)
+    
+    child_id: Mapped[int] = mapped_column(ForeignKey("child.id"), nullable=False)
     child: Mapped["Child"] = relationship(back_populates="grand_prize")
 
     def serialize(self):
@@ -162,7 +162,8 @@ class GrandPrize(db.Model):
             "name": self.name,
             "coins": self.coins,
             "image_url": self.image_url,
-            "child_id": self.child_id
+            "child_id": self.child_id,
+            "redeemed": self.redeemed
         }
 
 

@@ -320,14 +320,22 @@ def handle_single_grand_prize(prize_id):
 @api.route("/grand-prize/<int:prize_id>/redeem", methods=["POST"])
 def redeem_grand_prize(prize_id):
     prize = db.session.get(GrandPrize, prize_id)
-    if not prize: return jsonify({"msg": "Premio no encontrado"}), 404
+    if not prize: 
+        return jsonify({"msg": "Premio no encontrado"}), 404   
+       
     child = db.session.get(Child, prize.child_id)
     if child.total_coins < prize.coins:
         return jsonify({"msg": "Monedas insuficientes"}), 400
+    
     child.total_coins -= prize.coins
-    prize.redeemed = True
+    prize.redeemed = True   
     db.session.commit()
-    return jsonify({"msg": "¡Gran Premio canjeado!", "new_coins": child.total_coins}), 200
+    
+    return jsonify({
+        "msg": "¡Gran Premio canjeado!", 
+        "new_coins": child.total_coins,
+        "prize_status": "redeemed"
+    }), 200
 
 # --- MINIJUEGOS Y OTROS ---
 
