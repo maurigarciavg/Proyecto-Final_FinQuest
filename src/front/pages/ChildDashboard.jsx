@@ -8,7 +8,7 @@ import "../styles/child-dashboard.css";
 import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
 import { GameModal } from "../components/GameModal";
-import { LevelUpModal } from "../components/LevelUpModal"; 
+import { LevelUpModal } from "../components/LevelUpModal";
 import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
 import useGlobalReducer from "../hooks/useGlobalReducer";
@@ -21,7 +21,7 @@ export const ChildDashboard = () => {
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
     const [showGameModal, setShowGameModal] = useState(false);
-    const [showLevelModal, setShowLevelModal] = useState(false); 
+    const [showLevelModal, setShowLevelModal] = useState(false);
     const [rewardToast, setRewardToast] = useState(null);
     const [coinPopup, setCoinPopup] = useState(null);
     const { store } = useGlobalReducer();
@@ -94,7 +94,7 @@ export const ChildDashboard = () => {
     const handleComplete = async (taskId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
-            const response = await fetch(`${baseUrl}api/tasks/${taskId}/validate`, { 
+            const response = await fetch(`${baseUrl}api/tasks/${taskId}/validate`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ child_done: true })
@@ -120,15 +120,27 @@ export const ChildDashboard = () => {
         }
     };
 
-    const handleRedeemGrandPrize = async (prizeId) => {
+    const handleRedeemGrandPrize = async (prize_id) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
-            const response = await fetch(`${baseUrl}api/grand-prize/${prizeId}/redeem`, { method: "POST" });
+            const response = await fetch(`${baseUrl}api/grand-prize/${prize_id}/redeem`, {
+                method: "POST"
+            });
+
             if (response.ok) {
-                confetti({ particleCount: 300, spread: 150, origin: { y: 0.5 } });
+                confetti({
+                    particleCount: 300,
+                    spread: 150,
+                    origin: { y: 0.5 }
+                });
+
                 await loadData();
                 setRewardToast("🏆 ¡ENHORABUENA! Has conseguido tu Gran Premio.");
                 setTimeout(() => setRewardToast(null), 5000);
+            } else {
+                const errorData = await response.json();
+                setRewardToast(`❌ Error: ${errorData.msg}`);
+                setTimeout(() => setRewardToast(null), 3000);
             }
         } catch (err) {
             console.error("Error al canjear gran premio:", err);
@@ -144,7 +156,7 @@ export const ChildDashboard = () => {
     const xpInCurrentLevel = totalXP % 500;
     const levelProgress = (xpInCurrentLevel / 500) * 100;
     const xpRemaining = 500 - xpInCurrentLevel;
-    const goalCoins = child.grand_prize?.coins || 1; 
+    const goalCoins = child.grand_prize?.coins || 1;
     const prizeProgress = Math.min((child.total_coins / goalCoins) * 100, 100);
 
     const hasPlayedToday = (() => {
@@ -157,12 +169,12 @@ export const ChildDashboard = () => {
     return (
         <div className="child-dashboard">
             <div className="child-dashboard__container">
-                <ChildHeader 
-                    child={child} 
-                    level={currentLevel} 
-                    progress={levelProgress} 
+                <ChildHeader
+                    child={child}
+                    level={currentLevel}
+                    progress={levelProgress}
                     xpRemaining={xpRemaining}
-                    prizeProgress={prizeProgress} 
+                    prizeProgress={prizeProgress}
                 />
 
                 <main className="child-dashboard__content">
@@ -212,9 +224,9 @@ export const ChildDashboard = () => {
                                     </div>
                                 </div>
 
-                                <div 
+                                <div
                                     className="task-summary-card card-hover-effect"
-                                    onClick={() => setShowTaskModal(true)} 
+                                    onClick={() => setShowTaskModal(true)}
                                 >
                                     <TaskSection tasks={tasks} />
                                 </div>
