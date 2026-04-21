@@ -7,17 +7,19 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
             <div className="task-modal" onClick={e => e.stopPropagation()}>
                 <button className="task-modal__close" onClick={onClose}>✕</button>
 
-                <h2 className="task-modal__title">Cupones</h2>
+                <h2 className="task-modal__title">Tienda de Premios</h2>
 
                 <div className="task-modal__grid">
                     {rewards && rewards.length > 0 ? (
                         rewards.map(reward => (
                             <div key={reward.id} className="task-modal__item">
-                                <span className="task-modal__item-image">{getCouponIcon(reward.name)}</span>
+                                <span className="task-modal__item-image" style={{ fontSize: "2.5rem" }}>
+                                    {getCouponIcon(reward.name)}
+                                </span>
 
                                 <div className="task-modal__item-info">
                                     <p className="task-modal__item-name">{reward.name}</p>
-                                    <p className="task-modal__item-coins">🪙 -{reward.coins}</p>
+                                    <p className="task-modal__item-coins">🪙 {reward.coins}</p>
                                 </div>
 
                                 <button
@@ -37,12 +39,14 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
                                             : "Canjear cupón"
                                     }
                                 >
-                                    {coins >= reward.coins ? "✓" : "✗"}
+                                    {coins >= reward.coins ? "🎁" : "🔒"}
                                 </button>
                             </div>
                         ))
                     ) : (
-                        <p>Sin cupones disponibles</p>
+                        <p style={{ textAlign: "center", gridColumn: "1/-1", padding: "20px" }}>
+                            No hay cupones disponibles en este momento.
+                        </p>
                     )}
                 </div>
             </div>

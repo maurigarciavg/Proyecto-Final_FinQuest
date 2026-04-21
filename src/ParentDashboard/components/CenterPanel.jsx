@@ -21,20 +21,28 @@ const CenterPanel = ({
     const [subFilter, setSubFilter] = useState('principal');
     const panelRef = useRef(null);
 
-    const getTaskStatusBadge = (task) => {
-        if (task.done) {
-            return { label: "Aprobada", className: "badge-approved" };
-        }
-        if (task.status === 'rejected') {
-            return { label: "Desaprobada", className: "badge-rejected" };
-        }
-        if (task.status === 'pending_validation') {
-            return { label: "Pendiente", className: "badge-pending" };
-        }
-        return { label: "Por hacer", className: "badge-todo" };
+    // 🟢 Lógica de fechas de tu compañera (RECUPERADA)
+    const formatDate = (dateValue) => {
+        if (!dateValue) return "Sin fecha";
+        const d = new Date(dateValue);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const taskDate = new Date(d);
+        taskDate.setHours(0, 0, 0, 0);
+        const diffTime = taskDate - today;
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays === 0) return "Hoy";
+        if (diffDays === 1) return "Mañana";
+        if (diffDays === -1) return "Ayer";
+        return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
     };
 
-
+    const getTaskStatusBadge = (task) => {
+        if (task.done) return { label: "Aprobada", className: "badge-approved" };
+        if (task.status === 'rejected') return { label: "Rechazada", className: "badge-rejected" };
+        if (task.status === 'pending_validation') return { label: "Esperando", className: "badge-pending" };
+        return { label: "Pendiente", className: "badge-todo" };
+    };
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -45,7 +53,7 @@ const CenterPanel = ({
         switch (activeTab) {
             case 'Tareas': return '+ Añadir Tarea';
             case 'Cupones': return '+ Añadir Cupón';
-            case 'Gran Premio': return '+ Añadir Gran Premio';
+            case 'Gran Premio': return '+ Gran Premio';
             default: return `Nuevo ${activeTab}`;
         }
     };
@@ -65,10 +73,9 @@ const CenterPanel = ({
     return (
         <main className="center-panel" ref={panelRef}>
             <header className="center-header">
-                <h2>Misiones de {childName}</h2>
+                <h2>Panel de {childName}</h2>
             </header>
 
-            {/* Visual de compañero: Sección superior de pendientes */}
             <section className="pending-status">
                 <div className="status-card">
                     <h4>Pendientes de validar: <strong>{pendingTasksCount}</strong></h4>
@@ -82,21 +89,13 @@ const CenterPanel = ({
                                             <div className="task-icon-container">{getTaskIcon(t.title)}</div>
                                             <div className="task-info-text">
                                                 <span className="task-title">{t.title}</span>
-                                                {(() => {
-                                                    const badge = getTaskStatusBadge(t);
-                                                    return <span className={`task-badge ${badge.className}`}>{badge.label}</span>;
-                                                })()}
-                                                <div className="task-coins"><span>🪙</span> {t.points}</div>
+                                                <span className="task-date"><i className="fa-regular fa-calendar"></i> {formatDate(t.date)}</span>
                                             </div>
                                         </div>
                                         <div className="task-card-right">
                                             <div className="task-actions">
-                                                <button className="btn-action btn-pending-reject" onClick={() => onRejectTask(t.id)}>
-                                                    <i className="fa-solid fa-xmark"></i>
-                                                </button>
-                                                <button className="btn-action btn-pending-approve" onClick={() => onApproveTask(t.id)}>
-                                                    <i className="fa-solid fa-check"></i>
-                                                </button>
+                                                <button className="btn-action btn-pending-reject" onClick={() => onRejectTask(t.id)}><i className="fa-solid fa-xmark"></i></button>
+                                                <button className="btn-action btn-pending-approve" onClick={() => onApproveTask(t.id)}><i className="fa-solid fa-check"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -114,7 +113,6 @@ const CenterPanel = ({
                                 <button key={tab} className={`manage-item ${activeTab === tab ? 'active' : ''}`} onClick={() => handleTabChange(tab)}>{tab}</button>
                             ))}
                         </div>
-                        {/* Funcionalidad nuestra: Envía el tipo técnico al crear */}
                         <button className="add-mission-btn" disabled={activeTab === 'Gran Premio' && grandPrize} onClick={() => onCreateItem(activeTab === 'Gran Premio' ? 'grand-prize' : activeTab)}>
                             {getCreateButtonLabel()}
                         </button>
@@ -123,16 +121,16 @@ const CenterPanel = ({
                     <div className="filter-container">
                         <div className="sub-filters-wrapper">
                             <button className={`sub-filter-btn ${subFilter === 'principal' ? 'active' : ''}`} onClick={() => setSubFilter('principal')}>
-                                {activeTab === 'Tareas' ? 'Por hacer hoy' : 'Disponibles'}
+                                {activeTab === 'Tareas' ? 'Hoy' : 'Disponibles'}
                             </button>
                             <button className={`sub-filter-btn ${subFilter === 'secundario' ? 'active' : ''}`} onClick={() => setSubFilter('secundario')}>
-                                {activeTab === 'Tareas' ? 'Aprobadas' : 'Canjeados'}
+                                {activeTab === 'Tareas' ? 'Historial' : 'Canjeados'}
                             </button>
                         </div>
                     </div>
 
                     <div className='Lista'>
-                        {/* TAREAS - Mantenemos diseño visual de compañero + nuestro filtro is_today */}
+                        {/* SECCIÓN TAREAS */}
                         {activeTab === 'Tareas' && tasksList
                             .filter(t => {
                                 if (subFilter === 'principal') return t.is_today && !t.done && t.status !== 'pending_validation';
@@ -144,10 +142,9 @@ const CenterPanel = ({
                                         <div className="task-icon-container">{getTaskIcon(t.title)}</div>
                                         <div className="task-info-text">
                                             <span className="task-title">{t.title}</span>
-                                            {(() => {
-                                                const badge = getTaskStatusBadge(t);
-                                                return <span className={`task-badge ${badge.className}`}>{badge.label}</span>;
-                                            })()}
+                                            <div style={{display: 'flex', gap: '5px', fontSize: '0.7rem', color: '#888'}}>
+                                                <span>{t.days?.join('·')}</span> | <span>{formatDate(t.date)}</span>
+                                            </div>
                                             <div className="task-coins"><span>🪙</span> {t.points}</div>
                                         </div>
                                     </div>
@@ -166,7 +163,7 @@ const CenterPanel = ({
                                 </div>
                             ))}
 
-                        {/* CUPONES - Visual compañero + Lógica nuestra */}
+                        {/* SECCIÓN CUPONES */}
                         {activeTab === 'Cupones' && couponsList
                             .filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed)
                             .map(c => (
@@ -194,7 +191,7 @@ const CenterPanel = ({
                                 </div>
                             ))}
 
-                        {/* GRAN PREMIO - Visual compañero + FIX Funcional nuestro */}
+                        {/* SECCIÓN GRAN PREMIO */}
                         {activeTab === 'Gran Premio' && grandPrize && (
                             ((subFilter === 'principal' && !grandPrize.redeemed) || (subFilter === 'secundario' && grandPrize.redeemed)) && (
                                 <div className="task-card-item">
