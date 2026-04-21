@@ -25,6 +25,8 @@ export const ChildDashboard = () => {
     const [rewardToast, setRewardToast] = useState(null);
     const [coinPopup, setCoinPopup] = useState(null);
     const { store } = useGlobalReducer();
+    
+    // Estado para controlar que la animación de racha no se repita en la misma sesión
     const [streakAnimationShown, setStreakAnimationShown] = useState(false);
 
     const loadData = async () => {
@@ -34,20 +36,23 @@ export const ChildDashboard = () => {
             return;
         }
 
-        const xpNuevo = result.child.total_earned_coins || 0;
-        const nivelNuevo = Math.floor(xpNuevo / 500) + 1;
+        // 🟢 LÓGICA DE NIVELES DE TU COMPAÑERA (XP real)
+        const xpTotal = result.child.total_earned_coins || 0;
+        const nivelActual = Math.floor(xpTotal / 500) + 1;
         const storageKey = `last_seen_level_child_${childId}`;
-        const nivelVistoAnteriormente = parseInt(localStorage.getItem(storageKey));
+        const nivelAnterior = parseInt(localStorage.getItem(storageKey));
 
-        if (nivelVistoAnteriormente && nivelNuevo > nivelVistoAnteriormente) {
+        // Si el nivel en la DB es mayor al que recordamos, ¡Celebración!
+        if (nivelAnterior && nivelActual > nivelAnterior) {
             setShowLevelModal(true);
         }
-        localStorage.setItem(storageKey, nivelNuevo);
+        localStorage.setItem(storageKey, nivelActual);
 
         setData(result);
 
+        // 🟢 NOTIFICACIÓN DE RACHA DIARIA (Recuperada de ella)
         if (result.streak_reward_given && !streakAnimationShown) {
-            showRewardAnimation(result.streak_reward_amount || 10);
+            handleStreakBonus(result.streak_reward_amount || 10);
             setStreakAnimationShown(true);
         }
     };
@@ -58,16 +63,28 @@ export const ChildDashboard = () => {
         }
     }, [childId]);
 
-    const showRewardAnimation = (amount = 30) => {
+    // Función específica para la racha diaria que ella diseñó
+    const handleStreakBonus = (amount) => {
         confetti({
             particleCount: 150,
             spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#ffcc00', '#ff9900', '#ffffff']
+        });
+        setCoinPopup(`+${amount} Bonus Diario`);
+        setRewardToast(`🔥 ¡Racha activa! Has ganado ${amount} monedas extra.`);
+        setTimeout(() => setCoinPopup(null), 3000);
+        setTimeout(() => setRewardToast(null), 4500);
+    };
+
+    const showRewardAnimation = (amount) => {
+        confetti({
+            particleCount: 100,
+            spread: 70,
             origin: { y: 0.6 }
         });
         setCoinPopup(`+${amount} monedas`);
-        setRewardToast(`🎉 ¡Has ganado ${amount} monedas!`);
         setTimeout(() => setCoinPopup(null), 1800);
-        setTimeout(() => setRewardToast(null), 3200);
     };
 
     const handleGameComplete = async (pointsEarned) => {
@@ -85,6 +102,8 @@ export const ChildDashboard = () => {
                 await loadData();
                 setShowGameModal(false);
                 showRewardAnimation(pointsEarned);
+                setRewardToast(`🎮 ¡Increíble! Ganaste ${pointsEarned} monedas.`);
+                setTimeout(() => setRewardToast(null), 3000);
             }
         } catch (err) {
             console.error("Error al guardar puntos del juego:", err);
@@ -99,7 +118,11 @@ export const ChildDashboard = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ child_done: true })
             });
-            if (response.ok) await loadData();
+            if (response.ok) {
+                await loadData();
+                setRewardToast("✅ Tarea enviada. ¡Esperando la aprobación de papá/mamá!");
+                setTimeout(() => setRewardToast(null), 3500);
+            }
         } catch (err) {
             console.error("Error al completar tarea:", err);
         }
@@ -112,8 +135,8 @@ export const ChildDashboard = () => {
             if (response.ok) {
                 await loadData();
                 setShowRewardModal(false);
-                setRewardToast("🎁 ¡Cupón canjeado con éxito!");
-                setTimeout(() => setRewardToast(null), 3000);
+                setRewardToast("🎁 ¡Cupón canjeado con éxito! Reclama tu premio.");
+                setTimeout(() => setRewardToast(null), 4000);
             }
         } catch (err) {
             console.error("Error al canjear recompensa:", err);
@@ -126,21 +149,15 @@ export const ChildDashboard = () => {
             const response = await fetch(`${baseUrl}api/grand-prize/${prize_id}/redeem`, {
                 method: "POST"
             });
-
             if (response.ok) {
                 confetti({
-                    particleCount: 300,
-                    spread: 150,
-                    origin: { y: 0.5 }
+                    particleCount: 400,
+                    spread: 200,
+                    origin: { y: 0.4 }
                 });
-
                 await loadData();
-                setRewardToast("🏆 ¡ENHORABUENA! Has conseguido tu Gran Premio.");
-                setTimeout(() => setRewardToast(null), 5000);
-            } else {
-                const errorData = await response.json();
-                setRewardToast(`❌ Error: ${errorData.msg}`);
-                setTimeout(() => setRewardToast(null), 3000);
+                setRewardToast("🏆 ¡LO LOGRASTE! Has canjeado tu GRAN PREMIO.");
+                setTimeout(() => setRewardToast(null), 6000);
             }
         } catch (err) {
             console.error("Error al canjear gran premio:", err);
@@ -148,9 +165,11 @@ export const ChildDashboard = () => {
     };
 
     if (error) return <div className="child-dashboard">Error cargando dashboard</div>;
-    if (!data) return <div className="child-dashboard">Cargando...</div>;
+    if (!data) return <div className="child-dashboard">Cargando la aventura...</div>;
 
     const { child, tasks, rewards } = data;
+    
+    // Cálculos de progreso de ella
     const totalXP = child.total_earned_coins || 0;
     const currentLevel = Math.floor(totalXP / 500) + 1;
     const xpInCurrentLevel = totalXP % 500;
@@ -168,6 +187,16 @@ export const ChildDashboard = () => {
 
     return (
         <div className="child-dashboard">
+            {/* 🟢 Notificación de monedas (Racha/Juegos) de ella */}
+            {coinPopup && (
+                <div className="coins-popup streak-anim">
+                    <div className="coins-popup__content">
+                        <span className="coins-popup__amount">{coinPopup}</span>
+                        <img src={monedas3} alt="Monedas" className="coins-popup__icon" />
+                    </div>
+                </div>
+            )}
+
             <div className="child-dashboard__container">
                 <ChildHeader
                     child={child}
@@ -180,7 +209,7 @@ export const ChildDashboard = () => {
                 <main className="child-dashboard__content">
                     <section className="child-dashboard__left">
                         <div className="dashboard-panel">
-                            <h1 className="dashboard-panel__title">¡Hola, {child.name}!</h1>
+                            <h1 className="dashboard-panel__title">¡Hola, {child.name}! 👋</h1>
 
                             <div className="dashboard-panel__top">
                                 <div className="dashboard-placeholder dashboard-placeholder--streak">
@@ -210,10 +239,7 @@ export const ChildDashboard = () => {
                             </div>
 
                             <div className="dashboard-panel__bottom">
-                                <div
-                                    className="dashboard-placeholder dashboard-placeholder--shop card-hover-effect"
-                                    onClick={() => setShowRewardModal(true)}
-                                >
+                                <div className="dashboard-placeholder dashboard-placeholder--shop card-hover-effect" onClick={() => setShowRewardModal(true)}>
                                     <div className="dashboard-placeholder__header">
                                         <span className="dashboard-placeholder__badge">{rewards?.length || 0}</span>
                                         <h2 className="dashboard-placeholder__title">Tienda</h2>
@@ -224,10 +250,7 @@ export const ChildDashboard = () => {
                                     </div>
                                 </div>
 
-                                <div
-                                    className="task-summary-card card-hover-effect"
-                                    onClick={() => setShowTaskModal(true)}
-                                >
+                                <div className="task-summary-card card-hover-effect" onClick={() => setShowTaskModal(true)}>
                                     <TaskSection tasks={tasks} />
                                 </div>
                             </div>
@@ -240,7 +263,7 @@ export const ChildDashboard = () => {
                             prizeProgress={prizeProgress}
                             onMinigameClick={() => {
                                 if (hasPlayedToday) {
-                                    setRewardToast("⏳ Ya has jugado hoy. Vuelve mañana.");
+                                    setRewardToast("⏳ Ya has jugado hoy. ¡Vuelve mañana por más!");
                                     setTimeout(() => setRewardToast(null), 3000);
                                     return;
                                 }
@@ -252,14 +275,7 @@ export const ChildDashboard = () => {
                 </main>
             </div>
 
-            {coinPopup && (
-                <div className="coins-popup">
-                    <img src={monedas3} alt="Monedas" className="coins-popup__icon" />
-                    <span>{coinPopup}</span>
-                </div>
-            )}
-
-            {rewardToast && <div className="reward-toast">{rewardToast}</div>}
+            {rewardToast && <div className="reward-toast active">{rewardToast}</div>}
 
             {showGameModal && <GameModal onClose={() => setShowGameModal(false)} onGameComplete={handleGameComplete} />}
             {showRewardModal && <RewardModal rewards={rewards} coins={child.total_coins} onClose={() => setShowRewardModal(false)} onRedeem={handleRedeem} />}
