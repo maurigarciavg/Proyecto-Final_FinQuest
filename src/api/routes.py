@@ -285,52 +285,17 @@ def handle_single_coupon(goal_id):
         return jsonify(goal.serialize()), 200
 
 
-# --- GESTIÓN CUPONES (SmallGoal) ---
-
 @api.route("/rewards/<int:reward_id>/redeem", methods=["POST"])
 def redeem_small_goal(reward_id):
     goal = db.session.get(SmallGoal, reward_id)
     if not goal:
         return jsonify({"msg": "Cupón no encontrado"}), 404
     child = db.session.get(Child, goal.child_id)
-
     if child.total_coins < goal.coins:
         return jsonify({"msg": "Monedas insuficientes"}), 400
-
     child.total_coins -= goal.coins
-    goal.redeemed = True  # <--- IMPORTANTE: Faltaba esto en tu código
     db.session.commit()
     return jsonify({"msg": "Cupón canjeado", "new_coins": child.total_coins}), 200
-
-# NUEVA RUTA: Deshacer canje de cupón
-
-
-@api.route("/rewards/<int:reward_id>/rollback", methods=["PATCH"])
-def rollback_small_goal(reward_id):
-    goal = db.session.get(SmallGoal, reward_id)
-    if not goal:
-        return jsonify({"msg": "Cupón no encontrado"}), 404
-
-    child = db.session.get(Child, goal.child_id)
-    child.total_coins += goal.coins  # Le devolvemos las monedas
-    goal.redeemed = False
-    db.session.commit()
-    return jsonify({"msg": "Canje de cupón revertido", "new_coins": child.total_coins}), 200
-
-# NUEVA RUTA: Deshacer canje de gran premio
-
-
-@api.route("/grand-prize/<int:prize_id>/rollback", methods=["PATCH"])
-def rollback_grand_prize(prize_id):
-    prize = db.session.get(GrandPrize, prize_id)
-    if not prize:
-        return jsonify({"msg": "Premio no encontrado"}), 404
-
-    child = db.session.get(Child, prize.child_id)
-    child.total_coins += prize.coins  # Le devolvemos las monedas
-    prize.redeemed = False
-    db.session.commit()
-    return jsonify({"msg": "Canje de premio revertido", "new_coins": child.total_coins}), 200
 
 # --- GESTIÓN GRAN PREMIO (GrandPrize) ---
 
@@ -374,19 +339,19 @@ def handle_single_grand_prize(prize_id):
 @api.route("/grand-prize/<int:prize_id>/redeem", methods=["POST"])
 def redeem_grand_prize(prize_id):
     prize = db.session.get(GrandPrize, prize_id)
-    if not prize:
-        return jsonify({"msg": "Premio no encontrado"}), 404
-
+    if not prize: 
+        return jsonify({"msg": "Premio no encontrado"}), 404   
+       
     child = db.session.get(Child, prize.child_id)
     if child.total_coins < prize.coins:
         return jsonify({"msg": "Monedas insuficientes"}), 400
-
+    
     child.total_coins -= prize.coins
-    prize.redeemed = True
+    prize.redeemed = True   
     db.session.commit()
-
+    
     return jsonify({
-        "msg": "¡Gran Premio canjeado!",
+        "msg": "¡Gran Premio canjeado!", 
         "new_coins": child.total_coins,
         "prize_status": "redeemed"
     }), 200

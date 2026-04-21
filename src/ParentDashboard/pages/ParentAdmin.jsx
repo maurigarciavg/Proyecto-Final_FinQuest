@@ -47,10 +47,9 @@ export const ParentAdmin = () => {
                     id: r.id,
                     name: r.name,
                     coins: r.coins || r.cost,
-                    redeemed: r.redeemed // <--- USA EL VALOR QUE VIENE DEL BACKEND, NO "false"
+                    redeemed: false
                 })));
 
-                // Haz lo mismo con el Gran Premio si fuera necesario:
                 setGranPremio(data.child.grand_prize || null);
             }
         } catch (err) {
@@ -114,33 +113,11 @@ export const ParentAdmin = () => {
         }
     };
 
-    const handleUndoRedeem = async (id, type) => {
-        const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
-
-        // Determinamos el endpoint según el tipo
-        const endpoint = type === 'coupon'
-            ? `api/rewards/${id}/rollback`
-            : `api/grand-prize/${id}/rollback`;
-
-        try {
-            const response = await fetch(`${baseUrl}${endpoint}`, {
-                method: 'PATCH',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${session.token}`
-                }
-            });
-
-            if (response.ok) {
-                // Refrescamos los datos para que el cupón vuelva a "Pendientes"
-                // y las monedas del niño se actualicen
-                fetchData();
-            } else {
-                console.error("Error al revertir el canje");
-            }
-        } catch (error) {
-            console.error("Error de red:", error);
+    const handleUndoRedeem = (id, type) => {
+        if (type === 'coupon') {
+            setCupones(prev => prev.map(c => c.id === id ? { ...c, redeemed: false } : c));
+        } else if (type === 'prize') {
+            setGranPremio(prev => prev ? { ...prev, redeemed: false } : null);
         }
     };
 
