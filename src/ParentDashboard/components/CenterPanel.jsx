@@ -34,7 +34,7 @@ const CenterPanel = ({
         return { label: "Por hacer", className: "badge-todo" };
     };
 
-
+console.log(tasksList);
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
