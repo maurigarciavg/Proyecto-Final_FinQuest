@@ -9,20 +9,18 @@ export const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const activeProfile =
-  store.activeProfile ||
-  JSON.parse(localStorage.getItem("activeProfile"));
+    const activeProfile = store.activeProfile;
 
-    // compute profile target: prefer current child, then saved activeProfile, then parent
-    let profileTarget = "/";
+    // compute profile target: prefer current child, then saved activeProfile, then parent, else profiles
+    let profileTarget = "/profiles";
     if (store.currentChild && store.currentChild.id) {
         profileTarget = `/child-dashboard/${store.currentChild.id}`;
-    } else if (activeProfile && activeProfile.role === 'child' && activeProfile.id) {
+    } else if (activeProfile && activeProfile.role === "child" && activeProfile.id) {
         profileTarget = `/child-dashboard/${activeProfile.id}`;
+    } else if (activeProfile && activeProfile.role === "parent") {
+        profileTarget = "/parentadmin";
     } else if (store.user) {
-        profileTarget = '/parentadmin';
-    } else if (activeProfile && activeProfile.role === 'parent') {
-        profileTarget = '/parentadmin';
+        profileTarget = "/parentadmin";
     }
 
     const isHome = location.pathname === "/";
@@ -31,6 +29,7 @@ export const Navbar = () => {
     const handleLogout = () => {
         dispatch({ type: "clear_session", payload: "Sesión cerrada correctamente." });
         localStorage.removeItem("activeProfile");
+        localStorage.removeItem("jwt-example-session");
         navigate("/");
     };
 
@@ -60,6 +59,23 @@ export const Navbar = () => {
                             <a className="nav-link nav-link-custom" href="#nosotros">
                                 Nosotros
                             </a>
+                        )}
+
+                        {activeProfile && (
+                            <div className="navbar-profile-info d-flex align-items-center">
+                                {activeProfile.avatar && (
+                                    <img
+                                        className="navbar-profile-avatar"
+                                        src={activeProfile.avatar}
+                                        alt={activeProfile.name}
+                                    />
+                                )}
+                                {activeProfile.name && (
+                                    <span className="nav-link nav-link-custom navbar-profile-name">
+                                        {activeProfile.name}
+                                    </span>
+                                )}
+                            </div>
                         )}
 
                         {store.token ? (

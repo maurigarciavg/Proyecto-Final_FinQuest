@@ -29,7 +29,10 @@ export const PinModal = ({ profile, onClose }) => {
     if (String(pin) === String(correctPin)) {
       setError("");
 
+      dispatch({ type: "set_active_profile", payload: profile });
+
       if (profile.role === "parent") {
+        dispatch({ type: "set_child", payload: null });
         navigate("/parentadmin");
       } else if (profile.role === "child") {
         dispatch({ type: "set_child", payload: profile });

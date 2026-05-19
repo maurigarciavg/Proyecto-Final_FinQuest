@@ -11,8 +11,8 @@ export function StoreProvider({ children }) {
     const [store, dispatch] = useReducer(storeReducer, initialStore());
 
     useEffect(() => {
-        persistSession(store.token, store.user);
-    }, [store.token, store.user]);
+        persistSession(store.token, store.user, store.activeProfile, store.currentChild);
+    }, [store.token, store.user, store.activeProfile, store.currentChild]);
 
     return (
         <StoreContext.Provider value={{ store, dispatch }}>

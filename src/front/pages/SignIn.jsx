@@ -44,6 +44,15 @@ export const SignIn = () => {
                 }
             });
 
+            dispatch({
+                type: "set_active_profile",
+                payload: { ...data.user, role: "parent" }
+            });
+            dispatch({
+                type: "set_child",
+                payload: null
+            });
+
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -55,7 +64,7 @@ export const SignIn = () => {
                 payload: `Bienvenido otra vez, ${data.user.name}.`
             });
 
-            window.location.href = "/profiles";
+            navigate(redirectTarget, { replace: true });
         } catch (error) {
             dispatch({
                 type: "auth_failure",

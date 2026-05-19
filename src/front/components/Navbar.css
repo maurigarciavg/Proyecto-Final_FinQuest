@@ -50,6 +50,23 @@
     border-radius: 8px;
 }
 
+.navbar-profile-info {
+    gap: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.navbar-profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(50, 168, 155, 0.15);
+}
+
+.navbar-profile-name {
+    color: #2d3748;
+    font-weight: 700;
+}
 
 @media (max-width: 991.98px) {
     .navbar-logo {

@@ -2,12 +2,12 @@ const AUTH_STORAGE_KEY = "jwt-example-session";
 
 const readPersistedSession = () => {
   if (typeof window === "undefined") {
-    return { token: null, user: null };
+    return { token: null, user: null, activeProfile: null, currentChild: null };
   }
 
   const rawSession = window.localStorage.getItem(AUTH_STORAGE_KEY);
   if (!rawSession) {
-    return { token: null, user: null };
+    return { token: null, user: null, activeProfile: null, currentChild: null };
   }
 
   try {
@@ -15,14 +15,16 @@ const readPersistedSession = () => {
     return {
       token: parsedSession.token || null,
       user: parsedSession.user || null,
+      activeProfile: parsedSession.activeProfile || null,
+      currentChild: parsedSession.currentChild || null,
     };
   } catch (error) {
     window.localStorage.removeItem(AUTH_STORAGE_KEY);
-    return { token: null, user: null };
+    return { token: null, user: null, activeProfile: null, currentChild: null };
   }
 };
 
-export const persistSession = (token, user) => {
+export const persistSession = (token, user, activeProfile = null, currentChild = null) => {
   if (typeof window === "undefined") {
     return;
   }
@@ -34,7 +36,7 @@ export const persistSession = (token, user) => {
 
   window.localStorage.setItem(
     AUTH_STORAGE_KEY,
-    JSON.stringify({ token, user }),
+    JSON.stringify({ token, user, activeProfile, currentChild }),
   );
 };
 
@@ -45,7 +47,8 @@ export const initialStore = () => {
     token: persistedSession.token,
     user: persistedSession.user,
     authChecked: false,
-    currentChild: null,
+    currentChild: persistedSession.currentChild,
+    activeProfile: persistedSession.activeProfile,
     products: [],
     orders: [],
     loading: {
@@ -103,6 +106,8 @@ export default function storeReducer(store, action = {}) {
         ...store,
         token: null,
         user: null,
+        activeProfile: null,
+        currentChild: null,
         orders: [],
         authChecked: true,
         loading: {
@@ -198,6 +203,12 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         currentChild: action.payload,
+      };
+
+    case "set_active_profile":
+      return {
+        ...store,
+        activeProfile: action.payload,
       };
 
     default:
