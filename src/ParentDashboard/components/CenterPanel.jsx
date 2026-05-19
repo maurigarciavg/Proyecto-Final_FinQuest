@@ -11,6 +11,7 @@ const CenterPanel = ({
     grandPrize = null,
     onApproveTask,
     onRejectTask,
+    onApproveCoupon,
     onUndoTask,
     onUndoRedeem,
     onEditItem,
@@ -169,7 +170,12 @@ const CenterPanel = ({
                                         <div className="task-icon-container">{getCouponIcon(c.name)}</div>
                                         <div className="task-info-text">
                                             <span className="task-title">{c.name}</span>
-                                            <span className="task-date">Disponible</span>
+                                            {subFilter === 'principal'
+                                                ? <span className="task-date">Disponible</span>
+                                                : <span className="task-date" style={{ color: c.status === 'pending' ? '#f59e0b' : '#10b981' }}>
+                                                    {c.status === 'pending' ? '⏳ Pendiente' : '✅ Aprobado'}
+                                                  </span>
+                                            }
                                             <div className="task-coins"><span>🪙</span> {c.coins}</div>
                                         </div>
                                     </div>
@@ -181,7 +187,12 @@ const CenterPanel = ({
                                                     <button className="btn-action btn-delete" onClick={() => onDeleteItem(c.id, 'small-goals')}><i className="fa-solid fa-trash"></i></button>
                                                 </>
                                             ) : (
-                                                <button className="btn-action btn-undo" onClick={() => onUndoRedeem(c.id, 'coupon')}><i className="fa-solid fa-rotate-left"></i></button>
+                                                <>
+                                                    {c.status === 'pending' && (
+                                                        <button className="btn-action btn-pending-approve" onClick={() => onApproveCoupon(c.id)}><i className="fa-solid fa-check"></i></button>
+                                                    )}
+                                                    <button className="btn-action btn-undo" onClick={() => onUndoRedeem(c.id, 'coupon')}><i className="fa-solid fa-rotate-left"></i></button>
+                                                </>
                                             )}
                                         </div>
                                     </div>
@@ -229,6 +240,7 @@ CenterPanel.propTypes = {
     grandPrize: PropTypes.object,
     onApproveTask: PropTypes.func,
     onRejectTask: PropTypes.func,
+    onApproveCoupon: PropTypes.func,
     onUndoTask: PropTypes.func,
     onUndoRedeem: PropTypes.func,
     onEditItem: PropTypes.func,

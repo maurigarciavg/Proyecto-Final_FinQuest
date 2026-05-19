@@ -57,12 +57,17 @@
   border-radius: 22px;
   background: #ffffff;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .child-topbar__profile {
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .child-topbar__avatar {
@@ -83,6 +88,9 @@
   font-size: 1.9rem;
   font-weight: 800;
   line-height: 1.1;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .child-topbar__stats {
@@ -97,8 +105,9 @@
 .child-topbar__stat {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  flex: 1;
+  justify-content: flex-start;
+  flex: 1 1 140px;
+  min-width: 0;
 }
 
 .child-topbar__stat-head {
@@ -110,6 +119,15 @@
 
 .child-topbar__stat-head--coins {
   gap: 10px;
+}
+
+.child-topbar__xp-hint {
+  font-size: 0.75rem;
+  color: #5a5a5a;
+  margin-top: 4px;
+  display: block;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .child-topbar__stat-title {
@@ -298,7 +316,7 @@
 .dashboard-streak__days {
   display: flex;
   gap: 14px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .dashboard-streak__day {
@@ -547,7 +565,7 @@
 
 .task-modal__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
 }
 
@@ -706,7 +724,14 @@
 
 @media (max-width: 768px) {
   .dashboard-panel__bottom { grid-template-columns: 1fr; }
-  .task-modal__grid { grid-template-columns: repeat(2, 1fr); }
+  .task-modal__grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+
+@media (max-width: 1080px) {
+  .dashboard-streak__days { gap: 8px; }
+  .dashboard-streak__check { width: 36px; height: 36px; font-size: 1.2rem; }
+  .dashboard-streak__label { font-size: 0.8rem; }
+  .dashboard-streak__coins-image { width: 72px; }
 }
 
 @media (max-width: 640px) {
@@ -716,11 +741,37 @@
   .child-topbar__name { font-size: 1.5rem; }
   .goal-card__price-number { font-size: 2.4rem; }
   .dashboard-streak { flex-direction: column; align-items: flex-start; }
-  .dashboard-streak__days { gap: 10px; }
-  .dashboard-streak__check { width: 36px; height: 36px; font-size: 1.2rem; }
-  .dashboard-streak__coins-image { width: 72px; }
+  .dashboard-streak__days { gap: 8px; }
+  .dashboard-streak__check { width: 32px; height: 32px; font-size: 1rem; }
+  .dashboard-streak__coins-image { width: 64px; }
 }
 
 @media (max-width: 480px) {
-    .task-modal__grid { grid-template-columns: 1fr; }
+  .task-modal__grid { grid-template-columns: 1fr; }
+  .task-modal { padding: 20px 16px; }
+}
+
+@media (max-width: 450px) {
+  .child-topbar {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .child-topbar__profile {
+    gap: 10px;
+  }
+  .child-topbar__avatar {
+    width: 40px;
+    height: 40px;
+  }
+  .child-topbar__name {
+    font-size: 1.5rem;
+  }
+  .child-topbar__stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .child-topbar__stat {
+    flex: none;
+    width: 100%;
+  }
 }

@@ -80,7 +80,7 @@ h4 {
 
 .Lista {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
   padding: 10px 0;
   width: 100%;
@@ -210,7 +210,7 @@ h4 {
 }
 
 .pending-card {
-  min-width: calc(33.33% - 14px);
+  min-width: 160px;
   flex-shrink: 0;
   box-sizing: border-box;
 }
@@ -344,3 +344,45 @@ h4 {
 
 .badge-pending {
   color: #f08c00;
+  background-color: #fff8ec;
+  border-color: #f08c00;
+}
+
+@media (max-width: 768px) {
+  .mission-management {
+    padding: 16px;
+  }
+
+  .missions-btn {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .left_btn {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .add-mission-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 580px) {
+  .Lista {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .btn-action {
+    width: 40px;
+    height: 40px;
+  }
+
+  .task-icon-container {
+    font-size: 2.2rem;
+  }
+}

@@ -281,9 +281,35 @@ def redeem_small_goal(reward_id):
     child = db.session.get(Child, goal.child_id)
     if child.total_coins < goal.coins:
         return jsonify({"msg": "Monedas insuficientes"}), 400
-    child.total_coins -= goal.coins
+    if goal.status != "available":
+        return jsonify({"msg": "Cupón ya solicitado o aprobado"}), 400
+    goal.status = "pending"
     db.session.commit()
-    return jsonify({"msg": "Cupón canjeado", "new_coins": child.total_coins}), 200
+    return jsonify({"msg": "Cupón solicitado", "status": "pending"}), 200
+
+
+@api.route("/rewards/<int:reward_id>/approve", methods=["PATCH"])
+def approve_small_goal(reward_id):
+    goal = db.session.get(SmallGoal, reward_id)
+    if not goal:
+        return jsonify({"msg": "Cupón no encontrado"}), 404
+    child = db.session.get(Child, goal.child_id)
+    if child.total_coins < goal.coins:
+        return jsonify({"msg": "Monedas insuficientes"}), 400
+    child.total_coins -= goal.coins
+    goal.status = "approved"
+    db.session.commit()
+    return jsonify({"msg": "Cupón aprobado", "new_coins": child.total_coins}), 200
+
+
+@api.route("/rewards/<int:reward_id>/rollback", methods=["PATCH"])
+def rollback_small_goal(reward_id):
+    goal = db.session.get(SmallGoal, reward_id)
+    if not goal:
+        return jsonify({"msg": "Cupón no encontrado"}), 404
+    goal.status = "available"
+    db.session.commit()
+    return jsonify({"msg": "Cupón restaurado"}), 200
 
 
 @api.route("/child/<int:child_id>/grand-prize", methods=["POST"])

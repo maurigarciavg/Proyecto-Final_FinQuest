@@ -129,7 +129,7 @@ export const ChildDashboard = () => {
             if (response.ok) {
                 await loadData();
                 setShowRewardModal(false);
-                setRewardToast("🎁 ¡Cupón canjeado con éxito! Reclama tu premio.");
+                setRewardToast("⏳ ¡Cupón solicitado! Espera la aprobación de papá/mamá.");
                 setTimeout(() => setRewardToast(null), 4000);
             }
         } catch (err) {

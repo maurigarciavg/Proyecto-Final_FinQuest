@@ -24,7 +24,7 @@ export const Navbar = () => {
 
     return (
         <nav className="navbar navbar-expand-lg navbar-finquest sticky-top">
-            <div className="container">
+            <div className="container-fluid px-3 px-md-4">
                 <NavLink className="navbar-brand d-flex align-items-center" to="/">
                     <img src={logoImg} alt="FinQuest Logo" className="navbar-logo" />
                 </NavLink>

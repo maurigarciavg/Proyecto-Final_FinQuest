@@ -47,7 +47,8 @@ export const ParentAdmin = () => {
                     id: r.id,
                     name: r.name,
                     coins: r.coins || r.cost,
-                    redeemed: false
+                    status: r.status || "available",
+                    redeemed: r.status === "pending" || r.status === "approved"
                 })));
 
                 setGranPremio(data.child.grand_prize || null);
@@ -102,20 +103,31 @@ export const ParentAdmin = () => {
         }
     };
 
-    const handleRedeem = async (id, type) => {
+    const handleApproveCoupon = async (id) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        const endpoint = type === 'coupon' ? `api/coupons/${id}/redeem` : `api/prizes/${id}/redeem`;
         try {
-            const response = await fetch(`${baseUrl}${endpoint}`, { method: 'POST' });
+            const response = await fetch(`${baseUrl}api/rewards/${id}/approve`, {
+                method: 'PATCH',
+                headers: { "Content-Type": "application/json" }
+            });
             if (response.ok) fetchData();
         } catch (error) {
-            console.error("Error al canjear:", error);
+            console.error("Error al aprobar cupón:", error);
         }
     };
 
-    const handleUndoRedeem = (id, type) => {
+    const handleUndoRedeem = async (id, type) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
         if (type === 'coupon') {
-            setCupones(prev => prev.map(c => c.id === id ? { ...c, redeemed: false } : c));
+            try {
+                const response = await fetch(`${baseUrl}api/rewards/${id}/rollback`, {
+                    method: 'PATCH',
+                    headers: { "Content-Type": "application/json" }
+                });
+                if (response.ok) fetchData();
+            } catch (error) {
+                console.error("Error al revertir cupón:", error);
+            }
         } else if (type === 'prize') {
             setGranPremio(prev => prev ? { ...prev, redeemed: false } : null);
         }
@@ -191,7 +203,7 @@ export const ParentAdmin = () => {
                         grandPrize={granPremio}
                         onApproveTask={handleApproveTask}
                         onRejectTask={handleRejectTask}
-                        onRedeem={handleRedeem}
+                        onApproveCoupon={handleApproveCoupon}
                         onUndoTask={handleUndoTask}
                         onUndoRedeem={handleUndoRedeem}
                         onEditItem={handleEditItem}

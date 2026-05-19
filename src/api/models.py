@@ -130,6 +130,7 @@ class SmallGoal(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     coins: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="available")
     child_id: Mapped[int] = mapped_column(
         ForeignKey("child.id"), nullable=False)
 
@@ -140,6 +141,7 @@ class SmallGoal(db.Model):
             "id": self.id,
             "name": self.name,
             "coins": self.coins,
+            "status": self.status,
             "child_id": self.child_id
         }
 

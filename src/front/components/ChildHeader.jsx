@@ -36,7 +36,7 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
                             }}
                         ></div>
                     </div>
-                    <small style={{ fontSize: "0.75rem", color: "#5a5a5a", marginTop: "4px", display: "block" }}>
+                    <small className="child-topbar__xp-hint">
                         Faltan {xpRemaining} 🪙 para el nivel {level + 1}
                     </small>
                 </div>
