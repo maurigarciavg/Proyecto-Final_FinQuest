@@ -186,6 +186,7 @@ export const ParentAdmin = () => {
                 <aside className="panel-left">
                     <LeftPanel
                         parentName={store.user?.name || "Papá"}
+                        parentAvatar={store.user?.avatar}
                         childrenProfiles={misHijos}
                         onSelectChild={(child) => {
                             setSelectedChildId(child.id);

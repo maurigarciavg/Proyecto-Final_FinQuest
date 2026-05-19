@@ -4,7 +4,7 @@ import { ChildWizard } from "../../front/components/ChildProfileCreation/ChildWi
 import "../style ParentDash/styleLeftPanel.css";
 import defaultAvatar from "../../front/assets/img/Castor-1.png";
 
-const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
+const LeftPanel = ({ parentName, parentAvatar, childrenProfiles, onSelectChild }) => {
   const [showWizard, setShowWizard] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -16,6 +16,14 @@ const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
   return (
     <aside className="left-panel">
       <header className="panel-header">
+        <div className="parent-avatar-wrapper">
+          <img
+            src={parentAvatar || defaultAvatar}
+            className="parent-avatar"
+            alt={`Avatar de ${parentName}`}
+            onError={(e) => { e.target.src = defaultAvatar; }}
+          />
+        </div>
         <h2>{parentName}</h2>
       </header>
 
@@ -120,6 +128,7 @@ const LeftPanel = ({ parentName, childrenProfiles, onSelectChild }) => {
 
 LeftPanel.propTypes = {
   parentName: PropTypes.string.isRequired,
+  parentAvatar: PropTypes.string,
   childrenProfiles: PropTypes.array.isRequired,
   onSelectChild: PropTypes.func
 };
