@@ -2,7 +2,6 @@ import React from "react";
 import { getTaskIcon } from "../Utils/getTaskIcon";
 
 export const TaskModal = ({ tasks, onClose, onComplete }) => {
-    // 🟢 FILTRO: Solo mostramos en el modal las tareas marcadas como 'is_today'
     const tasksToday = tasks?.filter(t => t.is_today) || [];
 
     return (

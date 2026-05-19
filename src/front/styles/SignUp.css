@@ -1,15 +1,10 @@
-/* SignUp.css */
-
-/* Contenedor principal con fondo */
 .auth-section {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
-/* Card */
 .panel-card.auth-card {
   width: 600px;
   max-width: 100%;
@@ -17,15 +12,12 @@
   padding: 2rem 4rem;
   border-radius: 20px;
   background-color: #EAF6F4;
-
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-/* Título */
 .section-title {
   text-align: center;
   margin-top: 0;
@@ -35,17 +27,15 @@
   font-weight: bold;
 }
 
-/* Formulario */
 .auth-form {
   display: flex;
   flex-direction: column;
 }
 
-.auth-form label{
+.auth-form label {
   color: #3db7a4;
 }
 
-/* Inputs */
 .auth-form .form-control {
   margin-bottom: 1rem;
   padding: 0.5rem;
@@ -55,7 +45,6 @@
   font-size: 1rem;
 }
 
-/* Botón */
 .btn-primary-soft {
   padding: 0.5rem 1.3rem;
   border-radius: 999px;
@@ -73,13 +62,11 @@
   background: #2ea393;
 }
 
-/* Alertas de error */
 .alert.alert-danger {
   margin-top: 0.5rem;
   font-size: 0.9rem;
 }
 
-/* Footnote / registro */
 .auth-footnote {
   margin-top: 1rem;
   text-align: center;
@@ -91,20 +78,18 @@
   text-decoration: none;
 }
 
-/* Wrapper relativo para card + imagen */
 .signup-wrapper {
   position: relative;
   width: 100%;
   max-width: 400px;
 }
 
-/* Imagen abajo izquierda */
 .signup-image {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 400px; 
-  pointer-events: none; 
+  width: 400px;
+  pointer-events: none;
 }
 
 .signup-image img {
@@ -112,8 +97,6 @@
   height: auto;
 }
 
-/* ========================= */
-/* 📱 RESPONSIVE */
 @media (max-width: 1024px) {
   .panel-card.auth-card {
     width: 90%;

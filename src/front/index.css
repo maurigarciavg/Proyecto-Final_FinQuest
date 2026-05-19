@@ -35,7 +35,6 @@ body {
   margin: 0;
   min-width: 320px;
   background: #fff;
-
   color: var(--page-text);
   font-family: "Space Grotesk", sans-serif;
 }
@@ -523,12 +522,11 @@ code {
   overflow: hidden;
 }
 
-/* FONDO */
 .hero-bg {
   position: absolute;
   top: 0;
   right: 0;
-  width: 60%; /* controla cuánto ocupa */
+  width: 60%;
   height: 100%;
   background-image: url("../src/assets/img/fondo1.png");
   background-repeat: no-repeat;
@@ -537,7 +535,6 @@ code {
   z-index: 0;
 }
 
-/* CONTENIDO ENCIMA */
 .hero-section .container {
   position: relative;
   z-index: 2;
@@ -548,28 +545,23 @@ code {
   color: white;
   padding: 60px 0;
   position: relative;
-
   align-items: stretch;
   margin-bottom: 100px;
 }
 
-.about-text{
+.about-text {
   width: 80%;
   font-size: 20px;
 }
 
-/* CONTENEDOR DE LA IMAGEN */
 .about-img-wrapper {
   position: relative;
- 
 }
 
-/* IMAGEN */
 .about-img {
   position: relative;
   max-width: 20rem;
   margin-left: 50px;
-
 }
 
 .feature-card {
@@ -606,7 +598,6 @@ code {
   justify-content: center;
 }
 
-/* columna fija */
 .features-row .col-md-4,
 .features-row .col-lg-2 {
   flex: 0 0 auto;
@@ -640,6 +631,6 @@ code {
 }
 
 .hero-img {
-  width: 100%; /* controla cuánto ocupa */
+  width: 100%;
   z-index: 0;
 }

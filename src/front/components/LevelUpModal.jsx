@@ -1,5 +1,4 @@
 import React from "react";
-// 🟢 Importamos el video con la ruta corregida
 import levelVideo from "../assets/img/subida-de-nivel.mp4";
 
 export const LevelUpModal = ({ level, onClose }) => {
@@ -12,7 +11,6 @@ export const LevelUpModal = ({ level, onClose }) => {
                 maxWidth: "650px", 
                 textAlign: "center" 
             }}>
-                {/* Título con estilo de videojuego */}
                 <h1 style={{ 
                     color: "#fff", 
                     fontSize: "3.2rem", 
@@ -27,14 +25,13 @@ export const LevelUpModal = ({ level, onClose }) => {
                 <div style={{ 
                     borderRadius: "30px", 
                     overflow: "hidden", 
-                    boxShadow: "0 0 60px rgba(32, 184, 167, 0.4)", // Brillo del color de tu marca
+                    boxShadow: "0 0 60px rgba(32, 184, 167, 0.4)",
                     border: "5px solid #20b8a7",
                     backgroundColor: "#000"
                 }}>
                     <video 
                         autoPlay 
                         playsInline
-                        /* 🟢 Sin 'muted' para que se oigan los cohetes y el sonido del video */
                         style={{ width: "100%", display: "block" }}
                         onEnded={onClose} 
                     >

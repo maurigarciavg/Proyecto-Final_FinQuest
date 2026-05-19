@@ -12,7 +12,6 @@ export const ResetPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 👉 Validación básica
         if (password !== confirmPassword) {
             alert("Las contraseñas no coinciden");
             return;
@@ -27,11 +26,9 @@ export const ResetPassword = () => {
                 body: JSON.stringify({ token: token, password: password })
             });
 
-
             console.log(result);
         } catch (error) {
             console.log(error);
-
         }
     };
 
@@ -46,7 +43,6 @@ export const ResetPassword = () => {
                 </p>
 
                 <form onSubmit={handleSubmit}>
-
                     <div className="mb-3">
                         <label className="form-label">Nueva contraseña</label>
                         <input
@@ -79,7 +75,6 @@ export const ResetPassword = () => {
                 <div className="text-center mt-3">
                     <Link to="/sign-in">Volver al login</Link>
                 </div>
-
             </div>
         </div>
     );

@@ -14,10 +14,9 @@ const GiphyMemoryGame = ({ onGameComplete }) => {
                 const response = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${API_KEY}&q=pokemon&limit=8&rating=g`);
                 const { data } = await response.json();
                 
-                // Mezclamos y duplicamos
                 const pairCards = [...data, ...data].map((gif, index) => ({
                     ...gif,
-                    uniqueId: Math.random() + index // ID mucho más seguro para React
+                    uniqueId: Math.random() + index
                 }));
 
                 setCards(pairCards.sort(() => Math.random() - 0.5));
@@ -29,7 +28,6 @@ const GiphyMemoryGame = ({ onGameComplete }) => {
     }, []);
 
     const handleCardClick = (card) => {
-        // Validación extra: que no clique la misma carta que ya está boca arriba
         if (disabled || flippedCards.includes(card.uniqueId) || matchedCards.includes(card.id)) return;
 
         const newFlipped = [...flippedCards, card.uniqueId];
@@ -56,9 +54,7 @@ const GiphyMemoryGame = ({ onGameComplete }) => {
     };
 
     useEffect(() => {
-        // Cuando llega a 8 parejas, el juego termina
         if (matchedCards.length === 8) {
-            // Un pequeño delay para que dé tiempo a ver la última carta
             setTimeout(() => {
                 if (onGameComplete) onGameComplete(30);
             }, 500);
@@ -70,7 +66,7 @@ const GiphyMemoryGame = ({ onGameComplete }) => {
             display: 'grid', 
             gridTemplateColumns: 'repeat(4, 1fr)', 
             gap: '10px', 
-            perspective: '1000px' // Da efecto de profundidad
+            perspective: '1000px'
         }}>
             {cards.map((card) => {
                 const isFlipped = flippedCards.includes(card.uniqueId) || matchedCards.includes(card.id);
@@ -80,7 +76,7 @@ const GiphyMemoryGame = ({ onGameComplete }) => {
                         onClick={() => handleCardClick(card)}
                         style={{ 
                             width: '100%', 
-                            paddingTop: '100%', // Truco para que sean cuadrados perfectos
+                            paddingTop: '100%',
                             position: 'relative',
                             cursor: 'pointer',
                             borderRadius: '8px',
@@ -89,14 +85,12 @@ const GiphyMemoryGame = ({ onGameComplete }) => {
                             transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
                         }}
                     >
-                        {/* Parte trasera (la que se ve al inicio) */}
                         <div style={{
                             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                             backgroundColor: '#3dc9b6', borderRadius: '8px', backfaceVisibility: 'hidden',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', color: 'white'
                         }}>?</div>
 
-                        {/* Parte delantera (el GIF) */}
                         <div style={{
                             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                             backgroundColor: '#eee', borderRadius: '8px', backfaceVisibility: 'hidden',

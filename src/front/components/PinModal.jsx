@@ -50,7 +50,6 @@ export const PinModal = ({ profile, onClose }) => {
       >
         <h2>Ingresa el PIN de {profile.name}</h2>
 
-        {/* 🔥 SOLO ESTE CAMBIO (FORM) */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -81,7 +80,6 @@ export const PinModal = ({ profile, onClose }) => {
             </button>
           </div>
         </form>
-
       </div>
     </div>,
     document.body

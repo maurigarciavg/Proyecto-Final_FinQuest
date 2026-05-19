@@ -2,7 +2,6 @@ import React from "react";
 import defaultAvatar from "../assets/img/logo.png";
 import monedasIcon from "../assets/img/monedas.png";
 
-// Añadimos prizeProgress a las props que recibe el componente
 export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress }) => {
     const avatarSource = child.avatar ? child.avatar : defaultAvatar;
 
@@ -22,7 +21,6 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
             </div>
 
             <div className="child-topbar__stats">
-                {/* BARRA DE NIVEL (Izquierda - XP Acumulado) */}
                 <div className="child-topbar__stat">
                     <div className="child-topbar__stat-head">
                         <span className="child-topbar__stat-title">
@@ -43,7 +41,6 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
                     </small>
                 </div>
 
-                {/* BARRA DE GRAN PREMIO (Derecha - Monedas actuales) */}
                 <div className="child-topbar__stat">
                     <div className="child-topbar__stat-head child-topbar__stat-head--coins">
                         <img
@@ -56,7 +53,6 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
                         </span>
                     </div>
                     <div className="progress-track">
-                        {/* 🟢 AHORA DINÁMICA: Refleja el progreso real hacia el Gran Premio */}
                         <div
                             className="progress-fill progress-fill--coins"
                             style={{ 

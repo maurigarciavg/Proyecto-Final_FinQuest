@@ -7,8 +7,6 @@ import ScrollToTop from "../components/ScrollToTop";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { apiRequest, authHeaders } from "../services/api";
 
-// 1. Importamos el CSS del Layout si decides crearlo, o usaremos estilos en línea
-
 
 export const Layout = () => {
     const { store, dispatch } = useGlobalReducer();
@@ -70,13 +68,11 @@ export const Layout = () => {
 
     return (
         <ScrollToTop>
-            {/* Añadimos d-flex flex-column min-vh-100 para que el footer no flote */}
             <div className="app-shell d-flex flex-column min-vh-100">
                 <Navbar />
                 
                 {store.notice ? (
                     <div className="container pt-3">
-                        {/* 🟢 ALERTA PERSONALIZADA (Cambiamos alert-info por estilos FinQuest) */}
                         <div className="alert d-flex justify-content-between align-items-center gap-3 border-0 shadow-sm" 
                              style={{ backgroundColor: "#f0fdfa", color: "#134e4a", borderLeft: "5px solid #32a89b" }}>
                             <span>{store.notice}</span>

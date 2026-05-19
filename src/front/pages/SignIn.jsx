@@ -10,9 +10,7 @@ export const SignIn = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-
-    });
+    const [formData, setFormData] = useState({});
 
     if (store.token) {
         return <Navigate to="/profiles" replace />;
@@ -46,7 +44,6 @@ export const SignIn = () => {
                 }
             });
 
-            // Guardar en localStorage
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -58,7 +55,6 @@ export const SignIn = () => {
                 payload: `Bienvenido otra vez, ${data.user.name}.`
             });
 
-            // Redirección
             window.location.href = "/profiles";
         } catch (error) {
             dispatch({
@@ -70,13 +66,10 @@ export const SignIn = () => {
 
     return (
         <div className="login-container">
-
-            {/* CARD LOGIN */}
             <div className="login-card">
                 <h2 className="login-title">Iniciar sesión</h2>
 
                 <form className="login-form" onSubmit={handleSubmit}>
-
                     <input
                         className="login-input"
                         id="signin-email"
@@ -126,11 +119,9 @@ export const SignIn = () => {
                 </div>
             </div>
 
-            {/* Imagen derecha */}
             <div className="login-image">
                 <img src={beaverImg} alt="Cashtor" />
             </div>
-
         </div>
     );
 };

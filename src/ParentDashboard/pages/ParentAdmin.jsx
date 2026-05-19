@@ -75,6 +75,20 @@ export const ParentAdmin = () => {
         }
     };
 
+    const handleRejectTask = async (taskId) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(`${baseUrl}api/tasks/${taskId}/validate`, {
+                method: 'PATCH',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ approved: false })
+            });
+            if (response.ok) fetchData();
+        } catch (error) {
+            console.error("Error al rechazar tarea:", error);
+        }
+    };
+
     const handleUndoTask = async (taskId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {
@@ -176,6 +190,7 @@ export const ParentAdmin = () => {
                         couponsList={cupones}
                         grandPrize={granPremio}
                         onApproveTask={handleApproveTask}
+                        onRejectTask={handleRejectTask}
                         onRedeem={handleRedeem}
                         onUndoTask={handleUndoTask}
                         onUndoRedeem={handleUndoRedeem}

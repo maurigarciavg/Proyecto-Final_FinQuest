@@ -49,7 +49,6 @@ class Child(db.Model):
     pin: Mapped[str] = mapped_column(String(4), nullable=False)
     avatar: Mapped[str] = mapped_column(String(255), nullable=True)
     total_coins: Mapped[int] = mapped_column(Integer, default=0)
-    # 🟢 NUEVA COLUMNA: XP acumulado para niveles
     total_earned_coins: Mapped[int] = mapped_column(Integer, default=0)
     streak: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     last_login_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
@@ -75,7 +74,7 @@ class Child(db.Model):
             "pin": self.pin,
             "avatar": self.avatar,
             "total_coins": self.total_coins,
-            "total_earned_coins": self.total_earned_coins,  # 🟢 Enviado al frontend
+            "total_earned_coins": self.total_earned_coins,
             "streak": self.streak,
             "parent_id": self.parent_id,
             "small_goals": [goal.serialize() for goal in self.small_goals] if self.small_goals else [],
@@ -105,7 +104,7 @@ class Task(db.Model):
         next_date = None
         if task_days:
             today = datetime.now().date()
-            current_weekday = today.weekday()  # 0=lunes
+            current_weekday = today.weekday()
             next_day = min((d for d in task_days if d >=
                            current_weekday), default=None)
             if next_day is None:
@@ -152,7 +151,7 @@ class GrandPrize(db.Model):
     coins: Mapped[int] = mapped_column(Integer, nullable=False)
     image_url: Mapped[str] = mapped_column(String(255), nullable=True)
     redeemed: Mapped[bool] = mapped_column(Boolean(), default=False)
-    
+
     child_id: Mapped[int] = mapped_column(ForeignKey("child.id"), nullable=False)
     child: Mapped["Child"] = relationship(back_populates="grand_prize")
 

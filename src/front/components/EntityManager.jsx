@@ -9,19 +9,18 @@ export const EntityManager = ({ type, childId, onClose, onSave }) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
         
-        // 🟢 CORRECCIÓN: Ruta dinámica que incluye 'grand-prize'
         let endpoint = "";
         let body = "";
 
         if (type === 'tasks' || type === 'Tareas') {
             endpoint = `api/child/${childId}/tasks`;
-            body = JSON.stringify([newItem]); // Las tareas van en lista []
+            body = JSON.stringify([newItem]);
         } else if (type === 'small-goals' || type === 'Cupones') {
             endpoint = `api/child/${childId}/small-goals`;
-            body = JSON.stringify([newItem]); // Los cupones van en lista []
+            body = JSON.stringify([newItem]);
         } else if (type === 'grand-prize' || type === 'Gran Premio') {
             endpoint = `api/child/${childId}/grand-prize`;
-            body = JSON.stringify(newItem); // ⚠️ El Gran Premio va como objeto solo {}
+            body = JSON.stringify(newItem);
         }
 
         try {
