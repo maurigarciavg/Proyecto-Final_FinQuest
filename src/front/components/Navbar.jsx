@@ -13,6 +13,18 @@ export const Navbar = () => {
   store.activeProfile ||
   JSON.parse(localStorage.getItem("activeProfile"));
 
+    // compute profile target: prefer current child, then saved activeProfile, then parent
+    let profileTarget = "/";
+    if (store.currentChild && store.currentChild.id) {
+        profileTarget = `/child-dashboard/${store.currentChild.id}`;
+    } else if (activeProfile && activeProfile.role === 'child' && activeProfile.id) {
+        profileTarget = `/child-dashboard/${activeProfile.id}`;
+    } else if (store.user) {
+        profileTarget = '/parentadmin';
+    } else if (activeProfile && activeProfile.role === 'parent') {
+        profileTarget = '/parentadmin';
+    }
+
     const isHome = location.pathname === "/";
     const isParent = location.pathname === "/parentadmin";
 
@@ -25,7 +37,7 @@ export const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-finquest sticky-top">
             <div className="container-fluid px-3 px-md-4">
-                <NavLink className="navbar-brand d-flex align-items-center" to="/">
+                <NavLink className="navbar-brand d-flex align-items-center" to={profileTarget}>
                     <img src={logoImg} alt="FinQuest Logo" className="navbar-logo" />
                 </NavLink>
 
@@ -40,7 +52,7 @@ export const Navbar = () => {
 
                 <div className="collapse navbar-collapse" id="mainNavbar">
                     <div className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-                        <NavLink className="nav-link nav-link-custom" to="/">
+                        <NavLink className="nav-link nav-link-custom" to={profileTarget}>
                             Inicio
                         </NavLink>
 
