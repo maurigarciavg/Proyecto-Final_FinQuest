@@ -1,9 +1,21 @@
+.child-dashboard,
+.child-dashboard * {
+  box-sizing: border-box;
+}
+
+.child-dashboard img {
+  max-width: 100%;
+  height: auto;
+}
+
 .child-dashboard {
   min-height: 100vh;
   padding: 24px 18px 40px;
   background: #39b5ac;
   color: #1f1f1f;
   font-family: Arial, sans-serif;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .child-dashboard__container {
@@ -99,7 +111,7 @@
   justify-content: flex-end;
   gap: 28px;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .child-topbar__stat {
@@ -108,13 +120,32 @@
   justify-content: flex-start;
   flex: 1 1 140px;
   min-width: 0;
+  width: 100%;
 }
 
 .child-topbar__stat-head {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   min-height: 44px;
+  gap: 10px;
+}
+
+.child-topbar__stat-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.child-topbar__xp-hint {
+  margin-top: 8px;
+  min-height: 20px;
+  display: block;
+  color: #5a5a5a;
+}
+
+.child-topbar__stat .progress-track {
+  margin-bottom: 12px;
 }
 
 .child-topbar__stat-head--coins {
@@ -140,7 +171,8 @@
 }
 
 .child-topbar__coins-icon {
-  width: 48px;
+  width: 32px;
+  max-height: 32px;
   height: auto;
   object-fit: contain;
 }
@@ -278,6 +310,13 @@
   min-height: 58px;
 }
 
+.task-summary-card__label-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
 .dashboard-placeholder__badge,
 .task-summary-card__badge {
   width: 38px;
@@ -369,8 +408,14 @@
   flex-grow: 1;
 }
 
-.dashboard-shop__image {
+.dashboard-shop__image,
+.task-summary-card__image,
+.goal-card__image,
+.child-topbar__coins-icon,
+.child-topbar__avatar,
+.goal-card__coins-image {
   width: 150px;
+  max-width: 100%;
   height: auto;
   object-fit: contain;
 }
@@ -447,6 +492,7 @@
   justify-content: space-around;
   align-items: center;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .goal-card__image {
@@ -741,9 +787,17 @@
   .child-topbar__name { font-size: 1.5rem; }
   .goal-card__price-number { font-size: 2.4rem; }
   .dashboard-streak { flex-direction: column; align-items: flex-start; }
-  .dashboard-streak__days { gap: 8px; }
+  .dashboard-streak__days { gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .dashboard-streak__day { min-width: 30px; }
   .dashboard-streak__check { width: 32px; height: 32px; font-size: 1rem; }
+  .dashboard-streak__label { font-size: 0.8rem; }
   .dashboard-streak__coins-image { width: 64px; }
+  .goal-card__hero { justify-content: center; gap: 14px; }
+  .goal-card__price { width: 100%; min-width: 0; }
+  .goal-card__box--main { padding: 18px; }
+  .dashboard-shop__image, .task-summary-card__image, .goal-card__image { width: 100%; max-width: 220px; }
+  .dashboard-shop, .task-summary-card__content { padding-top: 0; }
+  .dashboard-placeholder--shop, .task-summary-card { min-height: auto; }
 }
 
 @media (max-width: 480px) {

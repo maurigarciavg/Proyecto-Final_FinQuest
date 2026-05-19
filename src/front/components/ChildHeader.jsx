@@ -43,14 +43,14 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
 
                 <div className="child-topbar__stat">
                     <div className="child-topbar__stat-head child-topbar__stat-head--coins">
+                        <span className="child-topbar__stat-title">
+                            {child.total_coins ?? 0} Monedas
+                        </span>
                         <img
                             className="child-topbar__coins-icon"
                             src={monedasIcon}
                             alt="Monedas"
                         />
-                        <span className="child-topbar__stat-title">
-                            {child.total_coins ?? 0} Monedas
-                        </span>
                     </div>
                     <div className="progress-track">
                         <div
