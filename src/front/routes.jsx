@@ -9,7 +9,6 @@ import { ParentAdmin } from "../ParentDashboard/pages/ParentAdmin";
 import { Home } from "./pages/Home";
 import { Layout } from "./pages/Layout";
 import { NotFound } from "./pages/NotFound";
-// 🟢 Eliminada la importación de Profile
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 import { ChildDashboard } from "./pages/ChildDashboard";
@@ -26,8 +25,7 @@ export const router = createBrowserRouter(
             <Route path="sign-up" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
-            
-            {/* 🟢 Selector de perfiles (Sustituye a la lógica de "Profile" antiguo) */}
+
             <Route
                 path="profiles"
                 element={
@@ -46,10 +44,8 @@ export const router = createBrowserRouter(
                 }
             />
 
-            {/* 🔴 RUTA /PROFILE ELIMINADA */}
-
             <Route
-                path="child-dashboard/:childId" 
+                path="child-dashboard/:childId"
                 element={(
                     <PrivateRoute>
                         <ChildDashboard />

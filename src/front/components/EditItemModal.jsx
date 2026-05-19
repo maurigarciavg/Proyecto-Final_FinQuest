@@ -14,7 +14,6 @@ export const EditItemModal = ({ item, type, onClose, onSave }) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
         
-        // 🟢 CORRECCIÓN: Ahora distinguimos las 3 rutas posibles (usando nombres técnicos)
         let endpoint = "";
         if (type === 'tasks' || type === 'Tareas') {
             endpoint = `api/tasks/${item.id}`;
@@ -35,7 +34,7 @@ export const EditItemModal = ({ item, type, onClose, onSave }) => {
                     name: editForm.name,
                     coins: parseInt(editForm.coins),
                     days: (type === 'Tareas' || type === 'tasks') ? editForm.days : null,
-                    image_url: editForm.image_url || "" // Importante para el Gran Premio
+                    image_url: editForm.image_url || ""
                 })
             });
 

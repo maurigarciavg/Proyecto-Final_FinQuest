@@ -45,9 +45,7 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step, formData }) => {
 
     return (
         <div className="wizard-step-wrapper animate__animated animate__fadeIn">
-
             <div className="wizard-header">
-
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
                     <img
                         src={selectedAvatar}
@@ -85,7 +83,6 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step, formData }) => {
                             onChange={(e) => setNewTaskCoins(e.target.value)}
                         />
                     </div>
-
                     <button
                         onClick={addNewTask}
                         className="btn-next"
@@ -105,11 +102,9 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step, formData }) => {
                     <p className="empty-tasks-msg">Usa el buscador de arriba para añadir misiones</p>
                 )}
 
-                {/* ... dentro del map de addedTasks ... */}
                 {addedTasks.map((task) => (
                     <div key={task.id} className="task-item">
                         <span className="task-name">{task.name}</span>
-
                         <div className="task-days-container">
                             {allDays.map(d => (
                                 <span
@@ -121,11 +116,9 @@ export const ChildTaskSetting = ({ onBack, onNextStep, step, formData }) => {
                                 </span>
                             ))}
                         </div>
-
                         <div className="task-coins-display">
                             🪙 {task.coins}
                         </div>
-
                         <button onClick={() => removeTask(task.id)} className="btn-delete-task">
                             <i className="fa-solid fa-trash text-red"></i>
                         </button>

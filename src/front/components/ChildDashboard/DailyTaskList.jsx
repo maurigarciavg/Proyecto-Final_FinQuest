@@ -4,10 +4,9 @@ export const DailyTaskList = ({ childId }) => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // 1. Lógica del Traductor: Averiguamos qué letra toca hoy
     const getTodayLetter = () => {
         const days = ["D", "L", "M", "X", "J", "V", "S"];
-        return days[new Date().getDay()]; 
+        return days[new Date().getDay()];
     };
 
     const today = getTodayLetter();
@@ -19,11 +18,7 @@ export const DailyTaskList = ({ childId }) => {
                 const response = await fetch(`${baseUrl}api/child/${childId}/tasks`);
                 if (response.ok) {
                     const data = await response.json();
-                    
-                    // 2. Lógica de Filtrado: Solo tareas que incluyan el día de hoy
-                    // El backend nos devuelve 'days' como un array gracias al serialize que hicimos
                     const filtered = data.filter(task => task.days.includes(today));
-                    
                     setTasks(filtered);
                 }
             } catch (error) {

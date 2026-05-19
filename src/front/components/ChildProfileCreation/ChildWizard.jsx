@@ -40,7 +40,6 @@ export const ChildWizard = ({ onClose }) => {
         setSaveError(null);
 
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        // Importante: Asegúrate de que esta clave coincide con la que usas en el resto de la App
         const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
         const token = session.token;
         const user = session.user;
@@ -57,8 +56,6 @@ export const ChildWizard = ({ onClose }) => {
         };
 
         try {
-            // 👶 1. Crear el Perfil del Niño
-            // USAMOS LA RUTA CORRECTA: /api/parent/ID/child
             const childInfo = fullData.child?.child || fullData.child;
             const childPayload = {
                 name: childInfo.name,
@@ -74,7 +71,6 @@ export const ChildWizard = ({ onClose }) => {
             });
 
             if (!childResponse.ok) {
-                // Si falla, intentamos leer el error del JSON, si no, capturamos el texto
                 const errorData = await childResponse.json().catch(() => null);
                 throw new Error(errorData?.message || "Error 405/500: La ruta de creación no existe o está mal configurada.");
             }
@@ -82,7 +78,6 @@ export const ChildWizard = ({ onClose }) => {
             const childResult = await childResponse.json();
             const childId = childResult.id;
 
-            // 🛠️ 2. Guardado masivo (Tasks, Goals, Prize)
             const requests = [
                 fetch(`${baseUrl}api/child/${childId}/tasks`, {
                     method: "POST",
@@ -116,7 +111,6 @@ export const ChildWizard = ({ onClose }) => {
                 throw new Error("El niño se creó, pero falló el guardado de misiones o premios.");
             }
 
-            // 🔄 Actualizamos el estado global para que el padre vea al nuevo niño inmediatamente
             const meResponse = await fetch(`${baseUrl}api/me`, { headers });
             if (meResponse.ok) {
                 const meData = await meResponse.json();
@@ -125,7 +119,6 @@ export const ChildWizard = ({ onClose }) => {
 
             setIsSaving(false);
 
-            // Éxito: cerramos y navegamos
             setTimeout(() => {
                 if (onClose) onClose();
                 navigate("/parentadmin");
@@ -147,7 +140,6 @@ export const ChildWizard = ({ onClose }) => {
                     onClose={onClose}
                 />
             )}
-
             {step === 2 && (
                 <ChildTaskSetting
                     step={step}
@@ -156,7 +148,6 @@ export const ChildWizard = ({ onClose }) => {
                     onNextStep={(tasksData) => handleNext({ tasks: tasksData })}
                 />
             )}
-
             {step === 3 && (
                 <ChildSmallGoals
                     step={step}
@@ -165,7 +156,6 @@ export const ChildWizard = ({ onClose }) => {
                     onNextStep={(goalsData) => handleNext({ smallGoals: goalsData })}
                 />
             )}
-
             {step === 4 && (
                 <ChildGrandPrizeSet
                     step={step}
@@ -174,7 +164,6 @@ export const ChildWizard = ({ onClose }) => {
                     onNextStep={handleTransitionToSummary}
                 />
             )}
-
             {step === 5 && (
                 <ChildSummary
                     formData={formData}

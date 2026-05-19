@@ -1,5 +1,5 @@
 import React from "react";
-import "./Footer.css"; // Asegúrate de crear este archivo o usar el anterior
+import "./Footer.css";
 
 export const Footer = () => (
     <footer className="footer-finquest mt-auto">

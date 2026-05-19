@@ -1,4 +1,3 @@
-/* --- ESTILOS GENERALES --- */
 aside {
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -14,7 +13,6 @@ aside {
 .prize-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
 .prize-name { font-weight: bold; margin-top: 5px; color: #1e293b; }
 
-/* --- ENCABEZADO Y NAVEGACIÓN --- */
 .calendar-header h4 {
     text-transform: capitalize;
     color: #475569;
@@ -69,7 +67,6 @@ button.nav-btn {
     cursor: pointer;
 }
 
-/* --- GRID BASE --- */
 .calendar-grid {
     display: grid;
     gap: 4px;
@@ -83,7 +80,6 @@ button.nav-btn {
     padding-bottom: 5px;
 }
 
-/* --- CELDAS DEL CALENDARIO --- */
 .calendar-day {
     background: #fff;
     border: 1px solid #f1f5f9;
@@ -93,7 +89,7 @@ button.nav-btn {
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Evita desbordamientos globales */
+    overflow: hidden;
 }
 
 .calendar-day:hover { background-color: rgba(61, 201, 182, 0.1); }
@@ -109,7 +105,6 @@ button.nav-btn {
     background: #f0fdfa;
 }
 
-/* VISTA MES */
 .grid-month {
     grid-template-columns: repeat(7, 1fr);
 }
@@ -120,7 +115,6 @@ button.nav-btn {
     justify-content: center;
 }
 
-/* VISTA SEMANA: 3 columnas, altura fija uniforme */
 .grid-week {
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
@@ -128,7 +122,7 @@ button.nav-btn {
 
 .calendar-day.view-week {
     aspect-ratio: auto;
-    height: 120px; /* Altura fija para que no crezca */
+    height: 120px;
     padding: 8px;
     align-items: center;
 }
@@ -138,7 +132,6 @@ button.nav-btn {
     width: 100%;
 }
 
-/* VISTA DÍA */
 .grid-day {
     grid-template-columns: 1fr;
 }
@@ -152,7 +145,6 @@ button.nav-btn {
 .calendar-day.view-day:hover { background: #fff; }
 .calendar-day.view-day.today:hover { background: #f0fdfa; }
 
-/* --- ENCABEZADO DE CELDA --- */
 .day-card-header {
     display: flex;
     justify-content: center;
@@ -162,7 +154,7 @@ button.nav-btn {
     border-bottom: 1px solid #f1f5f9;
     padding-bottom: 6px;
     margin-bottom: 8px;
-    flex-shrink: 0; /* Que el header no se encoja */
+    flex-shrink: 0;
 }
 
 .day-name-label {
@@ -178,12 +170,11 @@ button.nav-btn {
     color: #1e293b;
 }
 
-/* --- TAREAS Y CONTENEDORES --- */
 .tasks-container {
-    width: 100%;   
+    width: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Muro de contención */
+    overflow: hidden;
     flex-grow: 1;
 }
 
@@ -192,10 +183,9 @@ button.nav-btn {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    overflow: hidden; /* Evita scroll innecesario en semana */
+    overflow: hidden;
 }
 
-/* La "Píldora" de la tarea */
 .task-pill {
     background: #f0fdfa;
     border-radius: 6px;
@@ -208,7 +198,6 @@ button.nav-btn {
     box-sizing: border-box;
 }
 
-/* Truncado de texto (El truco de los ...) */
 .task-title-inline {
     font-size: 10px;
     color: #334155;
@@ -226,7 +215,6 @@ button.nav-btn {
     white-space: nowrap;
 }
 
-/* --- INDICADORES Y PUNTOS --- */
 .dots-container {
     display: flex;
     justify-content: center;
@@ -266,10 +254,7 @@ button.nav-btn {
     margin-top: 5px;
 }
 
-/* --- RESPONSIVE ADAPTATION (Sin destruir tus estilos base) --- */
-
 @media (max-width: 768px) {
-    /* Ajustamos el contenedor de navegación para que no se amontone */
     .calendar-nav {
         flex-wrap: wrap;
         gap: 10px;
@@ -280,45 +265,38 @@ button.nav-btn {
         font-size: 1rem;
     }
 
-    /* Modificamos tu .grid-week de 3 columnas a 1 sola columna para lectura vertical */
     .grid-week {
-        grid-template-columns: 1fr !important; /* Forzamos el cambio de columna */
+        grid-template-columns: 1fr !important;
         gap: 15px;
     }
 
-    /* Quitamos el ajuste específico del 7mo hijo para que fluya normal en la lista */
     .grid-week .calendar-day:nth-child(7) {
-        grid-column: auto !important; 
+        grid-column: auto !important;
     }
 
-    /* En la vista de mes (7 columnas), reducimos el tamaño para que quepa en pantalla */
     .grid-month {
-        gap: 2px; /* Espacio mínimo */
+        gap: 2px;
     }
 
     .grid-month .day-name-label {
-        font-size: 10px; /* Textos más pequeños */
+        font-size: 10px;
     }
 
     .grid-month .day-number {
         font-size: 11px;
     }
 
-    /* Ocultamos las "píldoras" de texto en el mes si la pantalla es muy pequeña */
-    /* para que no se desborde el card, dejando solo los puntos (dots) */
     .grid-month .task-pill {
         display: none;
     }
 }
 
 @media (max-width: 480px) {
-    /* Vista de día: le damos más aire */
     .calendar-day.view-day {
         min-height: 150px;
         padding: 10px;
     }
 
-    /* Ajuste de botones de selección de vista */
     .view-selector button {
         padding: 4px 8px;
         font-size: 0.7rem;

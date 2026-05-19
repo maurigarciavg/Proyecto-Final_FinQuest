@@ -16,8 +16,6 @@ from werkzeug.security import generate_password_hash
 url_front = os.getenv('VITE_FRONT_URL')
 api = Blueprint("api", __name__)
 
-# --- FUNCIONES AUXILIARES ---
-
 
 def get_json_payload():
     return request.get_json(silent=True) or {}
@@ -45,8 +43,6 @@ def get_current_user():
     if user is None:
         raise APIException("Authenticated user was not found", status_code=404)
     return user
-
-# --- RUTAS DE AUTENTICACIÓN ---
 
 
 @api.route("/signup", methods=["POST"])
@@ -89,8 +85,6 @@ def me():
     user = get_current_user()
     return jsonify({"user": user.serialize()}), 200
 
-# --- GESTIÓN DE HIJOS ---
-
 
 @api.route("/parent/<int:parent_id>/child", methods=["POST"])
 @jwt_required()
@@ -111,8 +105,6 @@ def create_child(parent_id):
     db.session.commit()
 
     return jsonify(new_child.serialize()), 201
-
-# --- DASHBOARD DEL NIÑO ---
 
 
 @api.route("/child-dashboard/<int:child_id>", methods=["GET"])
@@ -166,8 +158,6 @@ def get_child_dashboard(child_id):
         "streak_reward_given": streak_reward_given,
         "streak_reward_amount": 10
     }), 200
-
-# --- GESTIÓN TAREAS ---
 
 
 @api.route("/tasks/<int:task_id>", methods=["DELETE", "PATCH"])
@@ -251,8 +241,6 @@ def rollback_task(task_id):
     db.session.commit()
     return jsonify({"msg": "Rollback successful", "total_coins": child.total_coins}), 200
 
-# --- GESTIÓN CUPONES (SmallGoal) ---
-
 
 @api.route("/child/<int:child_id>/small-goals", methods=["POST"])
 @jwt_required()
@@ -297,8 +285,6 @@ def redeem_small_goal(reward_id):
     db.session.commit()
     return jsonify({"msg": "Cupón canjeado", "new_coins": child.total_coins}), 200
 
-# --- GESTIÓN GRAN PREMIO (GrandPrize) ---
-
 
 @api.route("/child/<int:child_id>/grand-prize", methods=["POST"])
 @jwt_required()
@@ -339,24 +325,22 @@ def handle_single_grand_prize(prize_id):
 @api.route("/grand-prize/<int:prize_id>/redeem", methods=["POST"])
 def redeem_grand_prize(prize_id):
     prize = db.session.get(GrandPrize, prize_id)
-    if not prize: 
-        return jsonify({"msg": "Premio no encontrado"}), 404   
-       
+    if not prize:
+        return jsonify({"msg": "Premio no encontrado"}), 404
+
     child = db.session.get(Child, prize.child_id)
     if child.total_coins < prize.coins:
         return jsonify({"msg": "Monedas insuficientes"}), 400
-    
+
     child.total_coins -= prize.coins
-    prize.redeemed = True   
+    prize.redeemed = True
     db.session.commit()
-    
+
     return jsonify({
-        "msg": "¡Gran Premio canjeado!", 
+        "msg": "¡Gran Premio canjeado!",
         "new_coins": child.total_coins,
         "prize_status": "redeemed"
     }), 200
-
-# --- MINIJUEGOS Y OTROS ---
 
 
 @api.route("/child/<int:child_id>/add-coins", methods=["POST"])

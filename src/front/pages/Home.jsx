@@ -15,10 +15,7 @@ export const Home = () => {
 
     return (
         <>
-            {/* HERO */}
             <section className="hero-section">
-
-                {/* FONDO */}
                 <div
                     className="hero-bg"
                     style={{ backgroundImage: `url(${fondo1})` }}
@@ -26,7 +23,6 @@ export const Home = () => {
 
                 <div className="container">
                     <div className="row align-items-center">
-
                         <div className="col-lg-6">
                             <h1 className="hero-title">
                                 Aprende a manejar tu dinero jugando
@@ -49,18 +45,14 @@ export const Home = () => {
                             </div>
                         </div>
 
-                        {/* puedes dejar esto vacío o meter el castor luego */}
                         <div className="col-lg-6"></div>
-
                     </div>
                 </div>
             </section>
 
-            {/* NOSOTROS */}
             <section className="about-section">
                 <div className="container">
                     <div className="row">
-
                         <div className="col-lg-8">
                             <h2 id="nosotros">Nosotros</h2>
                             <p className="about-text">
@@ -71,7 +63,6 @@ export const Home = () => {
                                 persona —sin importar su nivel— pueda construir hábitos financieros más saludables y tomar 
                                 el control de su futuro paso a paso. 
                             </p>
-                            
                         </div>
 
                         <div className="col-lg-4 about-img-wrapper">
@@ -81,16 +72,13 @@ export const Home = () => {
                                 className="about-img"
                             />
                         </div>
-
                     </div>
                 </div>
             </section>
 
-            {/* FEATURES */}
             <section className="features-section">
                 <div className="container">
                     <div className="row g-4 features-row">
-
                         <div className="col-md-4 col-lg-2 d-flex">
                             <div className="feature-card">
                                 <div className="feature-icon">
@@ -140,12 +128,9 @@ export const Home = () => {
                                 <p>Supervise el avance con gráficos y estadísticas que hacen visible el desarrollo de hábitos positivos.</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </section>
-
-            {/* CTA */}
 
             <section className="cta-section text-center">
                 <Link className=" cta-btn  btn btn-lg" to="/sign-up">

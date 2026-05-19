@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../services/api";
 import { PinModal } from "../components/PinModal";
 import "../styles/ProfilesPage.css";
-import cashtorImg from "../assets/img/Cashtor.jpg"; 
+import cashtorImg from "../assets/img/Cashtor.jpg";
 
 export const ProfilesPage = () => {
   const [profiles, setProfiles] = useState([]);
@@ -27,7 +27,7 @@ export const ProfilesPage = () => {
         });
 
         setProfiles([
-          { ...user, role: "parent" }, 
+          { ...user, role: "parent" },
           ...childrenData.map(child => ({ ...child, role: "child" }))
         ]);
 
@@ -42,7 +42,7 @@ export const ProfilesPage = () => {
   }, [navigate]);
 
   const handleProfileClick = (profile) => {
-    setSelectedProfile(profile); // abre modal
+    setSelectedProfile(profile);
   };
 
   const closeModal = () => {
@@ -67,14 +67,14 @@ export const ProfilesPage = () => {
               onClick={() => handleProfileClick(profile)}
             >
               <div className="profile-card__avatar-wrapper">
-                <img 
-                  src={profile.role === "child" ? (profile.avatar || cashtorImg) : cashtorImg} 
-                  alt={profile.name} 
+                <img
+                  src={profile.role === "child" ? (profile.avatar || cashtorImg) : cashtorImg}
+                  alt={profile.name}
                   className="profile-card__img"
                   onError={(e) => { e.target.src = cashtorImg; }}
                 />
               </div>
-              
+
               <div className="profile-card__info">
                 <p className="profile-card__name">
                   {profile.name.toUpperCase()}
@@ -86,9 +86,9 @@ export const ProfilesPage = () => {
       )}
 
       {selectedProfile && (
-        <PinModal 
-          profile={selectedProfile} 
-          onClose={closeModal} 
+        <PinModal
+          profile={selectedProfile}
+          onClose={closeModal}
         />
       )}
     </div>

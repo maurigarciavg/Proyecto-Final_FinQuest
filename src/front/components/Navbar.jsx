@@ -25,8 +25,6 @@ export const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-finquest sticky-top">
             <div className="container">
-
-                {/* LOGO */}
                 <NavLink className="navbar-brand d-flex align-items-center" to="/">
                     <img src={logoImg} alt="FinQuest Logo" className="navbar-logo" />
                 </NavLink>
@@ -42,12 +40,9 @@ export const Navbar = () => {
 
                 <div className="collapse navbar-collapse" id="mainNavbar">
                     <div className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-
-                        {/* Inicio */}
                         <NavLink className="nav-link nav-link-custom" to="/">
                             Inicio
                         </NavLink>
-
 
                         {isHome && (
                             <a className="nav-link nav-link-custom" href="#nosotros">
@@ -57,7 +52,6 @@ export const Navbar = () => {
 
                         {store.token ? (
                             <>
-
                                 {isParent && (
                                     <NavLink className="nav-link nav-link-custom" to="/parentadmin">
                                         Panel de Control

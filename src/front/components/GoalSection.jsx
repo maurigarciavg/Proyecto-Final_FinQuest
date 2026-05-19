@@ -13,7 +13,6 @@ export const GoalSection = ({ child, onMinigameClick, onRedeemPrize }) => {
         <section className="goal-card">
             <h2 className="goal-card__title" style={{ marginBottom: "20px", paddingLeft: "10px" }}>Gran Premio</h2>
 
-            {/* 🟢 Cambiamos a la clase --main para recuperar el fondo blanco elegante */}
             <div className="goal-card__box--main">
                 <p className="goal-card__name">{grandPrize?.name || "Tu Próxima Meta"}</p>
                 
@@ -50,7 +49,6 @@ export const GoalSection = ({ child, onMinigameClick, onRedeemPrize }) => {
                 )}
             </div>
 
-            {/* Bonus Card */}
             <div className="card-hover-effect" onClick={onMinigameClick} style={{ marginTop: "22px", textAlign: "center" }}>
                 <h2 className="dashboard-placeholder__title">¡Bonus! 🎮</h2>
                 <p className="task-summary-card__task-name" style={{ fontWeight: '700', margin: "10px 0" }}>

@@ -9,7 +9,7 @@
 .child-dashboard__container {
   max-width: 1180px;
   margin: 0 auto;
-  width: 100%; /* Asegura que ocupe el ancho disponible */
+  width: 100%;
 }
 
 .child-dashboard__content {
@@ -48,7 +48,6 @@
   animation: spin 0.9s linear infinite;
 }
 
-/* Fondo blanco para la barra superior */
 .child-topbar {
   display: flex;
   justify-content: space-between;
@@ -64,7 +63,6 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  /* Eliminado min-width para evitar desbordes */
 }
 
 .child-topbar__avatar {
@@ -100,7 +98,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  flex: 1; /* Permite que se ajuste */
+  flex: 1;
 }
 
 .child-topbar__stat-head {
@@ -179,7 +177,6 @@
   box-shadow: 0 0 10px rgba(32, 184, 167, 0.4);
 }
 
-/* Paneles contenedores con el amarillo suave solicitado */
 .dashboard-panel,
 .goal-card {
   padding: 26px;
@@ -190,7 +187,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%; /* Asegura que no se corte */
+  width: 100%;
 }
 
 .dashboard-panel__title,
@@ -695,10 +692,9 @@
     100% { transform: scale(1); box-shadow: 0 6px 20px rgba(32, 184, 167, 0.4); }
 }
 
-
 @media (max-width: 1024px) {
   .child-dashboard__content {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
   }
 }
 

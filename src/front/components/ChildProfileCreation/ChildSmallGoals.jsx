@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { ProgressBar } from "./ProgressBar";
-// Importamos el avatar por defecto (puedes elegir el que prefieras de los 4)
 import defaultAvatar from "../../assets/img/Profiles/Children/child_9.png";
 import "./ChildWizard.css";
 
 export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
 
-    // 🟢 Extraemos el avatar seleccionado en el paso 1 desde el formData
     const selectedAvatar = formData?.child?.child?.avatar || formData?.child?.avatar || defaultAvatar;
     const childName = formData?.child?.child?.name || formData?.child?.name || "Niño/a";
 
@@ -40,7 +38,6 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
         const formattedRewards = addedRewards.map(r => ({
             name: r.name,
             coins: parseInt(r.coins),
-            // Si tu backend pide una imagen para los cupones, añade una por defecto aquí
             image_url: ""
         }));
         onNextStep(formattedRewards);
@@ -48,11 +45,7 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
 
     return (
         <div className="wizard-step-wrapper animate__animated animate__fadeIn">
-
-            {/* CABECERA */}
             <div className="wizard-header">
-
-                {/* 🟢 AHORA MUESTRA EL AVATAR ELEGIDO POR EL PADRE */}
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
                     <img
                         src={selectedAvatar}
@@ -65,12 +58,10 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
                             objectFit: "cover",
                             boxShadow: "0 4px 10px rgba(50, 168, 155, 0.2)"
                         }}
-                        // Si la ruta falla, ponemos el avatar por defecto
                         onError={(e) => { e.target.src = defaultAvatar; }}
                     />
                 </div>
 
-                {/* Título justo debajo */}
                 <h2 className="wizard-title" style={{ marginBottom: "25px" }}>Crear Cupones para {childName}</h2>
 
                 <div className="task-input-row">
@@ -102,7 +93,6 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
                 </div>
             </div>
 
-            {/* CUERPO CENTRAL */}
             <div className="wizard-body">
                 <label className="wizard-label task-list-label">
                     ✅ CUPONES ACTIVOS ({addedRewards.length})
@@ -112,7 +102,6 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
                     <p className="empty-tasks-msg">Añade cupones para que el niño pueda canjearlos</p>
                 )}
 
-                {/* ... dentro del map de addedRewards ... */}
                 {addedRewards.map((r) => (
                     <div key={r.id} className="task-item">
                         <span className="task-name">{r.name}</span>
@@ -126,7 +115,6 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
                 ))}
             </div>
 
-            {/* PIE FIJO */}
             <div className="wizard-footer">
                 <p className="footer-suggestion">💡 Sugerencia: 20 🪙 = 1€</p>
                 <ProgressBar step={step} />
@@ -140,4 +128,3 @@ export const ChildSmallGoals = ({ onBack, onNextStep, step, formData }) => {
         </div>
     );
 };
-

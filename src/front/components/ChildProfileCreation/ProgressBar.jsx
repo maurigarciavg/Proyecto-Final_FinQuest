@@ -5,7 +5,6 @@ export const ProgressBar = ({ step }) => {
 
     return (
         <div className="w-100 mb-4">
-            {/* Contenedor de Bootstrap */}
             <div className="progress" style={{ height: "12px", borderRadius: "20px", backgroundColor: "#d1fae5" }}>
                 <div 
                     className="progress-bar progress-bar-striped progress-bar-animated" 

@@ -1,4 +1,3 @@
-/* Contenedor principal */
 .profiles-container {
   min-height: 100vh;
   background-color: #3db7a4;
@@ -10,7 +9,6 @@
   padding: 2rem;
 }
 
-/* Grid de perfiles */
 .profiles-grid {
   display: flex;
   gap: 2rem;
@@ -19,7 +17,6 @@
   justify-content: center;
 }
 
-/* Tarjeta de perfil */
 .profile-card {
   cursor: pointer;
   text-align: center;
@@ -27,6 +24,7 @@
   border-radius: 200px;
   padding: 1rem;
 }
+
 .profile-card img {
   transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
 }
@@ -37,7 +35,6 @@
               0 0 0 3px #237a6d;
 }
 
-/* Avatar */
 .profile-card img {
   width: 120px;
   height: 120px;
@@ -46,7 +43,6 @@
   border: 2px solid #237a6d;
 }
 
-/* Nombre del perfil */
 .profile-card p {
   margin-top: 0.5rem;
   font-weight: bold;
@@ -54,21 +50,19 @@
   font-size: 1rem;
 }
 
-/* Modal overlay */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.4); /* más claro que antes */
+  background-color: rgba(0,0,0,0.4);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
 
-/* Modal box centrado con bordes redondeados */
 .modal-content {
   background: #f9f9f9;
   padding: 2rem;
@@ -79,7 +73,6 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* Input PIN */
 .modal-content input {
   width: 100%;
   padding: 0.8rem;
@@ -90,7 +83,6 @@
   margin-top: 1rem;
 }
 
-/* Botones estilo login */
 .modal-content button {
   padding: 0.8rem;
   border-radius: 12px;
@@ -102,14 +94,15 @@
   transition: 0.3s;
   margin-top: 1rem;
 }
+
 .modal-content button:hover {
   background: #2ea393;
 }
+
 .modal-content button + button {
   margin-left: 1rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .profiles-grid {
     gap: 1rem;

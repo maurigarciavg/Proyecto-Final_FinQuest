@@ -21,7 +21,6 @@ const CenterPanel = ({
     const [subFilter, setSubFilter] = useState('principal');
     const panelRef = useRef(null);
 
-    // 🟢 Lógica de fechas de tu compañera (RECUPERADA)
     const formatDate = (dateValue) => {
         if (!dateValue) return "Sin fecha";
         const d = new Date(dateValue);
@@ -36,7 +35,6 @@ const CenterPanel = ({
         if (diffDays === -1) return "Ayer";
         return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
     };
-
 
     const getTaskStatusBadge = (task) => {
         if (task.done) return { label: "Aprobada", className: "badge-approved" };
@@ -114,7 +112,6 @@ const CenterPanel = ({
                                 <button key={tab} className={`manage-item ${activeTab === tab ? 'active' : ''}`} onClick={() => handleTabChange(tab)}>{tab}</button>
                             ))}
                         </div>
-                        {/* Funcionalidad nuestra: Envía el tipo técnico al crear */}
                         <button className="add-mission-btn" disabled={activeTab === 'Gran Premio' && grandPrize && !grandPrize.redeemed} onClick={() => onCreateItem(activeTab === 'Gran Premio' ? 'grand-prize' : activeTab)}>
                             {getCreateButtonLabel()}
                         </button>
@@ -132,7 +129,6 @@ const CenterPanel = ({
                     </div>
 
                     <div className='Lista'>
-                        {/* SECCIÓN TAREAS */}
                         {activeTab === 'Tareas' && tasksList
                             .filter(t => {
                                 if (subFilter === 'principal') return t.is_today && !t.done && t.status !== 'pending_validation';
@@ -165,7 +161,6 @@ const CenterPanel = ({
                                 </div>
                             ))}
 
-                        {/* SECCIÓN CUPONES */}
                         {activeTab === 'Cupones' && couponsList
                             .filter(c => subFilter === 'principal' ? !c.redeemed : c.redeemed)
                             .map(c => (
@@ -193,7 +188,6 @@ const CenterPanel = ({
                                 </div>
                             ))}
 
-                        {/* SECCIÓN GRAN PREMIO */}
                         {activeTab === 'Gran Premio' && grandPrize && (
                             ((subFilter === 'principal' && !grandPrize.redeemed) || (subFilter === 'secundario' && grandPrize.redeemed)) && (
                                 <div className="task-card-item">

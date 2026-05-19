@@ -25,8 +25,6 @@ export const ChildDashboard = () => {
     const [rewardToast, setRewardToast] = useState(null);
     const [coinPopup, setCoinPopup] = useState(null);
     const { store } = useGlobalReducer();
-    
-    // Estado para controlar que la animación de racha no se repita en la misma sesión
     const [streakAnimationShown, setStreakAnimationShown] = useState(false);
 
     const loadData = async () => {
@@ -36,13 +34,11 @@ export const ChildDashboard = () => {
             return;
         }
 
-        // 🟢 LÓGICA DE NIVELES DE TU COMPAÑERA (XP real)
         const xpTotal = result.child.total_earned_coins || 0;
         const nivelActual = Math.floor(xpTotal / 500) + 1;
         const storageKey = `last_seen_level_child_${childId}`;
         const nivelAnterior = parseInt(localStorage.getItem(storageKey));
 
-        // Si el nivel en la DB es mayor al que recordamos, ¡Celebración!
         if (nivelAnterior && nivelActual > nivelAnterior) {
             setShowLevelModal(true);
         }
@@ -50,7 +46,6 @@ export const ChildDashboard = () => {
 
         setData(result);
 
-        // 🟢 NOTIFICACIÓN DE RACHA DIARIA (Recuperada de ella)
         if (result.streak_reward_given && !streakAnimationShown) {
             handleStreakBonus(result.streak_reward_amount || 10);
             setStreakAnimationShown(true);
@@ -63,7 +58,6 @@ export const ChildDashboard = () => {
         }
     }, [childId]);
 
-    // Función específica para la racha diaria que ella diseñó
     const handleStreakBonus = (amount) => {
         confetti({
             particleCount: 150,
@@ -169,7 +163,6 @@ export const ChildDashboard = () => {
 
     const { child, tasks, rewards } = data;
     
-    // Cálculos de progreso de ella
     const totalXP = child.total_earned_coins || 0;
     const currentLevel = Math.floor(totalXP / 500) + 1;
     const xpInCurrentLevel = totalXP % 500;
@@ -187,7 +180,6 @@ export const ChildDashboard = () => {
 
     return (
         <div className="child-dashboard">
-            {/* 🟢 Notificación de monedas (Racha/Juegos) de ella */}
             {coinPopup && (
                 <div className="coins-popup streak-anim">
                     <div className="coins-popup__content">
