@@ -13,6 +13,8 @@ import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 import { ChildDashboard } from "./pages/ChildDashboard";
 import { ProfilesPage } from "./pages/ProfilesPage.jsx";
+import { ParentAccount } from "./pages/ParentAccount.jsx";
+import { ChildAccount } from "./pages/ChildAccount.jsx";
 import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
 import { ForgotPassword } from "./pages/ForgotPassword.jsx";
 import { ResetPassword } from "./pages/ResetPassword.jsx";
@@ -40,6 +42,24 @@ export const router = createBrowserRouter(
                 element={
                     <PrivateRoute>
                         <ParentAdmin />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path="account/parent"
+                element={
+                    <PrivateRoute>
+                        <ParentAccount />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path="account/child/:childId"
+                element={
+                    <PrivateRoute>
+                        <ChildAccount />
                     </PrivateRoute>
                 }
             />

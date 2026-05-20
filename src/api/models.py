@@ -17,6 +17,7 @@ class User(db.Model):
     role: Mapped[str] = mapped_column(
         String(20), nullable=False, default="parent")
     parentalPIN: Mapped[str] = mapped_column(String(4), nullable=True)
+    avatar: Mapped[str] = mapped_column(String(255), nullable=True)
     is_active: Mapped[bool] = mapped_column(
         Boolean(), nullable=False, default=True)
 
@@ -36,6 +37,7 @@ class User(db.Model):
             "name": self.name,
             "role": self.role,
             "parentalPIN": self.parentalPIN,
+            "avatar": self.avatar,
             "is_active": self.is_active,
             "children": [child.serialize() for child in self.children] if self.children else []
         }

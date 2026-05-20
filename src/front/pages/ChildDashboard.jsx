@@ -7,6 +7,8 @@ import { getChildDashboard } from "../services/childDashboard";
 import "../styles/child-dashboard.css";
 import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
+import { GrandPrizeModal } from "../components/GrandPrizeModal";
+import { StreakModal } from "../components/StreakModal";
 import { GameModal } from "../components/GameModal";
 import { LevelUpModal } from "../components/LevelUpModal";
 import monedas3 from "../assets/img/monedas3.png";
@@ -20,6 +22,8 @@ export const ChildDashboard = () => {
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
+    const [showGrandPrizeModal, setShowGrandPrizeModal] = useState(false);
+    const [showStreakModal, setShowStreakModal] = useState(false);
     const [showGameModal, setShowGameModal] = useState(false);
     const [showLevelModal, setShowLevelModal] = useState(false);
     const [rewardToast, setRewardToast] = useState(null);
@@ -204,11 +208,12 @@ export const ChildDashboard = () => {
                             <h1 className="dashboard-panel__title">¡Hola, {child.name}! 👋</h1>
 
                             <div className="dashboard-panel__top">
-                                <div className="dashboard-placeholder dashboard-placeholder--streak">
+                                <div className="dashboard-placeholder dashboard-placeholder--streak card-hover-effect" onClick={() => setShowStreakModal(true)} role="button">
                                     <div className="dashboard-placeholder__streak-header">
                                         <h2 className="dashboard-placeholder__title">
                                             Tu racha de {child.streak} {child.streak === 1 ? "día" : "días"} 🔥
                                         </h2>
+                                        <span className="dashboard-placeholder__hint">Pulsa para ver tu racha</span>
                                     </div>
                                     <div className="dashboard-streak">
                                         <div className="dashboard-streak__days">
@@ -253,6 +258,7 @@ export const ChildDashboard = () => {
                         <GoalSection
                             child={child}
                             prizeProgress={prizeProgress}
+                            onPrizeClick={() => setShowGrandPrizeModal(true)}
                             onMinigameClick={() => {
                                 if (hasPlayedToday) {
                                     setRewardToast("⏳ Ya has jugado hoy. ¡Vuelve mañana por más!");
@@ -271,6 +277,18 @@ export const ChildDashboard = () => {
 
             {showGameModal && <GameModal onClose={() => setShowGameModal(false)} onGameComplete={handleGameComplete} />}
             {showRewardModal && <RewardModal rewards={rewards} coins={child.total_coins} onClose={() => setShowRewardModal(false)} onRedeem={handleRedeem} />}
+            {showGrandPrizeModal && (
+                <GrandPrizeModal
+                    grandPrize={child.grand_prize}
+                    coins={child.total_coins}
+                    onClose={() => setShowGrandPrizeModal(false)}
+                    onRedeem={() => {
+                        setShowGrandPrizeModal(false);
+                        handleRedeemGrandPrize(child.grand_prize?.id);
+                    }}
+                />
+            )}
+            {showStreakModal && <StreakModal child={child} onClose={() => setShowStreakModal(false)} />}
             {showTaskModal && <TaskModal tasks={tasks} onClose={() => setShowTaskModal(false)} onComplete={handleComplete} />}
             {showLevelModal && <LevelUpModal level={currentLevel} onClose={() => setShowLevelModal(false)} />}
         </div>

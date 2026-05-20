@@ -59,7 +59,7 @@ def sign_up():
         raise APIException("User already exists", status_code=409)
 
     new_user = User(email=email, name=name, role="parent",
-                    parentalPIN=parentalPIN, is_active=True)
+                    parentalPIN=parentalPIN, avatar=data.get("avatar"), is_active=True)
     new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()
@@ -79,11 +79,45 @@ def sign_in():
     return build_auth_response(user, 200, "Sign in successful")
 
 
-@api.route("/me", methods=["GET"])
+@api.route("/me", methods=["GET", "PATCH"])
 @jwt_required()
 def me():
     user = get_current_user()
+    if request.method == "PATCH":
+        data = get_json_payload()
+        email = data.get("email", "").strip().lower()
+        if email and email != user.email:
+            existing_user = User.query.filter_by(email=email).one_or_none()
+            if existing_user:
+                raise APIException("El email ya está en uso", status_code=409)
+            user.email = email
+        user.name = data.get("name", user.name).strip() or user.name
+        if "avatar" in data:
+            user.avatar = data.get("avatar")
+        if "parentalPIN" in data:
+            user.parentalPIN = data.get("parentalPIN") or user.parentalPIN
+        db.session.commit()
+        return jsonify({"user": user.serialize()}), 200
+
     return jsonify({"user": user.serialize()}), 200
+
+
+@api.route("/me/password", methods=["PATCH"])
+@jwt_required()
+def change_password():
+    user = get_current_user()
+    data = get_json_payload()
+    current_password = data.get("current_password", "")
+    new_password = data.get("new_password", "")
+
+    if not user.check_password(current_password):
+        raise APIException("Contraseña actual incorrecta", status_code=401)
+    if len(new_password) < 6:
+        raise APIException("La nueva contraseña debe tener al menos 6 caracteres", status_code=400)
+
+    user.set_password(new_password)
+    db.session.commit()
+    return jsonify({"message": "Contraseña actualizada"}), 200
 
 
 @api.route("/parent/<int:parent_id>/child", methods=["POST"])
@@ -181,6 +215,37 @@ def handle_single_task(task_id):
                 days_data, list) else days_data
         db.session.commit()
         return jsonify(task.serialize()), 200
+
+
+@api.route("/child/<int:child_id>", methods=["GET", "PATCH", "DELETE"])
+@jwt_required()
+def handle_child_profile(child_id):
+    child = db.session.get(Child, child_id)
+    if not child:
+        raise APIException("Child not found", status_code=404)
+
+    current_user = get_current_user()
+    if child.parent_id != current_user.id:
+        raise APIException("No autorizado para modificar este niño", status_code=401)
+
+    if request.method == "GET":
+        return jsonify({"child": child.serialize()}), 200
+
+    if request.method == "DELETE":
+        db.session.delete(child)
+        db.session.commit()
+        return jsonify({"message": "Niño eliminado"}), 200
+
+    data = get_json_payload()
+    if "avatar" in data:
+        child.avatar = data.get("avatar")
+    if "age" in data:
+        try:
+            child.age = int(data.get("age", child.age))
+        except (TypeError, ValueError):
+            pass
+    db.session.commit()
+    return jsonify({"child": child.serialize()}), 200
 
 
 @api.route("/child/<int:child_id>/tasks", methods=["POST"])
@@ -388,6 +453,9 @@ def add_minigame_coins(child_id):
 @api.route("/parent/<int:parent_id>/children", methods=["GET"])
 @jwt_required()
 def get_children(parent_id):
+    current_user = get_current_user()
+    if current_user.id != parent_id:
+        raise APIException("No autorizado", status_code=401)
     children = Child.query.filter_by(parent_id=parent_id).all()
     return jsonify([child.serialize() for child in children]), 200
 

@@ -16,7 +16,13 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
                             const isApproved = reward.status === "approved";
                             const canRedeem = !isPending && !isApproved && coins >= reward.coins;
                             return (
-                            <div key={reward.id} className="task-modal__item">
+                            <div
+                            key={reward.id}
+                            className={`task-modal__item ${canRedeem ? "task-modal__item--clickable" : ""}`}
+                            onClick={() => { if (canRedeem) onRedeem(reward.id); }}
+                            role={canRedeem ? "button" : undefined}
+                            tabIndex={canRedeem ? 0 : undefined}
+                        >
                                 <span className="task-modal__item-image" style={{ fontSize: "2.5rem" }}>
                                     {getCouponIcon(reward.name)}
                                 </span>
@@ -24,8 +30,9 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
                                 <div className="task-modal__item-info">
                                     <p className="task-modal__item-name">{reward.name}</p>
                                     <p className="task-modal__item-coins">🪙 {reward.coins}</p>
-                                    {isPending && <p style={{ fontSize: "0.7rem", color: "#f59e0b" }}>⏳ Pendiente</p>}
-                                    {isApproved && <p style={{ fontSize: "0.7rem", color: "#10b981" }}>✅ Aprobado</p>}
+                                    <p className="task-modal__item-hint">
+                                        {isPending ? "Pendiente de aprobación" : isApproved ? "Ya aprobado" : coins < reward.coins ? `Necesitas ${reward.coins - coins} monedas más` : "Pulsa para canjear"}
+                                    </p>
                                 </div>
 
                                 <button

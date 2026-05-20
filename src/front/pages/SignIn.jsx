@@ -10,7 +10,10 @@ export const SignIn = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
 
     if (store.token) {
         return <Navigate to="/profiles" replace />;

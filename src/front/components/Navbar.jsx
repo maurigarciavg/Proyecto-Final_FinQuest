@@ -25,6 +25,11 @@ export const Navbar = () => {
 
     const isHome = location.pathname === "/";
     const isParent = location.pathname === "/parentadmin";
+    const accountTarget = store.currentChild?.id
+        ? `/account/child/${store.currentChild.id}`
+        : activeProfile?.role === "child" && activeProfile?.id
+            ? `/account/child/${activeProfile.id}`
+            : "/account/parent";
 
     const handleLogout = () => {
         dispatch({ type: "clear_session", payload: "Sesión cerrada correctamente." });
@@ -85,6 +90,10 @@ export const Navbar = () => {
                                         Panel de Control
                                     </NavLink>
                                 )}
+
+                                <NavLink className="nav-link nav-link-custom" to={accountTarget}>
+                                    Mi cuenta
+                                </NavLink>
 
                                 <NavLink className="nav-link nav-link-custom" to="/profiles">
                                     Cambiar Perfil

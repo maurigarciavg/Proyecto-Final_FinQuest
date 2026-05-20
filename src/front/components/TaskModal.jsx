@@ -4,6 +4,12 @@ import { getTaskIcon } from "../Utils/getTaskIcon";
 export const TaskModal = ({ tasks, onClose, onComplete }) => {
     const tasksToday = tasks?.filter(t => t.is_today) || [];
 
+    const handleItemClick = (task) => {
+        if (task.status === "pending") {
+            onComplete(task.id);
+        }
+    };
+
     return (
         <div className="task-modal__overlay" onClick={onClose}>
             <div className="task-modal" onClick={e => e.stopPropagation()}>
@@ -17,7 +23,13 @@ export const TaskModal = ({ tasks, onClose, onComplete }) => {
                             const taskEmoji = getTaskIcon(task.name || task.title);
                             
                             return (
-                                <div key={task.id} className="task-modal__item">
+                                <div
+                            key={task.id}
+                            className={`task-modal__item ${task.status === "pending" ? "task-modal__item--clickable" : ""}`}
+                            onClick={() => handleItemClick(task)}
+                            role={task.status === "pending" ? "button" : undefined}
+                            tabIndex={task.status === "pending" ? 0 : undefined}
+                        >
                                     <div className="task-modal__item-image" style={{ fontSize: "2rem" }}>
                                         {taskEmoji}
                                     </div>
@@ -25,6 +37,9 @@ export const TaskModal = ({ tasks, onClose, onComplete }) => {
                                     <div className="task-modal__item-info">
                                         <p className="task-modal__item-name">{task.name || task.title}</p>
                                         <p className="task-modal__item-coins">🪙 +{task.coins}</p>
+                                        <p className="task-modal__item-hint">
+                                            {task.status === "pending" ? "Pulsa aquí para marcarla como hecha" : task.status === "pending_validation" ? "Esperando aprobación" : "Tarea completada"}
+                                        </p>
                                     </div>
 
                                     <button
