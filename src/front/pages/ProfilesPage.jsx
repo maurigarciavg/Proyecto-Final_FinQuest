@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../services/api";
 import { PinModal } from "../components/PinModal";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/ProfilesPage.css";
 import cashtorImg from "../assets/img/Cashtor.jpg";
 
 export const ProfilesPage = () => {
+  const { store } = useGlobalReducer();
   const [profiles, setProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,8 +16,8 @@ export const ProfilesPage = () => {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const user = JSON.parse(localStorage.getItem("user"));
+        const token = store.token;
+        const user = store.user;
 
         if (!token || !user) {
           navigate("/sign-in");
@@ -39,7 +41,7 @@ export const ProfilesPage = () => {
     };
 
     fetchProfiles();
-  }, [navigate]);
+  }, [navigate, store.token, store.user]);
 
   const handleProfileClick = (profile) => {
     setSelectedProfile(profile);
@@ -68,7 +70,7 @@ export const ProfilesPage = () => {
             >
               <div className="profile-card__avatar-wrapper">
                 <img
-                  src={profile.role === "child" ? (profile.avatar || cashtorImg) : cashtorImg}
+                  src={profile.avatar || cashtorImg}
                   alt={profile.name}
                   className="profile-card__img"
                   onError={(e) => { e.target.src = cashtorImg; }}
