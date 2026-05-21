@@ -19,12 +19,12 @@ const taskEmojiMap = {
 const couponEmojiMap = {
     "videojuegos": "🎮", "tablet": "📱", "movil": "📱", "tele": "📺", "youtube": "📺", 
     "pelicula": "🍿", "cine": "🎬", "dibujos": "🖍️", "minecraft": "⛏️", "roblox": "🧱",
-    "helado": "🍦", "chuches": "🍭", "caramelos": "🍬", "chocolate": "🍫", "pizza": "🍕", 
-    "hamburguesa": "🍔", "patatas": "🍟", "postre": "🍰", "batido": "🥤", "donuts": "🍩",
+    "helado": "🍦", "chuches": "🍭", "caramelos": "🍬", "chocolate": "🍫", "pizza": "🍕", "pizza casera": "🍕", 
+    "hamburguesa": "🍔", "patatas": "🍟", "postre": "🍰", "batido": "🥤", "donuts": "🍩", "macarrones": "🍝", "guitarra": "🎸", "pelicula": "🍿", "cine": "🎬", "parque": "🛝", "piscina": "🏊",
     "parque": "🛝", "piscina": "🏊", "playa": "🏖️", "campo": "🌳", "bici": "🚲", 
     "patinete": "🛴", "amigos": "👫", "balon": "⚽", "futbol": "⚽", "baloncesto": "🏀",
     "dormir": "😴", "tarde": "⏰", "despacio": "🐌", "ropa": "👗", "disfraz": "🎭", 
-    "cuento": "📖", "juego": "🎲", "baño": "🧼", "musica": "🎵"
+    "cuento": "📖", "juego": "🎲", "baño": "🧼", "musica": "🎵", "cocina": "🍳", "pasta": "🍝", "pizza": "🍕", "fruta": "🍎", "verdura": "🥦", "desayuno": "🥞", "comida": "🍴", "manualidades": "🎨", "pintar": "🖌️", "barrer": "🧹", "sacar": "🗑️", "limpiar": "🧽"
 };
 
 const grandPrizeEmojiMap = {
@@ -33,7 +33,7 @@ const grandPrizeEmojiMap = {
     "tablet": "🔋", "ordenador": "💻", "portatil": "💻",
     "bicicleta": "🚲", "patines": "🛼", "skate": "🛹",
     "viaje": "✈️", "avion": "✈️", "hotel": "🏨", "disney": "🏰",
-    "fiesta": "🥳", "cumpleaños": "🎂", "concierto": "🎸"
+    "fiesta": "🥳", "cumpleaños": "🎂", "concierto": "🎸", "pizza": "🍕", "pizza casera": "🍕", "helado": "🍦", "playa": "🏖️", "parque": "🛝", "zoo": "🐾", "montaña": "⛰️" 
 };
 
 /**
