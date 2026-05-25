@@ -58,3 +58,4 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
         </div>
     );
 };
+//edit
