@@ -15,59 +15,72 @@ const LeftPanel = ({ parentName, parentAvatar, childrenProfiles, onSelectChild }
 
   return (
     <aside className="left-panel">
-      <header className="panel-header">
-        <div className="parent-avatar-wrapper">
-          <img
-            src={parentAvatar || defaultAvatar}
-            className="parent-avatar"
-            alt={`Avatar de ${parentName}`}
-            onError={(e) => { e.target.src = defaultAvatar; }}
-          />
-        </div>
-        <h2>{parentName}</h2>
-      </header>
-
-      <nav className="panel-content">
-        <button
-          className={`btn-create-child-profile ${selectedId === 'create' ? 'selected' : ''}`}
-          onClick={() => {
-            setShowWizard(true);
-            setSelectedId('create');
-          }}
-        >
-          <div className="plus-icon-container">
-            <i className="fa-solid fa-plus"></i>
+      <div className="left-panel-card">
+        <header className="panel-header">
+          <div className="parent-avatar-wrapper">
+            <img
+              src={parentAvatar || defaultAvatar}
+              className="parent-avatar"
+              alt={`Avatar de ${parentName}`}
+              onError={(e) => { e.target.src = defaultAvatar; }}
+            />
           </div>
-          <span>Crear perfil hijo</span>
-        </button>
+          <div className="parent-info">
+            <p className="parent-role">Perfil del padre</p>
+            <h2>{parentName}</h2>
+            <p className="parent-subtitle">{childrenProfiles.length} {childrenProfiles.length === 1 ? 'hijo registrado' : 'hijos registrados'}</p>
+          </div>
+        </header>
 
-        <ul className="children-list">
-          {childrenProfiles.map((child) => (
-            <li
-              key={child.id}
-              className={`child-item ${selectedId === child.id ? 'active' : ''}`}
-            >
-              <button
-                className="child-profile"
-                onClick={() => {
-                  setSelectedId(child.id);
-                  if (onSelectChild) onSelectChild(child);
-                }}
+        <div className="panel-actions">
+          <button
+            className={`btn-create-child-profile ${selectedId === 'create' ? 'selected' : ''}`}
+            onClick={() => {
+              setShowWizard(true);
+              setSelectedId('create');
+            }}
+          >
+            <div className="plus-icon-container">
+              <i className="fa-solid fa-plus"></i>
+            </div>
+            <span>Crear perfil hijo</span>
+          </button>
+        </div>
+
+        <div className="children-section">
+          <div className="children-section-header">
+            <h3>Perfiles de niños</h3>
+            <span className="children-count">{childrenProfiles.length}</span>
+          </div>
+
+          <ul className="children-list">
+            {childrenProfiles.map((child) => (
+              <li
+                key={child.id}
+                className={`child-item ${selectedId === child.id ? 'active' : ''}`}
               >
-                <div className="avatar-wrapper">
-                  <img
-                    src={child.avatar || defaultAvatar}
-                    className="child-avatar"
-                    alt={`Avatar de ${child.name}`}
-                    onError={(e) => { e.target.src = defaultAvatar}}
-                  />
-                </div>
-                <span className="child-name">{child.name}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
+                <button
+                  className="child-profile"
+                  onClick={() => {
+                    setSelectedId(child.id);
+                    if (onSelectChild) onSelectChild(child);
+                  }}
+                >
+                  <div className="avatar-wrapper">
+                    <img
+                      src={child.avatar || defaultAvatar}
+                      className="child-avatar"
+                      alt={`Avatar de ${child.name}`}
+                      onError={(e) => { e.target.src = defaultAvatar}}
+                    />
+                  </div>
+                  <span className="child-name">{child.name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
       {showWizard && (
         <div

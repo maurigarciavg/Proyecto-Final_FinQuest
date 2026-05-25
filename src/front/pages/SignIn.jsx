@@ -10,7 +10,10 @@ export const SignIn = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
 
     if (store.token) {
         return <Navigate to="/profiles" replace />;
@@ -44,6 +47,15 @@ export const SignIn = () => {
                 }
             });
 
+            dispatch({
+                type: "set_active_profile",
+                payload: { ...data.user, role: "parent" }
+            });
+            dispatch({
+                type: "set_child",
+                payload: null
+            });
+
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -55,7 +67,7 @@ export const SignIn = () => {
                 payload: `Bienvenido otra vez, ${data.user.name}.`
             });
 
-            window.location.href = "/profiles";
+            navigate(redirectTarget, { replace: true });
         } catch (error) {
             dispatch({
                 type: "auth_failure",

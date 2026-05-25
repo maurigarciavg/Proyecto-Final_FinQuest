@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import defaultAvatar from "../assets/img/logo.png";
 import monedasIcon from "../assets/img/monedas.png";
 
@@ -18,6 +20,12 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
                     <p className="child-topbar__label">¡Sigue así!</p>
                     <h2 className="child-topbar__name">{child.name || "Perfil"}</h2>
                 </div>
+            </div>
+
+            <div className="child-topbar__actions">
+                <Link className="btn btn-secondary btn-sm" to={`/account/child/${child.id}`}>
+                    Editar perfil
+                </Link>
             </div>
 
             <div className="child-topbar__stats">
@@ -65,4 +73,17 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
             </div>
         </section>
     );
+};
+
+ChildHeader.propTypes = {
+    child: PropTypes.shape({
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        total_coins: PropTypes.number
+    }).isRequired,
+    level: PropTypes.number.isRequired,
+    progress: PropTypes.number.isRequired,
+    xpRemaining: PropTypes.number,
+    prizeProgress: PropTypes.number.isRequired
 };

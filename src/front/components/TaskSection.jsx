@@ -22,6 +22,7 @@ export const TaskSection = ({ tasks }) => {
             </div>
 
             <div className="task-summary-card__content">
+                <div className="task-summary-card__emoji">{taskEmoji}</div>
                 <img 
                     className="task-summary-card__image" 
                     src={tareasImg} 
@@ -31,7 +32,7 @@ export const TaskSection = ({ tasks }) => {
                 <p className="task-summary-card__task-name">
                     {firstTask?.title || firstTask?.name || "Pasear al perro"}
                 </p>
-
+                <p className="task-summary-card__subtitle">Pulsa aquí para marcar tu tarea como hecha</p>
                 <p className="task-summary-card__reward">
                     +{firstTask?.coins || 10} 
                     <img className="task-summary-card__coin-icon" src={coin} alt="Moneda" />

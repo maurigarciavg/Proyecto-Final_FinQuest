@@ -1,11 +1,14 @@
 import React from "react";
 import monedas from "../assets/img/monedas.png";
+import { getGrandPrizeIcon } from "../Utils/getTaskIcon";
 
-export const GoalSection = ({ child, onMinigameClick, onRedeemPrize }) => {
+export const GoalSection = ({ child, onPrizeClick, onMinigameClick, onRedeemPrize }) => {
     const grandPrize = child.grand_prize;
     const totalCoins = child.total_coins ?? 0;
     const prizeCoins = grandPrize?.coins ?? 0;
     const progress = prizeCoins > 0 ? Math.min(Math.round((totalCoins / prizeCoins) * 100), 100) : 0;
+    const prizeIconUrl = grandPrize?.image_url?.startsWith("http") ? grandPrize.image_url : null;
+    const prizeEmoji = !prizeIconUrl ? getGrandPrizeIcon(grandPrize?.name) : null;
     
     const canRedeem = progress >= 100 && !grandPrize?.redeemed;
 
@@ -13,15 +16,19 @@ export const GoalSection = ({ child, onMinigameClick, onRedeemPrize }) => {
         <section className="goal-card">
             <h2 className="goal-card__title" style={{ marginBottom: "20px", paddingLeft: "10px" }}>Gran Premio</h2>
 
-            <div className="goal-card__box--main">
+            <div className="goal-card__box--main" onClick={onPrizeClick} role={onPrizeClick ? "button" : undefined} tabIndex={onPrizeClick ? 0 : undefined}>
                 <p className="goal-card__name">{grandPrize?.name || "Tu Próxima Meta"}</p>
                 
                 <div className="goal-card__hero">
-                    <img
-                        className="goal-card__image"
-                        src={grandPrize?.image_url?.startsWith("http") ? grandPrize.image_url : "https://cdn-icons-png.flaticon.com/512/3112/3112946.png"}
-                        alt="Premio"
-                    />
+                    {prizeIconUrl ? (
+                        <img
+                            className="goal-card__image"
+                            src={prizeIconUrl}
+                            alt="Premio"
+                        />
+                    ) : (
+                        <div className="goal-card__emoji">{prizeEmoji}</div>
+                    )}
                     <div className="goal-card__price">
                         <span className="goal-card__price-number">{prizeCoins.toLocaleString()}</span>
                     </div>
