@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import monedas from "../assets/img/monedas3.png";
+import monedas from "../../assets/img/monedas3.png";
 
 export const StreakModal = ({ child, onClose }) => {
     const streakText = child?.streak === 1 ? "día" : "días";

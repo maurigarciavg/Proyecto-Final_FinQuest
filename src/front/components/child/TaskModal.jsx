@@ -1,5 +1,5 @@
 import React from "react";
-import { getTaskIcon } from "../Utils/getTaskIcon";
+import { getTaskIcon } from "../../utils/getTaskIcon";
 
 export const TaskModal = ({ tasks, onClose, onComplete }) => {
     const tasksToday = tasks?.filter(t => t.is_today) || [];
@@ -21,7 +21,7 @@ export const TaskModal = ({ tasks, onClose, onComplete }) => {
                     {tasksToday.length > 0 ? (
                         tasksToday.map(task => {
                             const taskEmoji = getTaskIcon(task.name || task.title);
-                            
+
                             return (
                                 <div
                             key={task.id}

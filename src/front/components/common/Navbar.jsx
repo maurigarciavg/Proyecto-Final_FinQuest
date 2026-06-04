@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";
-import logoImg from "../assets/img/logo.png";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
+import logoImg from "../../assets/img/logo.png";
 import "./Navbar.css";
 
 export const Navbar = () => {

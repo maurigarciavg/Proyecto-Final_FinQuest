@@ -4,8 +4,8 @@ import {
     createRoutesFromElements
 } from "react-router-dom";
 
-import { PrivateRoute } from "./components/PrivateRoute";
-import { ParentAdmin } from "../ParentDashboard/pages/ParentAdmin";
+import { PrivateRoute } from "./components/common/PrivateRoute";
+import { ParentAdmin } from "./components/parent/ParentAdmin";
 import { Home } from "./pages/Home";
 import { Layout } from "./pages/Layout";
 import { NotFound } from "./pages/NotFound";
@@ -15,7 +15,7 @@ import { ChildDashboard } from "./pages/ChildDashboard";
 import { ProfilesPage } from "./pages/ProfilesPage.jsx";
 import { ParentAccount } from "./pages/ParentAccount.jsx";
 import { ChildAccount } from "./pages/ChildAccount.jsx";
-import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
+import { ChildWizard } from "./components/child-wizard/ChildWizard.jsx";
 import { ForgotPassword } from "./pages/ForgotPassword.jsx";
 import { ResetPassword } from "./pages/ResetPassword.jsx";
 

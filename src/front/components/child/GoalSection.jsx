@@ -1,6 +1,6 @@
 import React from "react";
-import monedas from "../assets/img/monedas.png";
-import { getGrandPrizeIcon } from "../Utils/getTaskIcon";
+import monedas from "../../assets/img/monedas.png";
+import { getGrandPrizeIcon } from "../../utils/getTaskIcon";
 
 export const GoalSection = ({ child, onPrizeClick, onMinigameClick, onRedeemPrize }) => {
     const grandPrize = child.grand_prize;
@@ -9,7 +9,7 @@ export const GoalSection = ({ child, onPrizeClick, onMinigameClick, onRedeemPriz
     const progress = prizeCoins > 0 ? Math.min(Math.round((totalCoins / prizeCoins) * 100), 100) : 0;
     const prizeIconUrl = grandPrize?.image_url?.startsWith("http") ? grandPrize.image_url : null;
     const prizeEmoji = !prizeIconUrl ? getGrandPrizeIcon(grandPrize?.name) : null;
-    
+
     const canRedeem = progress >= 100 && !grandPrize?.redeemed;
 
     return (
@@ -18,7 +18,7 @@ export const GoalSection = ({ child, onPrizeClick, onMinigameClick, onRedeemPriz
 
             <div className="goal-card__box--main" onClick={onPrizeClick} role={onPrizeClick ? "button" : undefined} tabIndex={onPrizeClick ? 0 : undefined}>
                 <p className="goal-card__name">{grandPrize?.name || "Tu Próxima Meta"}</p>
-                
+
                 <div className="goal-card__hero">
                     {prizeIconUrl ? (
                         <img
@@ -44,7 +44,7 @@ export const GoalSection = ({ child, onPrizeClick, onMinigameClick, onRedeemPriz
                 <p className="goal-card__progress-text">
                     ¡Llevas el <strong>{progress}%</strong> conseguido!
                 </p>
-                
+
                 {canRedeem ? (
                     <button onClick={onRedeemPrize} className="goal-card__redeem-btn">
                         🎁 ¡CANJEAR MI RECOMPENSA!

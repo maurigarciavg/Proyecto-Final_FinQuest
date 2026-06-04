@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import useGlobalReducer from '../../front/hooks/useGlobalReducer.jsx';
-import LeftPanel from '../components/LeftPanel';
-import CenterPanel from '../components/CenterPanel';
-import RightPanel from '../components/RightPanel';
-import { EntityManager } from "../../front/components/EntityManager";
-import { EditItemModal } from "../../front/components/EditItemModal";
-import "../style ParentDash/stylePAdmin.css";
+import useGlobalReducer from '../../hooks/useGlobalReducer.jsx';
+import LeftPanel from './LeftPanel';
+import CenterPanel from './CenterPanel';
+import RightPanel from './RightPanel';
+import { EntityManager } from "./EntityManager";
+import { EditItemModal } from "./EditItemModal";
+import "./stylePAdmin.css";
 
 export const ParentAdmin = () => {
     const { store } = useGlobalReducer();

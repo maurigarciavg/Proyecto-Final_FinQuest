@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import defaultAvatar from "../assets/img/logo.png";
-import monedasIcon from "../assets/img/monedas.png";
+import defaultAvatar from "../../assets/img/logo.png";
+import monedasIcon from "../../assets/img/monedas.png";
 
 export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress }) => {
     const avatarSource = child.avatar ? child.avatar : defaultAvatar;
@@ -38,9 +38,9 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
                     <div className="progress-track">
                         <div
                             className="progress-fill progress-fill--level"
-                            style={{ 
-                                width: `${progress}%`, 
-                                transition: "width 0.8s ease-in-out" 
+                            style={{
+                                width: `${progress}%`,
+                                transition: "width 0.8s ease-in-out"
                             }}
                         ></div>
                     </div>
@@ -63,9 +63,9 @@ export const ChildHeader = ({ child, level, progress, xpRemaining, prizeProgress
                     <div className="progress-track">
                         <div
                             className="progress-fill progress-fill--coins"
-                            style={{ 
-                                width: `${prizeProgress}%`, 
-                                transition: "width 0.8s ease-in-out" 
+                            style={{
+                                width: `${prizeProgress}%`,
+                                transition: "width 0.8s ease-in-out"
                             }}
                         ></div>
                     </div>

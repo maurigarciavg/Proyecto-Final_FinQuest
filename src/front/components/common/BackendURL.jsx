@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import envFile from "../../../docs/assets/env-file.png";
+import envFile from "../../../../docs/assets/env-file.png";
 
 const Dark = ({ children }) => <span className="bg-dark text-white px-1 rounded">{children}</span>;
 Dark.propTypes = {

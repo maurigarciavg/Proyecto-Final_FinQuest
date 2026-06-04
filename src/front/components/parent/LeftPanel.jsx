@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { ChildWizard } from "../../front/components/ChildProfileCreation/ChildWizard";
-import "../style ParentDash/styleLeftPanel.css";
-import defaultAvatar from "../../front/assets/img/Castor-1.png";
+import { ChildWizard } from "../child-wizard/ChildWizard";
+import "./styleLeftPanel.css";
+import defaultAvatar from "../../assets/img/Castor-1.png";
 
 const LeftPanel = ({ parentName, parentAvatar, childrenProfiles, onSelectChild }) => {
   const [showWizard, setShowWizard] = useState(false);

@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
-import { BackendURL } from "./components/BackendURL";
+import { BackendURL } from "./components/common/BackendURL";
 import { StoreProvider } from "./hooks/useGlobalReducer";
 import "./index.css";
 import { router } from "./routes";

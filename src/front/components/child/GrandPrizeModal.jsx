@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import monedas from "../assets/img/monedas.png";
-import { getGrandPrizeIcon } from "../Utils/getTaskIcon";
+import monedas from "../../assets/img/monedas.png";
+import { getGrandPrizeIcon } from "../../utils/getTaskIcon";
 
 export const GrandPrizeModal = ({ grandPrize, coins, onClose, onRedeem }) => {
     const prizeIcon = grandPrize?.image_url?.startsWith("http")

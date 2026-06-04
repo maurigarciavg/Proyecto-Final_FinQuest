@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../services/api";
-import { PinModal } from "../components/PinModal";
+import { PinModal } from "../components/child/PinModal";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/ProfilesPage.css";
 import cashtorImg from "../assets/img/Cashtor.jpg";

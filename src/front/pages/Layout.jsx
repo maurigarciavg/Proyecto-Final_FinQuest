@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
-import { Footer } from "../components/Footer";
-import { Navbar } from "../components/Navbar";
-import ScrollToTop from "../components/ScrollToTop";
+import { Footer } from "../components/common/Footer";
+import { Navbar } from "../components/common/Navbar";
+import ScrollToTop from "../components/common/ScrollToTop";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { apiRequest, authHeaders } from "../services/api";
 

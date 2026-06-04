@@ -1,5 +1,5 @@
 import React from "react";
-import { getCouponIcon } from "../Utils/getTaskIcon";
+import { getCouponIcon } from "../../utils/getTaskIcon";
 
 export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
     return (
@@ -65,4 +65,3 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
         </div>
     );
 };
-//editar

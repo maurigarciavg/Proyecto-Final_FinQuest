@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { getGrandPrizeIcon } from "../../front/Utils/getTaskIcon";
-import "../style ParentDash/styleRightPanel.css";
+import { getGrandPrizeIcon } from "../../utils/getTaskIcon";
+import "./styleRightPanel.css";
 
 const RightPanel = ({ grandPrizeName, grandPrizeImage, tasks = [] }) => {
     const [viewDate, setViewDate] = useState(new Date());

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { getTaskIcon, getCouponIcon, getGrandPrizeIcon } from "../../front/Utils/getTaskIcon";
-import "../style ParentDash/styleCePanel.css";
+import { getTaskIcon, getCouponIcon, getGrandPrizeIcon } from "../../utils/getTaskIcon";
+import "./styleCePanel.css";
 
 const CenterPanel = ({
     childName,
